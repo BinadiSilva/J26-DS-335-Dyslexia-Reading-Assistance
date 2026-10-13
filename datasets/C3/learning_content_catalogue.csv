@@ -1,0 +1,14 @@
+
+item_id,title,activity_type,target_skill,difficulty_level,duration_minutes,topic,content
+A001,Sound and Word Practice,Word Games,Phonics,Easy,10,Animals,"Practise matching beginning sounds with familiar animal words."
+A002,Word Recognition Challenge,Word Games,Word Recognition,Medium,15,Stories,"Identify familiar words in a short list and match each word to its meaning."
+A003,Space Word Puzzle,Word Games,Phonics,Medium,15,Space,"Match space-related words with their beginning sounds and syllables."
+A004,Animal Word Match,Word Games,Word Recognition,Easy,10,Animals,"Match animal names with simple descriptions."
+A005,Read Aloud: The Little Fox,Reading Stories,Fluency,Easy,10,Animals,"Read a short fictional passage about a fox, focusing on steady pacing."
+A006,Space Adventure Reading,Reading Stories,Fluency,Medium,15,Space,"Read a short fictional space adventure aloud at a comfortable pace."
+A007,The School Day,Reading Stories,Pronunciation,Easy,10,Stories,"Read simple sentences about a school day and practise clear pronunciation."
+A008,Sports Day Story,Reading Stories,Fluency,Medium,15,Sports,"Read a short fictional story about a school sports day."
+A009,Story Understanding,Comprehension,Comprehension,Easy,10,Stories,"Read a short passage and answer basic questions about its main idea."
+A010,Animal Facts Comprehension,Comprehension,Comprehension,Medium,15,Animals,"Read a short informational passage about animals and answer questions."
+A011,Space Reading Questions,Comprehension,Comprehension,Medium,20,Space,"Read a short passage about space and answer questions about key details."
+A012,Pronunciation Practice,Pronunciation,Pronunciation,Easy,10,Stories,"Practise saying selected words clearly and repeating short sentences."
