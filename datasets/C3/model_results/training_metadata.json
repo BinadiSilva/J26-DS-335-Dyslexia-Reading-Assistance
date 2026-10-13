@@ -1,0 +1,25 @@
+{
+    "selected_model": "Logistic Regression",
+    "target": "recommended_activity",
+    "feature_columns": [
+        "age",
+        "grade",
+        "preferred_topic",
+        "preferred_activity",
+        "preferred_duration_min",
+        "reading_score",
+        "reading_speed_wpm",
+        "pronunciation_accuracy",
+        "fluency_score",
+        "difficulty_level",
+        "difficulty_score",
+        "weak_skill",
+        "previous_score",
+        "activity_completion_rate",
+        "previous_activity"
+    ],
+    "training_rows": 1600,
+    "testing_rows": 400,
+    "selection_metric": "macro_f1",
+    "note": "Initial experiment using synthetic data. Requires further validation before real-world use."
+}
