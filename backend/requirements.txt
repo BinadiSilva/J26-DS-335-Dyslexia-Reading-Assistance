@@ -3,3 +3,7 @@ uvicorn[standard]
 pydantic
 pydantic-settings
 python-dotenv
+pandas
+scikit-learn
+joblib
+matplotlib

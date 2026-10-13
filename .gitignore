@@ -22,3 +22,6 @@ htmlcov/
 # OS
 .DS_Store
 Thumbs.db
+
+# Local learner progress data
+datasets/C3/progress/
