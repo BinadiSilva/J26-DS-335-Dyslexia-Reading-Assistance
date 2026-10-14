@@ -544,6 +544,17 @@ def predict_recommended_activity(
         previous_score=previous_score,
         current_difficulty=current_difficulty,
     )
+    
+    # Recommend activities that match the adapted difficulty.
+    catalogue = catalogue[
+        catalogue["_difficulty_key"] == target_difficulty
+    ].copy()
+
+    if catalogue.empty:
+        raise ValueError(
+        f"No learning activities are available at "
+        f"the target difficulty: {target_difficulty}."
+    )
 
     ranked_items = []
 

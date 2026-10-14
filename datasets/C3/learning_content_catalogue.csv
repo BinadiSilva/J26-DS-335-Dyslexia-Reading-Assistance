@@ -12,3 +12,9 @@ A009,Story Understanding,Comprehension,Comprehension,Easy,10,Stories,"Read a sho
 A010,Animal Facts Comprehension,Comprehension,Comprehension,Medium,15,Animals,"Read a short informational passage about animals and answer questions."
 A011,Space Reading Questions,Comprehension,Comprehension,Medium,20,Space,"Read a short passage about space and answer questions about key details."
 A012,Pronunciation Practice,Pronunciation,Pronunciation,Easy,10,Stories,"Practise saying selected words clearly and repeating short sentences."
+A013,Advanced Sound Patterns,Word Games,Phonics,Hard,15,Animals,Identify and distinguish more complex sound patterns in unfamiliar animal-related words.
+A014,Challenging Word Recognition,Word Games,Word Recognition,Hard,15,Stories,Recognize and distinguish longer words with similar spelling patterns.
+A015,Fluent Story Reading,Reading Stories,Reading Fluency,Hard,20,Space,Read a longer age-appropriate space story and practise accuracy and fluent phrasing.
+A016,Story Comprehension Challenge,Comprehension,Comprehension,Hard,20,Space,Read a short challenging story and answer questions about key details and implied meaning.
+A017,Pronunciation Practice Challenge,Pronunciation,Pronunciation,Hard,15,Animals,Practise pronouncing longer words and distinguishing similar speech sounds.
+A018,Advanced Word Meaning,Comprehension,Vocabulary,Hard,20,Stories,Use context clues to determine the meanings of unfamiliar words in a short story.
