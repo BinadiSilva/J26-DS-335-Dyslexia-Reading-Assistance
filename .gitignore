@@ -1,0 +1,22 @@
+
+# Python cache files
+__pycache__/
+*.pyc
+
+# Python environments
+.venv/
+venv/
+env/
+.env
+
+# Dataset recordings and metadata
+/datasets/c1/mps/
+
+# Generated and test audio
+/datasets/c1/test_audio/
+
+# Temporary files
+*.tmp
+
+# Editor settings
+.vscode/
