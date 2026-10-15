@@ -1,0 +1,137 @@
+weak_skill label set: ['phonological', 'decoding', 'fluency', 'pronunciation']
+intervention label set: ['Low', 'Moderate', 'High']
+match check 0 {'weak_skill': True, 'intervention_intensity': True}
+match check 1 {'weak_skill': True, 'intervention_intensity': True}
+match check 2 {'weak_skill': True, 'intervention_intensity': True}
+match check 3 {'weak_skill': True, 'intervention_intensity': True}
+match check 4 {'weak_skill': True, 'intervention_intensity': True}
+{
+  "child_id": "C001",
+  "session_id": "C001-S01",
+  "timestamp": "2026-08-09",
+  "difficulty_score": 0.580510133014761,
+  "difficulty_level": "High",
+  "weak_skill": "phonological",
+  "weak_skill_confidence": 0.6757650971412659,
+  "intervention_intensity": "High",
+  "intervention_confidence": 0.9963406920433044,
+  "low_confidence_flags": {
+    "weak_skill": false,
+    "intervention_intensity": false
+  },
+  "shap_top_features": {
+    "difficulty_score": [
+      [
+        "words_correct",
+        0.028961968572863903
+      ],
+      [
+        "word_error_rate",
+        0.025225846026254967
+      ],
+      [
+        "reading_speed_wpm",
+        0.017745140515096697
+      ],
+      [
+        "fluency_score",
+        0.01661347841052408
+      ],
+      [
+        "normalized_fluency",
+        0.016373024065403353
+      ]
+    ],
+    "weak_skill": [
+      [
+        "hesitation_count",
+        0.4730205535888672
+      ],
+      [
+        "pronunciation_accuracy",
+        0.40553516149520874
+      ],
+      [
+        "word_error_rate",
+        0.20200829207897186
+      ],
+      [
+        "omission_count",
+        0.055805061012506485
+      ],
+      [
+        "fluency_score",
+        0.03783203661441803
+      ]
+    ],
+    "intervention_intensity": [
+      [
+        "pronunciation_accuracy",
+        1.0968146324157715
+      ],
+      [
+        "reading_speed_wpm",
+        0.9232682585716248
+      ],
+      [
+        "energy_variability",
+        0.24240238964557648
+      ],
+      [
+        "substitution_count",
+        -0.21016845107078552
+      ],
+      [
+        "fluency_score",
+        0.1873759776353836
+      ]
+    ]
+  },
+  "cognitive_profile": {
+    "subskill_scores": {
+      "phonological": 60.0,
+      "decoding": 72.0,
+      "fluency": 38.4,
+      "pronunciation": 43.5
+    },
+    "strengths": [],
+    "weaknesses": [
+      "fluency",
+      "pronunciation"
+    ],
+    "difficulty_level": "High",
+    "primary_focus_area": "phonological",
+    "rule_based_weakest_area": "fluency",
+    "model_rule_agreement": false
+  },
+  "prosody_engagement_index": {
+    "prosody_engagement_index": 58.5,
+    "components": {
+      "pitch_variability": 76.4,
+      "energy_mean": 57.1,
+      "energy_variability": 47.0,
+      "pause_pattern_score": 53.4
+    },
+    "note": "Rule-based indicator; not clinically validated."
+  },
+  "intervention": {
+    "intervention_intensity": "High",
+    "focus_area": "phonological",
+    "recommended_activities": [
+      "Tap and copy rhythmic syllables.",
+      "Listen for and repeat target sounds.",
+      "Play sound-matching games with minimal pairs."
+    ],
+    "requires_professional_review": true,
+    "review_reasons": [
+      "high intensity"
+    ],
+    "disclaimer": "Decision support only; not a diagnosis."
+  },
+  "model_versions": {
+    "difficulty_score": "EBM",
+    "weak_skill": "XGBoost",
+    "intervention_intensity": "XGBoost"
+  }
+}
+Pipeline checks passed.

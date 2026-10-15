@@ -1,0 +1,40 @@
+{
+  "features": {
+    "pitch_variability": {
+      "p5": 0.02877932063383142,
+      "p95": 0.13516492946417022,
+      "median": 0.07023793371765841,
+      "direction": -1,
+      "spearman_vs_target_info_only": 0.697387976843117,
+      "degenerate": false,
+      "skew": 0.7854392142582636
+    },
+    "energy_mean": {
+      "p5": 0.5,
+      "p95": 0.71,
+      "median": 0.605,
+      "direction": 1,
+      "spearman_vs_target_info_only": -0.02009098500084684,
+      "degenerate": false,
+      "skew": -0.3523010375497175
+    },
+    "energy_variability": {
+      "p5": 0.034781401624135504,
+      "p95": 0.2862233890488255,
+      "median": 0.12140235292515425,
+      "direction": -1,
+      "spearman_vs_target_info_only": 0.7380198350574432,
+      "degenerate": false,
+      "skew": 0.7396153040883644
+    },
+    "pause_pattern_score": {
+      "p5": 1.7607499999999998,
+      "p95": 10.041949999999996,
+      "median": 4.653499999999999,
+      "direction": -1,
+      "spearman_vs_target_info_only": -0.23925472828448516,
+      "degenerate": false,
+      "skew": 0.7381664604612899
+    }
+  }
+}
