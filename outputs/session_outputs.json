@@ -1,0 +1,1298 @@
+[
+  {
+    "child_id": "C001",
+    "session_id": "C001-S01",
+    "timestamp": "2026-08-09",
+    "difficulty_score": 0.580510133014761,
+    "difficulty_level": "High",
+    "weak_skill": "phonological",
+    "weak_skill_confidence": 0.6757650971412659,
+    "intervention_intensity": "High",
+    "intervention_confidence": 0.9963406920433044,
+    "low_confidence_flags": {
+      "weak_skill": false,
+      "intervention_intensity": false
+    },
+    "shap_top_features": {
+      "difficulty_score": [
+        [
+          "words_correct",
+          0.028961968572863903
+        ],
+        [
+          "word_error_rate",
+          0.025225846026254967
+        ],
+        [
+          "reading_speed_wpm",
+          0.017745140515096697
+        ],
+        [
+          "fluency_score",
+          0.01661347841052408
+        ],
+        [
+          "normalized_fluency",
+          0.016373024065403353
+        ]
+      ],
+      "weak_skill": [
+        [
+          "hesitation_count",
+          0.4730205535888672
+        ],
+        [
+          "pronunciation_accuracy",
+          0.40553516149520874
+        ],
+        [
+          "word_error_rate",
+          0.20200829207897186
+        ],
+        [
+          "omission_count",
+          0.055805061012506485
+        ],
+        [
+          "fluency_score",
+          0.03783203661441803
+        ]
+      ],
+      "intervention_intensity": [
+        [
+          "pronunciation_accuracy",
+          1.0968146324157715
+        ],
+        [
+          "reading_speed_wpm",
+          0.9232682585716248
+        ],
+        [
+          "energy_variability",
+          0.24240238964557648
+        ],
+        [
+          "substitution_count",
+          -0.21016845107078552
+        ],
+        [
+          "fluency_score",
+          0.1873759776353836
+        ]
+      ]
+    },
+    "cognitive_profile": {
+      "subskill_scores": {
+        "phonological": 60.0,
+        "decoding": 72.0,
+        "fluency": 38.4,
+        "pronunciation": 43.5
+      },
+      "strengths": [],
+      "weaknesses": [
+        "fluency",
+        "pronunciation"
+      ],
+      "difficulty_level": "High",
+      "primary_focus_area": "phonological",
+      "rule_based_weakest_area": "fluency",
+      "model_rule_agreement": false
+    },
+    "prosody_engagement_index": {
+      "prosody_engagement_index": 58.5,
+      "components": {
+        "pitch_variability": 76.4,
+        "energy_mean": 57.1,
+        "energy_variability": 47.0,
+        "pause_pattern_score": 53.4
+      },
+      "note": "Rule-based indicator; not clinically validated."
+    },
+    "intervention": {
+      "intervention_intensity": "High",
+      "focus_area": "phonological",
+      "recommended_activities": [
+        "Tap and copy rhythmic syllables.",
+        "Listen for and repeat target sounds.",
+        "Play sound-matching games with minimal pairs."
+      ],
+      "requires_professional_review": true,
+      "review_reasons": [
+        "high intensity"
+      ],
+      "disclaimer": "Decision support only; not a diagnosis."
+    },
+    "model_versions": {
+      "difficulty_score": "EBM",
+      "weak_skill": "XGBoost",
+      "intervention_intensity": "XGBoost"
+    }
+  },
+  {
+    "child_id": "C001",
+    "session_id": "C001-S02",
+    "timestamp": "2026-08-16",
+    "difficulty_score": 0.5588192786815045,
+    "difficulty_level": "High",
+    "weak_skill": "phonological",
+    "weak_skill_confidence": 0.8678716421127319,
+    "intervention_intensity": "High",
+    "intervention_confidence": 0.9966790676116943,
+    "low_confidence_flags": {
+      "weak_skill": false,
+      "intervention_intensity": false
+    },
+    "shap_top_features": {
+      "difficulty_score": [
+        [
+          "reading_speed_wpm",
+          0.02030266777658512
+        ],
+        [
+          "reading_duration_sec",
+          0.017855057371395554
+        ],
+        [
+          "normalized_speed",
+          0.017200183557776225
+        ],
+        [
+          "words_incorrect",
+          0.014982700665887383
+        ],
+        [
+          "word_error_rate",
+          0.014717878561037578
+        ]
+      ],
+      "weak_skill": [
+        [
+          "repetition_count",
+          0.5323334336280823
+        ],
+        [
+          "hesitation_count",
+          0.35854682326316833
+        ],
+        [
+          "word_error_rate",
+          0.3081652820110321
+        ],
+        [
+          "pronunciation_accuracy",
+          0.20324277877807617
+        ],
+        [
+          "substitution_count",
+          0.04090762138366699
+        ]
+      ],
+      "intervention_intensity": [
+        [
+          "pronunciation_accuracy",
+          1.0068360567092896
+        ],
+        [
+          "reading_speed_wpm",
+          0.8807834386825562
+        ],
+        [
+          "energy_variability",
+          0.24828793108463287
+        ],
+        [
+          "substitution_count",
+          0.2371591329574585
+        ],
+        [
+          "fluency_score",
+          0.19771133363246918
+        ]
+      ]
+    },
+    "cognitive_profile": {
+      "subskill_scores": {
+        "phonological": 60.0,
+        "decoding": 60.0,
+        "fluency": 45.7,
+        "pronunciation": 45.8
+      },
+      "strengths": [],
+      "weaknesses": [
+        "fluency",
+        "pronunciation"
+      ],
+      "difficulty_level": "High",
+      "primary_focus_area": "phonological",
+      "rule_based_weakest_area": "fluency",
+      "model_rule_agreement": false
+    },
+    "prosody_engagement_index": {
+      "prosody_engagement_index": 36.4,
+      "components": {
+        "pitch_variability": 31.8,
+        "energy_mean": 0.0,
+        "energy_variability": 37.3,
+        "pause_pattern_score": 76.5
+      },
+      "note": "Rule-based indicator; not clinically validated."
+    },
+    "intervention": {
+      "intervention_intensity": "High",
+      "focus_area": "phonological",
+      "recommended_activities": [
+        "Tap and copy rhythmic syllables.",
+        "Listen for and repeat target sounds.",
+        "Play sound-matching games with minimal pairs."
+      ],
+      "requires_professional_review": true,
+      "review_reasons": [
+        "high intensity"
+      ],
+      "disclaimer": "Decision support only; not a diagnosis."
+    },
+    "model_versions": {
+      "difficulty_score": "EBM",
+      "weak_skill": "XGBoost",
+      "intervention_intensity": "XGBoost"
+    }
+  },
+  {
+    "child_id": "C001",
+    "session_id": "C001-S03",
+    "timestamp": "2026-08-23",
+    "difficulty_score": 0.5725888810237428,
+    "difficulty_level": "High",
+    "weak_skill": "phonological",
+    "weak_skill_confidence": 0.7493282556533813,
+    "intervention_intensity": "High",
+    "intervention_confidence": 0.9952347874641418,
+    "low_confidence_flags": {
+      "weak_skill": false,
+      "intervention_intensity": false
+    },
+    "shap_top_features": {
+      "difficulty_score": [
+        [
+          "word_error_rate",
+          0.026704737407695096
+        ],
+        [
+          "words_incorrect",
+          0.02305589372071113
+        ],
+        [
+          "reading_duration_sec",
+          0.02217720472313859
+        ],
+        [
+          "reading_speed_wpm",
+          0.021184898982332185
+        ],
+        [
+          "normalized_speed",
+          0.018732843430343735
+        ]
+      ],
+      "weak_skill": [
+        [
+          "repetition_count",
+          0.5508167743682861
+        ],
+        [
+          "hesitation_count",
+          0.35666635632514954
+        ],
+        [
+          "pronunciation_accuracy",
+          0.2657359540462494
+        ],
+        [
+          "word_error_rate",
+          0.09426240622997284
+        ],
+        [
+          "fluency_score",
+          0.04583550617098808
+        ]
+      ],
+      "intervention_intensity": [
+        [
+          "pronunciation_accuracy",
+          1.0068360567092896
+        ],
+        [
+          "reading_speed_wpm",
+          0.90106201171875
+        ],
+        [
+          "energy_variability",
+          0.24828793108463287
+        ],
+        [
+          "substitution_count",
+          0.2371591329574585
+        ],
+        [
+          "fluency_score",
+          0.19771133363246918
+        ]
+      ]
+    },
+    "cognitive_profile": {
+      "subskill_scores": {
+        "phonological": 52.0,
+        "decoding": 64.0,
+        "fluency": 46.2,
+        "pronunciation": 40.4
+      },
+      "strengths": [],
+      "weaknesses": [
+        "phonological",
+        "fluency",
+        "pronunciation"
+      ],
+      "difficulty_level": "High",
+      "primary_focus_area": "phonological",
+      "rule_based_weakest_area": "pronunciation",
+      "model_rule_agreement": false
+    },
+    "prosody_engagement_index": {
+      "prosody_engagement_index": 36.4,
+      "components": {
+        "pitch_variability": 0.4,
+        "energy_mean": 19.0,
+        "energy_variability": 38.0,
+        "pause_pattern_score": 88.1
+      },
+      "note": "Rule-based indicator; not clinically validated."
+    },
+    "intervention": {
+      "intervention_intensity": "High",
+      "focus_area": "phonological",
+      "recommended_activities": [
+        "Tap and copy rhythmic syllables.",
+        "Listen for and repeat target sounds.",
+        "Play sound-matching games with minimal pairs."
+      ],
+      "requires_professional_review": true,
+      "review_reasons": [
+        "high intensity",
+        "multiple weak areas"
+      ],
+      "disclaimer": "Decision support only; not a diagnosis."
+    },
+    "model_versions": {
+      "difficulty_score": "EBM",
+      "weak_skill": "XGBoost",
+      "intervention_intensity": "XGBoost"
+    }
+  },
+  {
+    "child_id": "C001",
+    "session_id": "C001-S04",
+    "timestamp": "2026-08-30",
+    "difficulty_score": 0.5378507934058513,
+    "difficulty_level": "High",
+    "weak_skill": "fluency",
+    "weak_skill_confidence": 0.796405017375946,
+    "intervention_intensity": "High",
+    "intervention_confidence": 0.997168242931366,
+    "low_confidence_flags": {
+      "weak_skill": false,
+      "intervention_intensity": false
+    },
+    "shap_top_features": {
+      "difficulty_score": [
+        [
+          "fluency_score",
+          0.02352972136402893
+        ],
+        [
+          "normalized_fluency",
+          0.02176190904420491
+        ],
+        [
+          "words_incorrect",
+          0.0177978126586854
+        ],
+        [
+          "word_error_rate",
+          0.015594868848232862
+        ],
+        [
+          "reading_duration_sec",
+          0.013935369522966931
+        ]
+      ],
+      "weak_skill": [
+        [
+          "fluency_score",
+          1.623447060585022
+        ],
+        [
+          "repetition_count",
+          0.4096246063709259
+        ],
+        [
+          "hesitation_count",
+          -0.21054556965827942
+        ],
+        [
+          "omission_count",
+          -0.1430935263633728
+        ],
+        [
+          "substitution_count",
+          -0.05158918723464012
+        ]
+      ],
+      "intervention_intensity": [
+        [
+          "pronunciation_accuracy",
+          1.0811848640441895
+        ],
+        [
+          "reading_speed_wpm",
+          0.9232682585716248
+        ],
+        [
+          "energy_variability",
+          0.24828793108463287
+        ],
+        [
+          "substitution_count",
+          -0.21016845107078552
+        ],
+        [
+          "fluency_score",
+          0.1873759776353836
+        ]
+      ]
+    },
+    "cognitive_profile": {
+      "subskill_scores": {
+        "phonological": 68.0,
+        "decoding": 76.0,
+        "fluency": 27.3,
+        "pronunciation": 54.6
+      },
+      "strengths": [
+        "decoding"
+      ],
+      "weaknesses": [
+        "fluency",
+        "pronunciation"
+      ],
+      "difficulty_level": "High",
+      "primary_focus_area": "fluency",
+      "rule_based_weakest_area": "fluency",
+      "model_rule_agreement": true
+    },
+    "prosody_engagement_index": {
+      "prosody_engagement_index": 51.7,
+      "components": {
+        "pitch_variability": 78.0,
+        "energy_mean": 76.2,
+        "energy_variability": 31.7,
+        "pause_pattern_score": 21.0
+      },
+      "note": "Rule-based indicator; not clinically validated."
+    },
+    "intervention": {
+      "intervention_intensity": "High",
+      "focus_area": "fluency",
+      "recommended_activities": [
+        "Read the same passage twice for smooth pacing.",
+        "Do timed repeated reading with phrase cues.",
+        "Track reading speed and expression goals."
+      ],
+      "requires_professional_review": true,
+      "review_reasons": [
+        "high intensity"
+      ],
+      "disclaimer": "Decision support only; not a diagnosis."
+    },
+    "model_versions": {
+      "difficulty_score": "EBM",
+      "weak_skill": "XGBoost",
+      "intervention_intensity": "XGBoost"
+    }
+  },
+  {
+    "child_id": "C001",
+    "session_id": "C001-S05",
+    "timestamp": "2026-09-06",
+    "difficulty_score": 0.4440273193232157,
+    "difficulty_level": "Moderate",
+    "weak_skill": "decoding",
+    "weak_skill_confidence": 0.5230812430381775,
+    "intervention_intensity": "High",
+    "intervention_confidence": 0.9887962341308594,
+    "low_confidence_flags": {
+      "weak_skill": true,
+      "intervention_intensity": false
+    },
+    "shap_top_features": {
+      "difficulty_score": [
+        [
+          "reading_speed_wpm",
+          0.015346133785806144
+        ],
+        [
+          "normalized_speed",
+          0.013778756712186948
+        ],
+        [
+          "reading_duration_sec",
+          0.013309819828864611
+        ],
+        [
+          "normalized_fluency",
+          0.011989959132556285
+        ],
+        [
+          "fluency_score",
+          0.010304415334702176
+        ]
+      ],
+      "weak_skill": [
+        [
+          "fluency_score",
+          -0.5954673886299133
+        ],
+        [
+          "omission_count",
+          0.5086947679519653
+        ],
+        [
+          "pronunciation_accuracy",
+          0.2398635745048523
+        ],
+        [
+          "substitution_count",
+          0.2321610301733017
+        ],
+        [
+          "word_error_rate",
+          0.09566988050937653
+        ]
+      ],
+      "intervention_intensity": [
+        [
+          "pronunciation_accuracy",
+          -1.0704677104949951
+        ],
+        [
+          "reading_speed_wpm",
+          0.9131107926368713
+        ],
+        [
+          "energy_variability",
+          0.8500710725784302
+        ],
+        [
+          "substitution_count",
+          0.3249981701374054
+        ],
+        [
+          "fluency_score",
+          0.18505018949508667
+        ]
+      ]
+    },
+    "cognitive_profile": {
+      "subskill_scores": {
+        "phonological": 60.0,
+        "decoding": 56.0,
+        "fluency": 45.3,
+        "pronunciation": 64.8
+      },
+      "strengths": [],
+      "weaknesses": [
+        "decoding",
+        "fluency"
+      ],
+      "difficulty_level": "Moderate",
+      "primary_focus_area": "decoding",
+      "rule_based_weakest_area": "fluency",
+      "model_rule_agreement": false
+    },
+    "prosody_engagement_index": {
+      "prosody_engagement_index": 48.3,
+      "components": {
+        "pitch_variability": 69.6,
+        "energy_mean": 42.9,
+        "energy_variability": 40.3,
+        "pause_pattern_score": 40.2
+      },
+      "note": "Rule-based indicator; not clinically validated."
+    },
+    "intervention": {
+      "intervention_intensity": "High",
+      "focus_area": "decoding",
+      "recommended_activities": [
+        "Blend letter-sound chunks into words.",
+        "Read short decodable passages aloud.",
+        "Use flashcards for common word patterns."
+      ],
+      "requires_professional_review": true,
+      "review_reasons": [
+        "low confidence in weak-skill prediction",
+        "high intensity"
+      ],
+      "disclaimer": "Decision support only; not a diagnosis."
+    },
+    "model_versions": {
+      "difficulty_score": "EBM",
+      "weak_skill": "XGBoost",
+      "intervention_intensity": "XGBoost"
+    }
+  },
+  {
+    "child_id": "C002",
+    "session_id": "C002-S01",
+    "timestamp": "2026-08-03",
+    "difficulty_score": 0.222907447100127,
+    "difficulty_level": "Low",
+    "weak_skill": "phonological",
+    "weak_skill_confidence": 0.6908507347106934,
+    "intervention_intensity": "Low",
+    "intervention_confidence": 0.9569231867790222,
+    "low_confidence_flags": {
+      "weak_skill": false,
+      "intervention_intensity": false
+    },
+    "shap_top_features": {
+      "difficulty_score": [
+        [
+          "reading_duration_sec",
+          -0.018850259878299715
+        ],
+        [
+          "words_incorrect",
+          -0.016301785972909395
+        ],
+        [
+          "word_error_rate",
+          -0.01379578727913224
+        ],
+        [
+          "normalized_speed",
+          -0.010600726506427441
+        ],
+        [
+          "normalized_fluency",
+          -0.010340393277359246
+        ]
+      ],
+      "weak_skill": [
+        [
+          "repetition_count",
+          0.7480095028877258
+        ],
+        [
+          "hesitation_count",
+          0.3269389271736145
+        ],
+        [
+          "omission_count",
+          0.21823693811893463
+        ],
+        [
+          "word_error_rate",
+          -0.17386150360107422
+        ],
+        [
+          "pronunciation_accuracy",
+          -0.06302715837955475
+        ]
+      ],
+      "intervention_intensity": [
+        [
+          "reading_speed_wpm",
+          2.1876213550567627
+        ],
+        [
+          "words_incorrect",
+          0.7649369239807129
+        ],
+        [
+          "energy_variability",
+          -0.42681974172592163
+        ],
+        [
+          "pitch_variability",
+          -0.06878351420164108
+        ],
+        [
+          "pause_pattern_score",
+          -0.06300670653581619
+        ]
+      ]
+    },
+    "cognitive_profile": {
+      "subskill_scores": {
+        "phonological": 64.0,
+        "decoding": 80.0,
+        "fluency": 66.5,
+        "pronunciation": 64.6
+      },
+      "strengths": [
+        "decoding"
+      ],
+      "weaknesses": [],
+      "difficulty_level": "Low",
+      "primary_focus_area": "phonological",
+      "rule_based_weakest_area": "phonological",
+      "model_rule_agreement": true
+    },
+    "prosody_engagement_index": {
+      "prosody_engagement_index": 41.7,
+      "components": {
+        "pitch_variability": 57.5,
+        "energy_mean": 38.1,
+        "energy_variability": 70.6,
+        "pause_pattern_score": 0.4
+      },
+      "note": "Rule-based indicator; not clinically validated."
+    },
+    "intervention": {
+      "intervention_intensity": "Low",
+      "focus_area": "phonological",
+      "recommended_activities": [
+        "Tap and copy rhythmic syllables.",
+        "Listen for and repeat target sounds.",
+        "Play sound-matching games with minimal pairs."
+      ],
+      "requires_professional_review": false,
+      "review_reasons": [],
+      "disclaimer": "Decision support only; not a diagnosis."
+    },
+    "model_versions": {
+      "difficulty_score": "EBM",
+      "weak_skill": "XGBoost",
+      "intervention_intensity": "XGBoost"
+    }
+  },
+  {
+    "child_id": "C002",
+    "session_id": "C002-S02",
+    "timestamp": "2026-08-10",
+    "difficulty_score": 0.2767541575344011,
+    "difficulty_level": "Moderate",
+    "weak_skill": "phonological",
+    "weak_skill_confidence": 0.719872772693634,
+    "intervention_intensity": "Low",
+    "intervention_confidence": 0.9452648162841797,
+    "low_confidence_flags": {
+      "weak_skill": false,
+      "intervention_intensity": false
+    },
+    "shap_top_features": {
+      "difficulty_score": [
+        [
+          "reading_duration_sec",
+          -0.023718388357785093
+        ],
+        [
+          "normalized_speed",
+          -0.016096859578333882
+        ],
+        [
+          "reading_speed_wpm",
+          -0.015835873101211675
+        ],
+        [
+          "fluency_score",
+          -0.01468266399610094
+        ],
+        [
+          "normalized_fluency",
+          -0.01337162796730451
+        ]
+      ],
+      "weak_skill": [
+        [
+          "repetition_count",
+          0.6615340113639832
+        ],
+        [
+          "fluency_score",
+          0.5023290514945984
+        ],
+        [
+          "hesitation_count",
+          0.3837594985961914
+        ],
+        [
+          "omission_count",
+          0.21516260504722595
+        ],
+        [
+          "word_error_rate",
+          -0.12293460220098495
+        ]
+      ],
+      "intervention_intensity": [
+        [
+          "reading_speed_wpm",
+          2.1027731895446777
+        ],
+        [
+          "words_incorrect",
+          0.7649369239807129
+        ],
+        [
+          "energy_variability",
+          -0.4295802712440491
+        ],
+        [
+          "pronunciation_accuracy",
+          -0.25515690445899963
+        ],
+        [
+          "pitch_variability",
+          -0.11576789617538452
+        ]
+      ]
+    },
+    "cognitive_profile": {
+      "subskill_scores": {
+        "phonological": 56.0,
+        "decoding": 92.0,
+        "fluency": 74.5,
+        "pronunciation": 61.7
+      },
+      "strengths": [
+        "decoding"
+      ],
+      "weaknesses": [
+        "phonological"
+      ],
+      "difficulty_level": "Moderate",
+      "primary_focus_area": "phonological",
+      "rule_based_weakest_area": "phonological",
+      "model_rule_agreement": true
+    },
+    "prosody_engagement_index": {
+      "prosody_engagement_index": 35.4,
+      "components": {
+        "pitch_variability": 27.7,
+        "energy_mean": 0.0,
+        "energy_variability": 26.6,
+        "pause_pattern_score": 87.5
+      },
+      "note": "Rule-based indicator; not clinically validated."
+    },
+    "intervention": {
+      "intervention_intensity": "Low",
+      "focus_area": "phonological",
+      "recommended_activities": [
+        "Tap and copy rhythmic syllables.",
+        "Listen for and repeat target sounds.",
+        "Play sound-matching games with minimal pairs."
+      ],
+      "requires_professional_review": false,
+      "review_reasons": [],
+      "disclaimer": "Decision support only; not a diagnosis."
+    },
+    "model_versions": {
+      "difficulty_score": "EBM",
+      "weak_skill": "XGBoost",
+      "intervention_intensity": "XGBoost"
+    }
+  },
+  {
+    "child_id": "C002",
+    "session_id": "C002-S03",
+    "timestamp": "2026-08-17",
+    "difficulty_score": 0.2678843238113755,
+    "difficulty_level": "Moderate",
+    "weak_skill": "fluency",
+    "weak_skill_confidence": 0.9112415313720703,
+    "intervention_intensity": "Moderate",
+    "intervention_confidence": 0.892109751701355,
+    "low_confidence_flags": {
+      "weak_skill": false,
+      "intervention_intensity": false
+    },
+    "shap_top_features": {
+      "difficulty_score": [
+        [
+          "words_incorrect",
+          -0.02006435776440828
+        ],
+        [
+          "word_error_rate",
+          -0.01824176792061607
+        ],
+        [
+          "reading_duration_sec",
+          -0.016108668150467322
+        ],
+        [
+          "pronunciation_accuracy",
+          -0.010911981500888665
+        ],
+        [
+          "energy_variability",
+          -0.009856945557247306
+        ]
+      ],
+      "weak_skill": [
+        [
+          "fluency_score",
+          0.8269525766372681
+        ],
+        [
+          "pronunciation_accuracy",
+          0.37220078706741333
+        ],
+        [
+          "repetition_count",
+          0.3066270053386688
+        ],
+        [
+          "substitution_count",
+          0.18647544085979462
+        ],
+        [
+          "word_error_rate",
+          0.11310376971960068
+        ]
+      ],
+      "intervention_intensity": [
+        [
+          "reading_speed_wpm",
+          0.7015005946159363
+        ],
+        [
+          "insertion_count",
+          0.37951359152793884
+        ],
+        [
+          "words_total",
+          -0.2560490071773529
+        ],
+        [
+          "normalized_fluency",
+          -0.24991948902606964
+        ],
+        [
+          "pronunciation_accuracy",
+          0.2477876842021942
+        ]
+      ]
+    },
+    "cognitive_profile": {
+      "subskill_scores": {
+        "phonological": 88.0,
+        "decoding": 88.0,
+        "fluency": 52.4,
+        "pronunciation": 72.7
+      },
+      "strengths": [
+        "phonological",
+        "decoding"
+      ],
+      "weaknesses": [
+        "fluency"
+      ],
+      "difficulty_level": "Moderate",
+      "primary_focus_area": "fluency",
+      "rule_based_weakest_area": "fluency",
+      "model_rule_agreement": true
+    },
+    "prosody_engagement_index": {
+      "prosody_engagement_index": 62.6,
+      "components": {
+        "pitch_variability": 62.8,
+        "energy_mean": 28.6,
+        "energy_variability": 83.1,
+        "pause_pattern_score": 76.0
+      },
+      "note": "Rule-based indicator; not clinically validated."
+    },
+    "intervention": {
+      "intervention_intensity": "Moderate",
+      "focus_area": "fluency",
+      "recommended_activities": [
+        "Read the same passage twice for smooth pacing.",
+        "Do timed repeated reading with phrase cues.",
+        "Track reading speed and expression goals."
+      ],
+      "requires_professional_review": false,
+      "review_reasons": [],
+      "disclaimer": "Decision support only; not a diagnosis."
+    },
+    "model_versions": {
+      "difficulty_score": "EBM",
+      "weak_skill": "XGBoost",
+      "intervention_intensity": "XGBoost"
+    }
+  },
+  {
+    "child_id": "C002",
+    "session_id": "C002-S04",
+    "timestamp": "2026-08-24",
+    "difficulty_score": 0.4050970439044891,
+    "difficulty_level": "Moderate",
+    "weak_skill": "pronunciation",
+    "weak_skill_confidence": 0.811769425868988,
+    "intervention_intensity": "High",
+    "intervention_confidence": 0.9901396632194519,
+    "low_confidence_flags": {
+      "weak_skill": false,
+      "intervention_intensity": false
+    },
+    "shap_top_features": {
+      "difficulty_score": [
+        [
+          "words_correct",
+          -0.016211648988499062
+        ],
+        [
+          "reading_duration_sec",
+          0.013452351265779237
+        ],
+        [
+          "words_incorrect",
+          0.008394599012635165
+        ],
+        [
+          "pronunciation_accuracy",
+          0.007997378244458281
+        ],
+        [
+          "normalized_accuracy",
+          0.00792539811418835
+        ]
+      ],
+      "weak_skill": [
+        [
+          "substitution_count",
+          0.40592142939567566
+        ],
+        [
+          "pronunciation_accuracy",
+          0.2718912959098816
+        ],
+        [
+          "hesitation_count",
+          0.11554510146379471
+        ],
+        [
+          "word_error_rate",
+          0.10828793048858643
+        ],
+        [
+          "repetition_count",
+          0.0837254524230957
+        ]
+      ],
+      "intervention_intensity": [
+        [
+          "pronunciation_accuracy",
+          1.0587573051452637
+        ],
+        [
+          "reading_speed_wpm",
+          0.9505426287651062
+        ],
+        [
+          "energy_variability",
+          0.24828793108463287
+        ],
+        [
+          "substitution_count",
+          -0.21016845107078552
+        ],
+        [
+          "fluency_score",
+          0.17143435776233673
+        ]
+      ]
+    },
+    "cognitive_profile": {
+      "subskill_scores": {
+        "phonological": 84.0,
+        "decoding": 76.0,
+        "fluency": 55.0,
+        "pronunciation": 48.0
+      },
+      "strengths": [
+        "phonological",
+        "decoding"
+      ],
+      "weaknesses": [
+        "fluency",
+        "pronunciation"
+      ],
+      "difficulty_level": "Moderate",
+      "primary_focus_area": "pronunciation",
+      "rule_based_weakest_area": "pronunciation",
+      "model_rule_agreement": true
+    },
+    "prosody_engagement_index": {
+      "prosody_engagement_index": 56.4,
+      "components": {
+        "pitch_variability": 65.6,
+        "energy_mean": 47.6,
+        "energy_variability": 40.2,
+        "pause_pattern_score": 72.0
+      },
+      "note": "Rule-based indicator; not clinically validated."
+    },
+    "intervention": {
+      "intervention_intensity": "High",
+      "focus_area": "pronunciation",
+      "recommended_activities": [
+        "Repeat words with clear mouth movements.",
+        "Practice sentence stress and intonation.",
+        "Use mirror work for sound formation cues."
+      ],
+      "requires_professional_review": true,
+      "review_reasons": [
+        "high intensity"
+      ],
+      "disclaimer": "Decision support only; not a diagnosis."
+    },
+    "model_versions": {
+      "difficulty_score": "EBM",
+      "weak_skill": "XGBoost",
+      "intervention_intensity": "XGBoost"
+    }
+  },
+  {
+    "child_id": "C002",
+    "session_id": "C002-S05",
+    "timestamp": "2026-08-31",
+    "difficulty_score": 0.2598289899520861,
+    "difficulty_level": "Low",
+    "weak_skill": "decoding",
+    "weak_skill_confidence": 0.5528780221939087,
+    "intervention_intensity": "Moderate",
+    "intervention_confidence": 0.8171203136444092,
+    "low_confidence_flags": {
+      "weak_skill": true,
+      "intervention_intensity": false
+    },
+    "shap_top_features": {
+      "difficulty_score": [
+        [
+          "fluency_score",
+          -0.021190544116624476
+        ],
+        [
+          "normalized_fluency",
+          -0.01817600355037702
+        ],
+        [
+          "reading_speed_wpm",
+          -0.01693963813057422
+        ],
+        [
+          "normalized_speed",
+          -0.016811309244029262
+        ],
+        [
+          "reading_duration_sec",
+          -0.01550460456242327
+        ]
+      ],
+      "weak_skill": [
+        [
+          "fluency_score",
+          1.1405510902404785
+        ],
+        [
+          "word_error_rate",
+          -0.33038556575775146
+        ],
+        [
+          "pronunciation_accuracy",
+          0.22684180736541748
+        ],
+        [
+          "omission_count",
+          0.18101561069488525
+        ],
+        [
+          "repetition_count",
+          -0.09420829266309738
+        ]
+      ],
+      "intervention_intensity": [
+        [
+          "energy_variability",
+          0.6007708311080933
+        ],
+        [
+          "insertion_count",
+          0.4187396466732025
+        ],
+        [
+          "words_incorrect",
+          0.41435742378234863
+        ],
+        [
+          "substitution_count",
+          0.3611128330230713
+        ],
+        [
+          "words_total",
+          -0.24940471351146698
+        ]
+      ]
+    },
+    "cognitive_profile": {
+      "subskill_scores": {
+        "phonological": 80.0,
+        "decoding": 72.0,
+        "fluency": 84.6,
+        "pronunciation": 56.6
+      },
+      "strengths": [
+        "phonological",
+        "fluency"
+      ],
+      "weaknesses": [
+        "pronunciation"
+      ],
+      "difficulty_level": "Low",
+      "primary_focus_area": "decoding",
+      "rule_based_weakest_area": "pronunciation",
+      "model_rule_agreement": false
+    },
+    "prosody_engagement_index": {
+      "prosody_engagement_index": 59.1,
+      "components": {
+        "pitch_variability": 80.8,
+        "energy_mean": 9.5,
+        "energy_variability": 52.9,
+        "pause_pattern_score": 93.1
+      },
+      "note": "Rule-based indicator; not clinically validated."
+    },
+    "intervention": {
+      "intervention_intensity": "Moderate",
+      "focus_area": "decoding",
+      "recommended_activities": [
+        "Blend letter-sound chunks into words.",
+        "Read short decodable passages aloud.",
+        "Use flashcards for common word patterns."
+      ],
+      "requires_professional_review": true,
+      "review_reasons": [
+        "low confidence in weak-skill prediction"
+      ],
+      "disclaimer": "Decision support only; not a diagnosis."
+    },
+    "model_versions": {
+      "difficulty_score": "EBM",
+      "weak_skill": "XGBoost",
+      "intervention_intensity": "XGBoost"
+    }
+  }
+]

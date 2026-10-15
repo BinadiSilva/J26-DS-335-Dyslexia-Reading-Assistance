@@ -1,0 +1,20 @@
+{
+  "n_sessions": 5,
+  "difficulty_score_series": [
+    0.580510133014761,
+    0.5588192786815045,
+    0.5725888810237428,
+    0.5378507934058513,
+    0.4440273193232157
+  ],
+  "delta_vs_previous": -0.09382347408263558,
+  "trend_label": "improving",
+  "most_frequent_weak_skill": "phonological",
+  "intensity_history": [
+    "High",
+    "High",
+    "High",
+    "High",
+    "High"
+  ]
+}
