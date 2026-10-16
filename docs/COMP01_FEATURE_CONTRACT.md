@@ -1,0 +1,68 @@
+# Component 01 feature contract
+
+This document records the raw session fields used by the prediction pipeline and the feature engineering rules in `backend/app/services/reading_difficulty/features.py`.
+
+## Raw columns required by `predict_session`
+
+The session row passed to `predict_session` must include the same raw columns as the data source. These values are used to build the cleaner feature set before the model runs.
+
+| Column | Type | Unit | Example | Category |
+| --- | --- | --- | --- | --- |
+| child_id | string | id | C001 | Metadata |
+| session_id | string | id | C001-S01 | Metadata |
+| session_date | string | date | 2026-08-09 | Metadata |
+| age | integer | years | 10 | Metadata |
+| grade | integer | school year | 5 | Metadata |
+| gender | string | categorical | Male | Metadata |
+| passage_id | string | id | P05 | Metadata |
+| passage_level | string | categorical | Challenging | Metadata |
+| reading_duration_sec | float | seconds | 100.3 | Recording-derived |
+| words_total | integer | count | 94 | Recording-derived |
+| words_correct | integer | count | 38 | Recording-derived |
+| words_incorrect | integer | count | 56 | Recording-derived |
+| reading_speed_wpm | float | words per minute | 56.2 | Recording-derived |
+| pronunciation_accuracy | float | percent | 43.5 | Recording-derived |
+| fluency_score | float | score | 38.4 | Recording-derived |
+| word_error_rate | float | ratio | 0.593 | Recording-derived |
+| hesitation_count | integer | count | 8 | Recording-derived |
+| repetition_count | integer | count | 2 | Recording-derived |
+| omission_count | integer | count | 5 | Recording-derived |
+| substitution_count | integer | count | 2 | Recording-derived |
+| insertion_count | integer | count | 1 | Recording-derived |
+| transcribed_text | string | text | the family spent ... | Metadata |
+| pitch_mean | float | Hz | 234.0 | Recording-derived |
+| energy_mean | float | amplitude | 0.62 | Recording-derived |
+| avg_pause_duration | float | seconds | 1.01 | Recording-derived |
+| pitch_samples | string | semicolon-delimited list | 215.1;235.8;... | Recording-derived |
+| energy_samples | string | semicolon-delimited list | 0.69;0.62;... | Recording-derived |
+| pause_durations | string | semicolon-delimited list | 0.98;1.12;... | Recording-derived |
+| weak_skill | string | label | phonological | Target |
+| difficulty_score | float | normalized score | 0.616 | Target |
+| difficulty_level | string | label | High | Target |
+| intervention_intensity | string | label | High | Target |
+
+## Notes from feature engineering
+
+The raw records are cleaned and then transformed by `engineer_features` in `backend/app/services/reading_difficulty/features.py`.
+
+- Prosodic variability features are created from `pitch_samples`, `energy_samples`, and `pause_durations`.
+- Categorical variables such as `gender`, `passage_level`, `passage_id`, and `error_micro_profile` are one-hot encoded.
+- The weak-skill classifier uses the restricted feature subset below, rather than all engineered columns:
+  - hesitation_count
+  - repetition_count
+  - omission_count
+  - substitution_count
+  - fluency_score
+  - pronunciation_accuracy
+  - word_error_rate
+
+## Classification contract
+
+The model outputs and the generated UI use the following canonical label sets:
+
+- weak_skill: phonological, decoding, fluency, pronunciation
+- intervention_intensity: Low, Moderate, High
+
+## Data grouping
+
+The project uses synthetic child monitoring data. The files in `outputs/session_outputs.json` and `outputs/session_log.jsonl` are the canonical source for the demo dashboard, while the raw CSV remains the upstream source for model training and validation.
