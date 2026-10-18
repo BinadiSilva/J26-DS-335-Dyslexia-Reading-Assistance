@@ -27,6 +27,12 @@ PASSAGES = {
     "P01": ("Easy", 1), "P02": ("Moderate", 2), "P03": ("Moderate", 2),
     "P04": ("Challenging", 3), "P05": ("Challenging", 3),
 }
+GRADE_PASSAGE_CHOICES = {
+    3: ["P01", "P02", "P03"],
+    4: ["P02", "P03", "P04"],
+    5: ["P03", "P04", "P05"],
+}
+GRADE_SPEED_TARGETS = {3: 72, 4: 88, 5: 100}
 
 SAMPLE_SENTENCES = [
     "the little girl walked to school with her brother",
@@ -62,7 +68,7 @@ def _clip(x, lo, hi):
 def generate_session(rng: np.random.Generator, child_id: str, session_idx: int,
                       base_ability: float, age: int, grade: int, gender: str,
                       start_date: datetime):
-    passage_id = rng.choice(list(PASSAGES.keys()))
+    passage_id = rng.choice(GRADE_PASSAGE_CHOICES.get(grade, list(PASSAGES.keys())))
     passage_level_name, level_num = PASSAGES[passage_id]
 
     words_total = int(rng.integers(80, 150))
@@ -70,7 +76,8 @@ def generate_session(rng: np.random.Generator, child_id: str, session_idx: int,
     words_correct = int(round(words_total * accuracy_frac))
     words_incorrect = words_total - words_correct
 
-    reading_speed_wpm = _clip(rng.normal(30 + 100 * base_ability, 10), 20, 145)
+    grade_target = GRADE_SPEED_TARGETS.get(grade, 80)
+    reading_speed_wpm = _clip(rng.normal(grade_target + 18 * base_ability - 6 * max(0, (3 - grade)), 8), 25, 145)
     reading_duration_sec = round(words_total / reading_speed_wpm * 60, 1)
     word_error_rate = _clip((words_incorrect / words_total) + rng.normal(0, 0.01), 0.0, 0.7)
 
@@ -162,12 +169,7 @@ def generate_session(rng: np.random.Generator, child_id: str, session_idx: int,
     else:
         difficulty_level = "High"
 
-    n_weak_subskills = sum(1 for v in subskills.values() if v < 60)
-    _order = ["Low", "Moderate", "High"]
-    _idx = _order.index(difficulty_level)
-    if n_weak_subskills >= 3 and _idx < len(_order) - 1:
-        _idx += 1
-    intervention_intensity = _order[_idx]
+    intervention_intensity = difficulty_level
 
     session_date = start_date + timedelta(days=7 * session_idx)
 
@@ -219,8 +221,8 @@ def generate_dataset(n_children: int, sessions_per_child: int, seed: int = 42) -
         child_id = f"C{i+1:03d}"
         band_lo, band_hi = ABILITY_BANDS[i % len(ABILITY_BANDS)]
         base_ability = rng.uniform(band_lo, band_hi)
-        age = int(rng.integers(7, 13))
-        grade = int(_clip(age - 5, 1, 7))
+        age = int([8, 9, 10][i % 3])
+        grade = age - 5
         gender = rng.choice(["Male", "Female"])
         child_start = start_date + timedelta(days=int(rng.integers(0, 20)))
 

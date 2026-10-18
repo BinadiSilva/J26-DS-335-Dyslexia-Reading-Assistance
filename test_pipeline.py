@@ -60,6 +60,7 @@ for idx, result in enumerate(results):
         "weak_skill_confidence",
         "intervention_intensity",
         "intervention_confidence",
+        "level_consistency",
         "low_confidence_flags",
         "shap_top_features",
         "cognitive_profile",
@@ -68,6 +69,7 @@ for idx, result in enumerate(results):
         "model_versions",
     }
     assert set(result.keys()) == schema_keys, result.keys()
+    assert "recommended_activities" not in result["intervention"]
     json.dumps(result)
 
 # 3) low-confidence intervention review reasons are triggered
@@ -82,6 +84,7 @@ low_confidence = build_intervention(
     prosody={"prosody_engagement_index": 55.0},
     weak_skill_confidence=0.5,
 )
+assert "recommended_activities" not in low_confidence
 assert low_confidence["requires_professional_review"] is True
 assert any("low confidence in weak-skill prediction" in reason.lower() for reason in low_confidence["review_reasons"])
 assert any("low confidence" in reason.lower() for reason in low_confidence["review_reasons"])
@@ -99,6 +102,7 @@ low_skill_review = build_intervention(
     prosody={"prosody_engagement_index": 55.0},
     weak_skill_confidence=0.59,
 )
+assert "recommended_activities" not in low_skill_review
 assert low_skill_review["requires_professional_review"] is True
 assert any("low confidence in weak-skill prediction" in reason.lower() for reason in low_skill_review["review_reasons"]) 
 

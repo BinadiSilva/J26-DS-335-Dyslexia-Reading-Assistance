@@ -1,0 +1,50 @@
+{
+  "child_id": "demo_child_03",
+  "session_id": "demo_child_03-S01",
+  "gender": "Female",
+  "passage_id": "P03",
+  "passage_level": "Moderate",
+  "age": 10,
+  "grade": 5,
+  "reading_duration_sec": 47.3,
+  "words_total": 90,
+  "words_correct": 74,
+  "words_incorrect": 16,
+  "reading_speed_wpm": 114.1,
+  "pronunciation_accuracy": 82.1,
+  "fluency_score": 69.8,
+  "word_error_rate": 0.191,
+  "hesitation_count": 1,
+  "repetition_count": 1,
+  "omission_count": 3,
+  "substitution_count": 3,
+  "insertion_count": 1,
+  "pitch_mean": 210.5,
+  "energy_mean": 0.6,
+  "avg_pause_duration": 0.41,
+  "session_date": "2026-10-09",
+  "transcribed_text": "the family spent the evening reading a new story together",
+  "pitch_samples": [
+    193.7,
+    228.5,
+    205.4,
+    214.2,
+    208.0,
+    217.3,
+    204.1,
+    212.5
+  ],
+  "energy_samples": [
+    0.57,
+    0.59,
+    0.61,
+    0.55,
+    0.6,
+    0.63,
+    0.6,
+    0.61
+  ],
+  "pause_durations": [
+    0.41
+  ]
+}

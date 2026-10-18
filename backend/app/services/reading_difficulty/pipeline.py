@@ -197,7 +197,7 @@ def predict_session(artifacts: dict[str, Any], raw_session_df: pd.DataFrame | pd
 
     row = _prepare_session_frame(raw_session_df)
     cleaned = clean(row)
-    engineered = engineer_features(cleaned)
+    engineered = engineer_features(cleaned, drop_first=False)
     engineered = apply_grade_norms(engineered, artifacts["norms"])
 
     difficulty_target = artifacts["difficulty_score"]
@@ -250,6 +250,19 @@ def predict_session(artifacts: dict[str, Any], raw_session_df: pd.DataFrame | pd
         explanation = explain_prediction(model_name, aligned_row, feature_col_list, top_n=5)
         shap_top_features[target] = [[k, float(v)] for k, v in explanation["top_features"]]
 
+    level_consistency = {
+        "difficulty_level": difficulty_level,
+        "support_level": str(intervention_pred),
+        "consistent": str(intervention_pred) == difficulty_level,
+    }
+    if not level_consistency["consistent"]:
+        intervention = dict(intervention)
+        if not intervention.get("review_reasons"):
+            intervention["review_reasons"] = []
+        if "difficulty level and support intensity disagree" not in intervention["review_reasons"]:
+            intervention["review_reasons"].append("difficulty level and support intensity disagree")
+        intervention["requires_professional_review"] = True
+
     result = {
         "child_id": str(engineered.iloc[0].get("child_id", "unknown")),
         "session_id": str(engineered.iloc[0].get("session_id", "unknown_session")),
@@ -260,6 +273,7 @@ def predict_session(artifacts: dict[str, Any], raw_session_df: pd.DataFrame | pd
         "weak_skill_confidence": float(weak_skill_confidence),
         "intervention_intensity": str(intervention_pred),
         "intervention_confidence": float(intervention_confidence),
+        "level_consistency": level_consistency,
         "low_confidence_flags": {
             "weak_skill": bool(weak_skill_confidence < LOW_CONFIDENCE_THRESHOLD),
             "intervention_intensity": bool(intervention_confidence < LOW_CONFIDENCE_THRESHOLD),

@@ -74,7 +74,8 @@ def clean(df: pd.DataFrame) -> pd.DataFrame:
             if pd.notna(median_value):
                 cleaned[col] = cleaned[col].fillna(median_value)
 
-    rows_to_drop = cleaned[["child_id", *TARGET_COLS]].isna().any(axis=1)
+    required = ["child_id"] + [c for c in TARGET_COLS if c in cleaned.columns]
+    rows_to_drop = cleaned[required].isna().any(axis=1)
     cleaned = cleaned.loc[~rows_to_drop].copy()
 
     if {"words_correct", "words_incorrect", "words_total"}.issubset(cleaned.columns):
@@ -145,7 +146,7 @@ def _error_micro_profile(row) -> str:
     return f"{severity}_{dominant}"
 
 
-def engineer_features(df: pd.DataFrame) -> pd.DataFrame:
+def engineer_features(df: pd.DataFrame, drop_first: bool = True) -> pd.DataFrame:
     """Compute the STATELESS derived features -- ones that depend only on each row's
     own raw values, not on any cross-row statistic. Safe to call on the full dataset
     before splitting, since nothing here is fit against a distribution that could leak
@@ -194,7 +195,7 @@ def engineer_features(df: pd.DataFrame) -> pd.DataFrame:
     # --- categorical encoding (stateless: each row's own category membership) ---
     for col in CATEGORICAL_COLS:
         if col in engineered.columns:
-            dummies = pd.get_dummies(engineered[col], prefix=col, drop_first=True, dtype=int)
+            dummies = pd.get_dummies(engineered[col], prefix=col, drop_first=drop_first, dtype=int)
             engineered = pd.concat([engineered.drop(columns=[col]), dummies], axis=1)
 
     return engineered

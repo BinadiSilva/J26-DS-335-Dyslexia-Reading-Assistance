@@ -1,20 +1,20 @@
 {
   "n_sessions": 5,
   "difficulty_score_series": [
-    0.580510133014761,
-    0.5588192786815045,
-    0.5725888810237428,
-    0.5378507934058513,
-    0.4440273193232157
+    0.6271108239222907,
+    0.5984175175582106,
+    0.5837264016035892,
+    0.553319380731128,
+    0.5660254983992077
   ],
-  "delta_vs_previous": -0.09382347408263558,
-  "trend_label": "improving",
-  "most_frequent_weak_skill": "phonological",
+  "delta_vs_previous": 0.01270611766807972,
+  "trend_label": "stable",
+  "most_frequent_weak_skill": "fluency",
   "intensity_history": [
     "High",
     "High",
     "High",
-    "High",
+    "Moderate",
     "High"
   ]
 }

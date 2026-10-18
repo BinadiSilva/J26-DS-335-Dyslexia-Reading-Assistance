@@ -9,4 +9,4 @@ ENV PYTHONPATH=/workspace
 
 EXPOSE 8501
 
-CMD ["streamlit", "run", "frontend/app.py", "--server.address", "0.0.0.0", "--server.headless", "true"]
+CMD ["streamlit", "run", "frontend/frontend/app.py", "--server.address", "0.0.0.0", "--server.headless", "true"]

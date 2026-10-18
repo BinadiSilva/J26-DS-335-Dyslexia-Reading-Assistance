@@ -65,12 +65,9 @@ def build_intervention(
         review_reasons.append("multiple weak areas")
         requires_professional_review = True
 
-    activities = ACTIVITY_LIBRARY[focus_area]
-
     return {
         "intervention_intensity": intensity,
         "focus_area": focus_area,
-        "recommended_activities": list(activities[:3]),
         "requires_professional_review": requires_professional_review,
         "review_reasons": review_reasons,
         "disclaimer": "Decision support only; not a diagnosis.",
