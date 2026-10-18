@@ -1,0 +1,17 @@
+assessment_name,participants,observations,repeated_changes,mean_score,mean_change,positive_changes,negative_changes,unchanged
+DTWRPnonwords,931,3196,2265,10.87,6.57,2003,97,165
+DTWRPexception,833,2300,1467,4.92,5.56,1251,12,204
+DTWRPregular,833,2300,1467,7.49,7.33,1361,17,89
+BAS_word_reading,832,2880,2048,26.75,20.86,1983,4,61
+SightWordEfficiency,679,1658,979,74.92,3.59,697,223,59
+PhonemicDecoding,678,1656,978,45.48,2.63,678,234,66
+DTWRPException,661,896,235,26.31,1.34,159,32,44
+DTWRP_exception,579,579,0,23.84,,0,0,0
+DTWRP_nonwords,579,579,0,22.22,,0,0,0
+DTWRP_regular,579,579,0,25.83,,0,0,0
+YARCpassage1Comprehension,340,556,216,8.84,0.47,102,70,44
+YARCpassage2Comprehension,335,547,212,7.87,0.69,119,65,28
+YARCpassage_1_Comprehension,243,243,0,8.65,,0,0,0
+YARCpassage_2_Comprehension,243,243,0,7.49,,0,0,0
+YARC_passage_2_Comprehension,223,223,0,8.67,,0,0,0
+BASwordreading,116,116,0,69.91,,0,0,0
