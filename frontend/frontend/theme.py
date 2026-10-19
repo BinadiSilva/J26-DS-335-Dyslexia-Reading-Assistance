@@ -23,7 +23,9 @@ div.stButton > button[kind="primary"]:hover {color:#fff; transform:translateY(-2
 .stApp [data-testid="stSelectbox"] [data-baseweb="select"] > div {background:#ffffff; border:2px solid #d9d3f7; border-radius:14px;}
 .stApp [data-testid="stSelectbox"] [data-baseweb="select"] div, .stApp [data-testid="stSelectbox"] [data-baseweb="select"] span {color:#2b2350 !important;}
 .stApp [data-testid="stSelectbox"] svg {fill:#2b2350;}
-[data-baseweb="popover"] li, [data-baseweb="popover"] li * {color:#2b2350 !important;}
+[data-baseweb="popover"], [data-baseweb="popover"] *, [data-testid="stSelectboxVirtualDropdown"], [data-testid="stSelectboxVirtualDropdown"] *, ul[role="listbox"], ul[role="listbox"] * {background:#ffffff !important; background-color:#ffffff !important; color:#2b2350 !important;}
+[data-baseweb="popover"] li:hover, [data-baseweb="popover"] li:hover *, [data-baseweb="popover"] [aria-selected="true"], [data-baseweb="popover"] [aria-selected="true"] *, ul[role="listbox"] li:hover, ul[role="listbox"] li:hover * {background:#ece8ff !important; background-color:#ece8ff !important;}
+[data-baseweb="popover"] {border-radius:14px; box-shadow:0 10px 26px rgba(70,60,140,.18);}
 .stApp textarea {color:#2b2350 !important; background:#fff !important;}
 """
 
@@ -37,6 +39,13 @@ LANDING_CSS = """
 """
 
 PARENT_CSS = """
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;800&display=swap');
+/* dyslexia-friendly reading: Lexend, wider letter/word/line spacing, left-aligned */
+.stApp, .stApp button, .stApp label, .stApp p, .stApp li, .stApp [data-baseweb="select"] *, .stApp [data-testid="stCaptionContainer"] *, .gu-card, .gu-card *, .idrow, .idrow *, .review {font-family:'Lexend','Lexend Deca','Verdana','Trebuchet MS',system-ui,sans-serif;}
+.gu-card, .idrow, .review, .stApp [data-testid="stCaptionContainer"] {letter-spacing:.03em; word-spacing:.1em; text-align:left;}
+.gu-card p, .gu-card li, .gu-note, .main-skill span {line-height:1.8;}
+.gu-card li {margin:.4rem 0;}
+.gu-card h4 {line-height:1.5; margin-bottom:.6rem;}
 .stApp {background:linear-gradient(180deg,#e9f7ff 0%,#fff6e0 100%);}
 .gu-card {color:#3b2a63; background:#fff; border-radius:24px; padding:1.1rem 1.3rem; box-shadow:0 10px 26px rgba(70,60,140,.10); margin-bottom:1rem;}
 .gu-card h4 {margin:0 0 .4rem; color:#3b2a63;}
@@ -73,15 +82,16 @@ PARENT_CSS = """
 
 TEACHER_CSS = """
 .stApp {background:#f3f8f7; color:#1f3a36;}
-.stApp h4 {color:#16413c; font-size:1.08rem; margin:0; padding:.35rem 0 .1rem;}
-.stApp [data-testid="stVerticalBlock"] {gap:.55rem;}
+.stApp [data-testid="stMarkdownContainer"], .stApp .stMarkdown, .stApp [data-testid="stMarkdown"] {margin-bottom:0 !important;}
+.stApp h4 {color:#16413c; font-size:1.08rem; line-height:1.35; margin:0; padding:.5rem 0 .2rem;}
+.stApp [data-testid="stVerticalBlock"] {gap:.9rem;}
 .block-container {padding-top:.6rem !important; padding-bottom:1.5rem;}
 .stApp [data-testid="stWidgetLabel"] p {margin-bottom:.1rem;}
 .t-title {font-size:1.7rem; font-weight:900; color:#16413c; margin:0;}
-.t-sub {color:#5d7a76; margin:.1rem 0 .5rem;}
-.t-card {color:#1f3a36; background:#fff; border:1px solid #dcebe8; border-radius:14px; padding:.8rem 1rem; margin-bottom:.2rem;}
+.t-sub {color:#5d7a76; margin:.2rem 0 .2rem;}
+.t-card {color:#1f3a36; background:#fff; border:1px solid #dcebe8; border-radius:14px; padding:.9rem 1.1rem; margin-bottom:0;}
 .t-card h4 {margin:0 0 .6rem; color:#16413c; font-size:1.02rem;}
-.stat-strip {display:grid; grid-template-columns:repeat(4,1fr); gap:.6rem; margin-bottom:.2rem;}
+.stat-strip {display:grid; grid-template-columns:repeat(4,1fr); gap:.8rem; margin-bottom:0;}
 .stat {background:#fff; border:1px solid #dcebe8; border-radius:14px; padding:.6rem .9rem;}
 .stat .l {font-size:.78rem; color:#5d7a76; font-weight:700;}
 .stat .v {font-size:1.7rem; font-weight:900; color:#16413c;}
@@ -97,10 +107,10 @@ table.ct tr.sel td {background:#eaf7f4;}
 .child-head {display:flex; align-items:center; gap:1rem; flex-wrap:wrap;}
 .avatar {width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg,#2a9d8f,#79d3c2); color:#fff; font-weight:900; font-size:1.5rem; display:flex; align-items:center; justify-content:center;}
 .child-head .nm {font-size:1.4rem; font-weight:900; color:#16413c;} .child-head .meta {color:#5d7a76; font-size:.85rem;}
-.banner {border-radius:12px; padding:.6rem .9rem; margin:.1rem 0 .3rem; border:1px solid;}
+.banner {border-radius:12px; padding:.6rem .9rem; margin:0; border:1px solid;}
 .banner.red {background:#fff3f2; border-color:#f3c4c0; color:#7a1d17;} .banner.amber {background:#fff8e8; border-color:#f1dba5; color:#7a5200;}
 .banner b {display:block; margin-bottom:.2rem;} .banner ul {margin:.2rem 0 0 1.1rem; padding:0;}
-.kpis {display:grid; grid-template-columns:repeat(5,1fr); gap:.6rem; margin:.1rem 0 .3rem;}
+.kpis {display:grid; grid-template-columns:repeat(5,1fr); gap:.8rem; margin:0;}
 .kpi {background:#fff; border:1px solid #dcebe8; border-radius:14px; padding:.6rem .8rem;}
 .kpi .l {font-size:.74rem; color:#5d7a76; font-weight:800; text-transform:uppercase; letter-spacing:.03em;}
 .kpi .v {font-size:1.5rem; font-weight:900; color:#16413c; margin:.15rem 0;} .kpi .s {font-size:.78rem; color:#5d7a76;}
@@ -113,10 +123,10 @@ table.ct tr.sel td {background:#eaf7f4;}
 .sess-strip {display:flex; gap:.5rem; flex-wrap:wrap;} .sess {text-align:center; font-size:.7rem; color:#5d7a76;}
 .sess .bx {display:block; border-radius:8px; padding:.35rem .5rem; font-weight:800; font-size:.74rem; margin-bottom:.15rem;}
 .note {color:#5d7a76; font-size:.8rem;}
-.c4 {border:2px dashed #9fb6b2; background:#fbfdfc; border-radius:16px; padding:.9rem 1.2rem; margin:.4rem 0;}
+.c4 {border:2px dashed #9fb6b2; background:#fbfdfc; border-radius:16px; padding:1.1rem 1.3rem; margin:.2rem 0;}
 .c4-head {display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; border-bottom:1px solid #dcebe8; padding-bottom:.7rem; margin-bottom:.5rem;}
 .c4-ttl {font-size:1.35rem; font-weight:900; color:#16413c;} .c4 h5 {margin:.8rem 0 .15rem; color:#16413c;} .c4 p {margin:.1rem 0; color:#1f3a36;}
-.grid2 {display:grid; grid-template-columns:1fr 1fr; gap:.6rem;}
+.grid2 {display:grid; grid-template-columns:1fr 1fr; gap:.9rem;}
 .act-li {padding:.45rem .7rem; background:#f0f8f6; border-radius:10px; margin:.35rem 0; color:#1f3a36;}
 @media (max-width:900px){.kpis{grid-template-columns:repeat(2,1fr);} .stat-strip{grid-template-columns:repeat(2,1fr);} .grid2{grid-template-columns:1fr;}}
 """

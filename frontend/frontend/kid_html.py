@@ -65,9 +65,10 @@ def _confetti(n: int = 26) -> str:
 
 
 CSS = """
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;800&display=swap');
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
-body{font-family:'Nunito','Trebuchet MS','Segoe UI','Arial Rounded MT Bold',system-ui,sans-serif;color:#2b2350;overflow:hidden}
+body{font-family:'Lexend','Verdana','Trebuchet MS',system-ui,sans-serif;letter-spacing:.02em;word-spacing:.08em;color:#2b2350;overflow:hidden}
 .sky{position:relative;height:100%;min-height:560px;overflow:hidden;
  background:linear-gradient(180deg,#bfe8ff 0%,#e2f6ff 42%,#fff2d1 100%)}
 .sun{position:absolute;left:3%;top:5%;width:92px;height:92px;border-radius:50%;background:#ffd84d;box-shadow:0 0 0 12px rgba(255,216,77,.35),0 0 0 26px rgba(255,216,77,.18);animation:pulse 3.4s ease-in-out infinite}
