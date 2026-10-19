@@ -56,16 +56,73 @@ def _num(child_id: str) -> int:
     return int(m.group(1)) if m else 1
 
 
-def child_info(child_id: str, demo: dict) -> dict:
+DEMO_NAMES = {1: "Lara", 2: "Krish", 3: "Harsha"}
+
+
+def display_id(raw_id: str) -> str:
+    """demo_child_01 -> C001; demo_child_01-S02 -> C001-S02. Other ids are shown unchanged."""
+    m = re.match(r"demo_child_(\d+)(.*)$", str(raw_id))
+    return f"C{int(m.group(1)):03d}{m.group(2)}" if m else str(raw_id)
+
+
+def display_name(child_id: str) -> str:
+    """demo_child_01 -> 'Lara', demo_child_02 -> 'Krish', demo_child_03 -> 'Harsha'; others get a friendly first name."""
+    m = re.fullmatch(r"demo_child_(\d+)", str(child_id))
+    if m and int(m.group(1)) in DEMO_NAMES:
+        return DEMO_NAMES[int(m.group(1))]
+    n = _num(str(child_id))
+    return NAMES[(n - 1) % len(NAMES)]
+
+
+def child_info(child_id: str, demo: dict, sessions: list[dict] | None = None) -> dict:
     d = demo.get(child_id, {})
     n = _num(child_id)
-    age = d.get("age") or (7 + (n * 3) % 6)
+    summary = (sessions[-1].get("input_summary") if sessions else None) or {}
+    # target group: ages 8-10, grades 3-5
+    age = d.get("age") or summary.get("age") or (8 + n % 3)
+    grade = d.get("grade") or summary.get("grade") or (int(age) - 5)
     return {
         "child_id": child_id,
-        "name": d.get("first_name") or NAMES[(n - 1) % len(NAMES)],
+        "display_id": display_id(child_id),
+        "name": d.get("first_name") or display_name(child_id),
         "age": age,
-        "grade": d.get("grade") or max(1, age - 5),
+        "grade": grade,
     }
+
+
+# ---- support intensity: the only wording Component 2 shows (Component 03 owns recommendations) ----
+SUPPORT_LABELS = {"low": "Low support required", "moderate": "Medium support required",
+                  "medium": "Medium support required", "high": "High support required"}
+SUPPORT_KIND = {"Low support required": "green", "Medium support required": "amber", "High support required": "red"}
+
+
+def support_label(intensity: str) -> str:
+    return SUPPORT_LABELS.get(str(intensity).strip().lower(), "Medium support required")
+
+
+def session_number(sessions: list[dict], session_id: str) -> int:
+    for i, s in enumerate(sessions, 1):
+        if s.get("session_id") == session_id:
+            return i
+    return len(sessions)
+
+
+def session_title(sessions: list[dict], session: dict) -> str:
+    return f"Session {session_number(sessions, session.get('session_id')):02d} · {session.get('timestamp', '')}"
+
+
+def certainty(session: dict) -> tuple[str, float]:
+    """Plain-language certainty = the less certain of the two classifiers (weak skill, support level).
+    The difficulty score is a regression, so it has no probability of its own."""
+    c = min(float(session.get("weak_skill_confidence", 0.0)), float(session.get("intervention_confidence", 0.0)))
+    return ("High" if c >= 0.8 else "Medium" if c >= 0.6 else "Low"), c
+
+
+def weak_skills_for_display(session: dict) -> tuple[str | None, list[str]]:
+    """(model-predicted main area, other skills under the weakness threshold)."""
+    main = str(session.get("weak_skill") or "").lower() or None
+    others = [w for w in (session.get("cognitive_profile", {}).get("weaknesses") or []) if w != main]
+    return main, others
 
 
 def trend_label(scores: list[float]) -> str:
@@ -96,7 +153,7 @@ def summarize_child(sessions: list[dict]) -> dict:
 def build_overview(sessions: list[dict], demo: dict) -> list[dict]:
     rows = []
     for cid, rs in group_by_child(sessions).items():
-        info = child_info(cid, demo)
+        info = child_info(cid, demo, rs)
         latest = rs[-1]
         summ = summarize_child(rs)
         rows.append({

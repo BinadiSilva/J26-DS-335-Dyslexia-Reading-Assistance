@@ -52,6 +52,15 @@ FEATURE_PHRASES = {
 }
 FALLBACK_PHRASE = "other patterns in the way the reading sounded"
 
+# Background details are not reasons a parent should be shown; the teacher view still lists every feature.
+_DEMOGRAPHIC_EXACT = {"age", "grade", "gender", "passage_id", "passage_level"}
+_DEMOGRAPHIC_PREFIX = ("gender_", "passage_id_", "passage_level_")
+
+
+def _is_background(name: str) -> bool:
+    n = str(name).strip().lower()
+    return n in _DEMOGRAPHIC_EXACT or n.startswith(_DEMOGRAPHIC_PREFIX)
+
 
 def skill_nick(skill: str) -> str:
     s = str(skill or "").strip().lower()
@@ -86,6 +95,8 @@ def explanation_phrases(shap_top_features: dict, target: str, n: int = 3) -> lis
     items = shap_top_features.get(target, []) if isinstance(shap_top_features, dict) else []
     out: list[str] = []
     for feature_name, _v in items:
+        if _is_background(feature_name):
+            continue
         phrase = FEATURE_PHRASES.get(str(feature_name).strip().lower(), FALLBACK_PHRASE)
         if phrase not in out:
             out.append(phrase)

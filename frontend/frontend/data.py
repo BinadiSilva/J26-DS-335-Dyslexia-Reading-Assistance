@@ -39,7 +39,7 @@ def get_child_sessions(child_id: str) -> list[dict]:
 
 
 def get_child_info(child_id: str) -> dict:
-    return logic.child_info(str(child_id), logic.load_demo_children())
+    return logic.child_info(str(child_id), logic.load_demo_children(), get_child_sessions(str(child_id)))
 
 
 def get_summary(child_id: str) -> dict:
