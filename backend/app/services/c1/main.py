@@ -20,7 +20,7 @@ from reading_metrics import (
 # Project root (works even if the terminal is elsewhere)
 PROJECT_ROOT = Path(__file__).resolve().parents[4]
 
-RECORDING_ID = "3b30f_EN-OL-RC-234_2"
+RECORDING_ID = "3b15g_EN-OL-RC-234_2"
 
 METADATA_PATH = (
     PROJECT_ROOT / "datasets/c1/mps/selected_20.json"
@@ -34,7 +34,8 @@ AUDIO_PATH = (
 
 OUTPUT_PATH = (
     PROJECT_ROOT
-    / "datasets/c1/test_audio/c1_session_output.json"
+    / "datasets/c1/test_audio"
+    / f"{RECORDING_ID}_output.json"
 )
 
 
