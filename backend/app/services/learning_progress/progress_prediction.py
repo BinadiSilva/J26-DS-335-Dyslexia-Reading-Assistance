@@ -252,6 +252,196 @@ def evaluate_repeated_group_validation(n_splits=5, test_size=0.20):
     }
 
 
+
+def evaluate_prediction_intervals(
+    calibration_size=0.20,
+    test_size=0.20,
+    confidence_level=0.90,
+):
+    """Evaluate experimental prediction intervals on separate participants.
+
+    Calibration uses each participant's maximum absolute residual, so the
+    threshold accounts for repeated records within calibration participants.
+    This is an experimental evaluation, not clinical validation.
+    """
+
+    # Validate the requested proportions and confidence level.
+    if not 0 < calibration_size < 1:
+        raise ValueError("calibration_size must be between 0 and 1.")
+
+    if not 0 < test_size < 1:
+        raise ValueError("test_size must be between 0 and 1.")
+
+    if calibration_size + test_size >= 1:
+        raise ValueError(
+            "calibration_size + test_size must be less than 1."
+        )
+
+    if not 0 < confidence_level < 1:
+        raise ValueError("confidence_level must be between 0 and 1.")
+
+    # Load prediction examples and define the existing model features.
+    data = prepare_libs_prediction_data()
+    features = [
+        "previous_score",
+        "assessment_score",
+        "previous_time_point",
+        "time_point",
+    ]
+    target = "target_score"
+
+    # Require enough participants to form three separate groups.
+    participant_count = data[PARTICIPANT_COLUMN].nunique()
+    if data.empty or participant_count < 10:
+        raise ValueError(
+            "At least 10 participants are required for interval evaluation."
+        )
+
+    # First reserve the test participants, which are not used for fitting
+    # or calibration.
+    outer_splitter = GroupShuffleSplit(
+        n_splits=1,
+        test_size=test_size,
+        random_state=RANDOM_STATE + 20,
+    )
+    development_indices, test_indices = next(
+        outer_splitter.split(
+            data[features],
+            data[target],
+            groups=data[PARTICIPANT_COLUMN],
+        )
+    )
+
+    development_data = data.iloc[development_indices].copy()
+    test_data = data.iloc[test_indices].copy()
+
+    # Separate calibration participants from model-fitting participants.
+    relative_calibration_size = calibration_size / (1 - test_size)
+    calibration_splitter = GroupShuffleSplit(
+        n_splits=1,
+        test_size=relative_calibration_size,
+        random_state=RANDOM_STATE + 21,
+    )
+    fit_indices, calibration_indices = next(
+        calibration_splitter.split(
+            development_data[features],
+            development_data[target],
+            groups=development_data[PARTICIPANT_COLUMN],
+        )
+    )
+
+    fit_data = development_data.iloc[fit_indices].copy()
+    calibration_data = development_data.iloc[calibration_indices].copy()
+
+    # Verify that no participant crosses a split boundary.
+    fit_ids = set(fit_data[PARTICIPANT_COLUMN])
+    calibration_ids = set(calibration_data[PARTICIPANT_COLUMN])
+    test_ids = set(test_data[PARTICIPANT_COLUMN])
+
+    if (
+        not fit_ids.isdisjoint(calibration_ids)
+        or not fit_ids.isdisjoint(test_ids)
+        or not calibration_ids.isdisjoint(test_ids)
+    ):
+        raise RuntimeError(
+            "Participant overlap detected across interval evaluation groups."
+        )
+
+    # Fit a fresh Random Forest using only the fitting participants.
+    model = _create_models()["Random Forest"]
+    model.fit(fit_data[features], fit_data[target])
+
+    # Estimate calibration errors without using test participants.
+    calibration_predictions = model.predict(calibration_data[features])
+    calibration_errors = calibration_data[[PARTICIPANT_COLUMN]].copy()
+    calibration_errors["absolute_error"] = np.abs(
+        calibration_data[target].to_numpy() - calibration_predictions
+    )
+
+    # Use each participant's maximum residual to account for repeated
+    # assessment records belonging to that participant.
+    participant_errors = (
+        calibration_errors.groupby(PARTICIPANT_COLUMN)["absolute_error"]
+        .max()
+        .to_numpy()
+    )
+
+    # Use the finite-sample conformal quantile rank.
+    calibration_count = len(participant_errors)
+    quantile_rank = int(
+        np.ceil((calibration_count + 1) * confidence_level)
+    )
+
+    if quantile_rank > calibration_count:
+        raise ValueError(
+            "Too few calibration participants for this confidence level."
+        )
+
+    threshold = float(
+        np.sort(participant_errors)[quantile_rank - 1]
+    )
+
+    # Evaluate the resulting intervals only on the held-out test group.
+    test_predictions = model.predict(test_data[features])
+    actual_scores = test_data[target].to_numpy()
+
+    lower_bounds = np.clip(test_predictions - threshold, 0, 90)
+    upper_bounds = np.clip(test_predictions + threshold, 0, 90)
+
+    test_results = test_data[
+        [PARTICIPANT_COLUMN, target, "target_time_point"]
+    ].copy()
+    test_results["predicted_score"] = test_predictions
+    test_results["lower_bound"] = lower_bounds
+    test_results["upper_bound"] = upper_bounds
+    test_results["covered"] = (
+        (actual_scores >= lower_bounds)
+        & (actual_scores <= upper_bounds)
+    )
+    test_results["interval_width"] = upper_bounds - lower_bounds
+
+    # Report record-level coverage and width, plus the stricter participant-
+    # level measure: whether all tested records for a participant are covered.
+    participant_coverage = (
+        test_results.groupby(PARTICIPANT_COLUMN)["covered"].all()
+    )
+
+    summary = {
+        "confidence_level": confidence_level,
+        "calibration_participants": len(calibration_ids),
+        "test_participants": len(test_ids),
+        "calibration_threshold": threshold,
+        "record_coverage": float(test_results["covered"].mean()),
+        "participant_coverage": float(participant_coverage.mean()),
+        "mean_interval_width": float(test_results["interval_width"].mean()),
+        "test_records": len(test_results),
+    }
+
+    print("\nEXPERIMENTAL PREDICTION INTERVAL EVALUATION")
+    print("=" * 46)
+    for metric, value in summary.items():
+        if isinstance(value, float):
+            print(f"{metric}: {value:.3f}")
+        else:
+            print(f"{metric}: {value}")
+
+    print(
+        "\nLimitations: these intervals are experimental, use LIBS data, "
+        "and do not establish clinical validity or guaranteed coverage "
+        "for future participants."
+    )
+
+    return {
+        "summary": summary,
+        "test_results": test_results,
+        "model": model,
+        "features": features,
+        "fit_participants": fit_ids,
+        "calibration_participants": calibration_ids,
+        "test_participants": test_ids,
+    }
+
+
 def train_libs_progress_model(save_results=True):
     """Select models using validation participants and evaluate on test participants.
 

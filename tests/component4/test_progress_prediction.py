@@ -395,3 +395,57 @@ def test_repeated_validation_rejects_invalid_test_size():
             n_splits=5,
             test_size=1.0,
         )
+
+
+def test_prediction_intervals_keep_participants_separate():
+    """Fitting, calibration, and test participants must not overlap."""
+
+    # Run the experimental interval evaluation.
+    result = progress_prediction.evaluate_prediction_intervals()
+
+    # Verify that the participant groups are disjoint.
+    fit_ids = result["fit_participants"]
+    calibration_ids = result["calibration_participants"]
+    test_ids = result["test_participants"]
+
+    assert fit_ids.isdisjoint(calibration_ids)
+    assert fit_ids.isdisjoint(test_ids)
+    assert calibration_ids.isdisjoint(test_ids)
+
+
+def test_prediction_intervals_have_valid_bounds():
+    """Every lower bound must be no greater than its upper bound."""
+
+    # Evaluate intervals on held-out participants.
+    result = progress_prediction.evaluate_prediction_intervals()
+    intervals = result["test_results"]
+
+    assert (intervals["lower_bound"] >= 0).all()
+    assert (intervals["upper_bound"] <= 90).all()
+    assert (intervals["lower_bound"] <= intervals["upper_bound"]).all()
+
+
+def test_prediction_interval_metrics_are_valid():
+    """Coverage and interval width must be within valid ranges."""
+
+    # Obtain the interval evaluation summary.
+    result = progress_prediction.evaluate_prediction_intervals()
+    summary = result["summary"]
+
+    assert 0 <= summary["record_coverage"] <= 1
+    assert 0 <= summary["participant_coverage"] <= 1
+    assert summary["mean_interval_width"] >= 0
+    assert summary["test_records"] > 0
+
+
+def test_prediction_intervals_reject_invalid_confidence_level():
+    """An invalid confidence level should raise a clear error."""
+
+    # Confidence levels must be strictly between zero and one.
+    with pytest.raises(
+        ValueError,
+        match="confidence_level must be between 0 and 1",
+    ):
+        progress_prediction.evaluate_prediction_intervals(
+            confidence_level=1.0
+        )

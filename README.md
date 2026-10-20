@@ -363,3 +363,34 @@ separate held-out test evaluation.
 The results apply to the prepared LIBS dataset and current features. They do
 not establish clinical effectiveness or guarantee generalization to children
 diagnosed with dyslexia.
+
+
+## 16. Experimental Prediction Intervals
+
+An experimental split conformal prediction-interval evaluation was added
+for the Random Forest reading-progress model. Participants were separated
+into fitting, calibration, and test groups to avoid participant overlap.
+
+The evaluation used a nominal 90% confidence level and produced these results
+for the current prepared LIBS dataset:
+
+| Metric | Result |
+|---|---:|
+| Calibration participants | 142 |
+| Test participants | 142 |
+| Test records | 248 |
+| Record-level coverage | 94.8% |
+| Participant-level coverage | 90.8% |
+| Mean interval width | 39.176 score points |
+| Calibration threshold | 20.326 score points |
+
+Record-level coverage measures the proportion of individual test records
+inside their intervals. Participant-level coverage measures the proportion
+of test participants for whom all evaluated records were covered.
+
+**Limitations:** These are experimental results from the current LIBS dataset.
+The intervals are clipped to the 0–90 score range, which can affect coverage.
+The observed coverage does not guarantee nominal coverage for future
+participants. The dataset is not specific to children diagnosed with dyslexia,
+and these results do not establish clinical validity or intervention
+effectiveness.
