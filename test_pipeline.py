@@ -27,6 +27,13 @@ assert "difficulty_score" in artifacts
 assert "weak_skill" in artifacts
 assert "intervention_intensity" in artifacts
 assert "norms" in artifacts
+assert "model_versions" in artifacts
+assert set(artifacts["model_versions"]) == {"difficulty_score", "weak_skill", "intervention_intensity"}
+assert "training_metadata" in artifacts
+assert set(artifacts["training_metadata"]) == {"training_date_utc", "seed", "train_rows", "library_versions"}
+assert isinstance(artifacts["training_metadata"]["seed"], int)
+assert isinstance(artifacts["training_metadata"]["train_rows"], int)
+assert set(artifacts["training_metadata"]["library_versions"]) >= {"python", "numpy", "pandas", "scikit_learn", "xgboost", "interpret"}
 
 # 2) predict_session for held-out rows returns complete JSON-serialisable schema
 raw_df = load_raw(str(raw_path))

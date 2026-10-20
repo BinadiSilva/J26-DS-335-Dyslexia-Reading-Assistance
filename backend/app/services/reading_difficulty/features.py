@@ -218,6 +218,12 @@ def fit_grade_norms(train_df: pd.DataFrame, min_group_size: int = 3) -> dict[str
                     norms["by_grade"][col][grade_val] = float(group[col].mean())
     return norms
 
+def _grade_key(value: Any) -> Any:
+    """Grade as a plain int when possible (3, 3.0 and "3" all become 3)."""
+    try:
+        return int(float(value))
+    except (TypeError, ValueError):
+        return value
 
 def apply_grade_norms(df: pd.DataFrame, norms: dict[str, Any]) -> pd.DataFrame:
     """Apply previously-fit grade norms to add normalized_speed/fluency/accuracy.
@@ -235,11 +241,11 @@ def apply_grade_norms(df: pd.DataFrame, norms: dict[str, Any]) -> pd.DataFrame:
             applied[new_col] = 1.0
             continue
 
-        by_grade = norms["by_grade"].get(raw_col, {})
+        by_grade = {_grade_key(k): v for k, v in norms["by_grade"].get(raw_col, {}).items()}
         global_norm = norms["global"].get(raw_col, 1.0) or 1.0
 
         def _normalize(row, raw_col=raw_col, by_grade=by_grade, global_norm=global_norm):
-            grade_val = row.get("grade")
+            grade_val = _grade_key(row.get("grade"))
             grade_norm = by_grade.get(grade_val, global_norm) or global_norm
             return row[raw_col] / grade_norm if grade_norm else 1.0
 
@@ -310,7 +316,10 @@ def stratified_learner_level_split(
 
 def get_feature_cols(df: pd.DataFrame, exclude_subskills: bool = False) -> list[str]:
     """Return the model-input feature columns while keeping leakage rules centralized."""
-    excluded = set(METADATA_COLS) | set(TARGET_COLS)
+        # age and grade are not model inputs: grade = age - 5 (collinear), the grade-normalised
+    # features already carry the grade effect, and explanations were citing "age" for intensity.
+    # They stay in the frame because apply_grade_norms needs `grade`.
+    excluded = set(METADATA_COLS) | set(TARGET_COLS) | {"age", "grade"}
     feature_cols = [col for col in df.columns if col not in excluded]
     if exclude_subskills:
         feature_cols = [col for col in feature_cols if col not in SUBSKILL_COLS]

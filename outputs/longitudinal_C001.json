@@ -1,20 +1,20 @@
 {
   "n_sessions": 5,
   "difficulty_score_series": [
-    0.6271108239222907,
-    0.5984175175582106,
-    0.5837264016035892,
-    0.553319380731128,
-    0.5660254983992077
+    0.5189077155309604,
+    0.5415691635619158,
+    0.6251756873745205,
+    0.6092047591990893,
+    0.5023918021275469
   ],
-  "delta_vs_previous": 0.01270611766807972,
-  "trend_label": "stable",
-  "most_frequent_weak_skill": "fluency",
+  "delta_vs_previous": -0.10681295707154248,
+  "trend_label": "improving",
+  "most_frequent_weak_skill": "decoding",
   "intensity_history": [
     "High",
     "High",
     "High",
-    "Moderate",
+    "High",
     "High"
   ]
 }

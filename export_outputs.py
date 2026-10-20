@@ -15,7 +15,7 @@ artifacts = load_artifacts("outputs/artifacts.joblib")
 
 out_dir = Path("outputs")
 out_dir.mkdir(exist_ok=True)
-log_path = out_dir / "session_log.jsonl"
+log_path = out_dir / "session_log_all.jsonl"
 if log_path.exists():
     log_path.unlink()
 
@@ -33,5 +33,6 @@ if first_child:
     (out_dir / f"longitudinal_{first_child}.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
 
 print(f"Wrote {len(results)} sessions -> outputs/session_outputs.json")
+print(f"Wrote full log -> outputs/session_log_all.jsonl")
 if first_child:
     print(f"Wrote longitudinal summary for {first_child} -> outputs/longitudinal_{first_child}.json")

@@ -52,6 +52,7 @@ SAMPLE_SENTENCES = [
     "the family spent the evening reading a new story together",
 ]
 
+PROFILE_WEIGHT = 0.6   # share of the weak-skill allocation that is stable per child
 WEAK_SKILLS = ["phonological", "decoding", "fluency", "pronunciation"]
 
 ABILITY_BANDS = [
@@ -67,7 +68,7 @@ def _clip(x, lo, hi):
 
 def generate_session(rng: np.random.Generator, child_id: str, session_idx: int,
                       base_ability: float, age: int, grade: int, gender: str,
-                      start_date: datetime):
+                      start_date: datetime, profile_w=None, support_need: float = 0.0):
     passage_id = rng.choice(GRADE_PASSAGE_CHOICES.get(grade, list(PASSAGES.keys())))
     passage_level_name, level_num = PASSAGES[passage_id]
 
@@ -91,14 +92,12 @@ def generate_session(rng: np.random.Generator, child_id: str, session_idx: int,
     #    session, independent of overall severity -- this is what keeps weak_skill
     #    balanced across its 4 classes rather than one skill structurally
     #    dominating the argmin regardless of the child's actual profile.
-    # An earlier version of this generator conflated these two things (either
-    # letting one skill's formula have a narrower range than the others, or
-    # replacing the ability-driven base entirely with a shared "total weakness"
-    # pool) -- both approaches broke either weak_skill's balance or
-    # difficulty_score's dynamic range. Keeping the two components additive and
-    # separate avoids both failure modes. ---
+    # A child's weak-skill profile is persistent across sessions, but each session
+    # still has its own local variation. The profile_w term keeps the child-specific
+    # pattern stable while the session-specific Dirichlet draw preserves variability.
     common_base = 20 + 75 * base_ability
-    w = rng.dirichlet(np.ones(4) * 2.0)
+    session_w = rng.dirichlet(np.ones(4) * 2.0)
+    w = session_w if profile_w is None else PROFILE_WEIGHT * profile_w + (1 - PROFILE_WEIGHT) * session_w
     deltas = (w - 0.25) * 70
     phon_delta, dec_delta, flu_delta, pron_delta = deltas.tolist()
 
@@ -169,7 +168,17 @@ def generate_session(rng: np.random.Generator, child_id: str, session_idx: int,
     else:
         difficulty_level = "High"
 
-    intervention_intensity = difficulty_level
+    # Intervention intensity is not a mirror of difficulty level. It combines the
+    # severity signal with how concentrated the weakness is and a child-level support
+    # need that is not directly visible to the model through the session features.
+    skill_gap = (float(np.mean(list(subskills.values()))) - min(subskills.values())) / 100
+    intensity_score = difficulty_score + 0.25 * skill_gap + support_need
+    if intensity_score < 0.26:
+        intervention_intensity = "Low"
+    elif intensity_score < 0.50:
+        intervention_intensity = "Moderate"
+    else:
+        intervention_intensity = "High"
 
     session_date = start_date + timedelta(days=7 * session_idx)
 
@@ -224,11 +233,13 @@ def generate_dataset(n_children: int, sessions_per_child: int, seed: int = 42) -
         age = int([8, 9, 10][i % 3])
         grade = age - 5
         gender = rng.choice(["Male", "Female"])
+        profile_w = rng.dirichlet(np.ones(4) * 1.0)
+        support_need = float(rng.normal(0, 0.04))
         child_start = start_date + timedelta(days=int(rng.integers(0, 20)))
 
         for s in range(sessions_per_child):
             drift_ability = _clip(base_ability + rng.normal(0.01 * s, 0.03), 0.01, 0.99)
-            row = generate_session(rng, child_id, s, drift_ability, age, grade, gender, child_start)
+            row = generate_session(rng, child_id, s, drift_ability, age, grade, gender, child_start, profile_w, support_need)
             rows.append(row)
 
     return pd.DataFrame(rows)

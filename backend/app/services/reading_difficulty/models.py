@@ -8,7 +8,6 @@ folds to preserve class balance during evaluation.
 """
 
 from __future__ import annotations
-from sklearn.preprocessing import LabelEncoder
 
 from typing import Any
 
@@ -24,7 +23,7 @@ from sklearn.metrics import (
     precision_recall_fscore_support,
     r2_score,
 )
-from sklearn.model_selection import KFold, StratifiedKFold, cross_val_score
+from sklearn.model_selection import GroupKFold, KFold, StratifiedGroupKFold, StratifiedKFold, cross_val_score
 from xgboost import XGBClassifier, XGBRegressor
 
 from backend.app.services.reading_difficulty.features import (
@@ -134,13 +133,16 @@ def cross_validate_regression(
     y: pd.Series,
     cv_folds: int = 5,
     seed: int = 42,
+    groups: Any = None,
 ) -> pd.DataFrame:
-    """Cross-validate regression models using KFold and RMSE/R2 scoring.
+    """Cross-validate regression models using RMSE/R2 scoring.
 
-    Continuous targets are not stratified because ordering is irrelevant; the split
-    should preserve overall data distribution without imposing class-like constraints.
+    Continuous targets are not stratified because ordering is irrelevant. When `groups`
+    (the child_id of every row) is given, GroupKFold keeps all sessions of a learner in
+    the same fold, matching the learner-level hold-out split and avoiding optimistic CV
+    scores from sibling sessions leaking across train and validation.
     """
-    cv = KFold(n_splits=cv_folds, shuffle=True, random_state=seed)
+    cv = GroupKFold(n_splits=cv_folds) if groups is not None else KFold(n_splits=cv_folds, shuffle=True, random_state=seed)
     rows: list[dict[str, float | str]] = []
 
     for model_name, model in models.items():
@@ -149,9 +151,10 @@ def cross_validate_regression(
             X,
             y,
             cv=cv,
+            groups=groups,
             scoring="neg_root_mean_squared_error",
         )
-        r2_scores = cross_val_score(model, X, y, cv=cv, scoring="r2")
+        r2_scores = cross_val_score(model, X, y, cv=cv, groups=groups, scoring="r2")
 
         rows.append(
             {
@@ -178,18 +181,22 @@ def cross_validate_classification(
     y: pd.Series,
     cv_folds: int = 5,
     seed: int = 42,
+    groups: Any = None,
 ) -> pd.DataFrame:
     """Cross-validate classification models with stratified folds to preserve class balance.
 
     The synthetic dataset is small enough that class imbalance or fold imbalance can
-    distort the metric, so StratifiedKFold keeps each fold representative of the
-    target distribution.
+    distort the metric, so stratification keeps each fold representative of the target
+    distribution. When `groups` (child_id per row) is provided, StratifiedGroupKFold
+    ensures all sessions from one learner remain in the same fold, matching the
+    learner-level hold-out split and preventing optimistic validation scores.
     """
-    cv = StratifiedKFold(n_splits=cv_folds, shuffle=True, random_state=seed)
+    cv = (StratifiedGroupKFold(n_splits=cv_folds, shuffle=True, random_state=seed)
+          if groups is not None else StratifiedKFold(n_splits=cv_folds, shuffle=True, random_state=seed))
     rows: list[dict[str, float | str]] = []
 
     for model_name, model in models.items():
-        f1_scores = cross_val_score(model, X, y, cv=cv, scoring="f1_macro")
+        f1_scores = cross_val_score(model, X, y, cv=cv, groups=groups, scoring="f1_macro")
         rows.append(
             {
                 "model": model_name,
@@ -291,12 +298,13 @@ def train_and_evaluate_all(train_df: pd.DataFrame, test_df: pd.DataFrame, seed: 
     instead of duplicating selection rules across the project.
     """
     results: dict[str, dict[str, Any]] = {}
+    train_groups = train_df["child_id"].to_numpy()
 
     difficulty_X_train, difficulty_y_train = get_xy_difficulty(train_df)
     difficulty_X_test, difficulty_y_test = get_xy_difficulty(test_df)
     difficulty_models = get_regression_models(seed=seed)
     difficulty_models = train_all(difficulty_models, difficulty_X_train, difficulty_y_train)
-    difficulty_cv = cross_validate_regression(difficulty_models, difficulty_X_train, difficulty_y_train, seed=seed)
+    difficulty_cv = cross_validate_regression(difficulty_models, difficulty_X_train, difficulty_y_train, seed=seed, groups=train_groups)
     difficulty_holdout = evaluate_holdout_regression(difficulty_models, difficulty_X_test, difficulty_y_test)
     results["difficulty_score"] = {
         "models": difficulty_models,
@@ -313,7 +321,7 @@ def train_and_evaluate_all(train_df: pd.DataFrame, test_df: pd.DataFrame, seed: 
     weak_skill_y_test = weak_skill_y_test_raw.map(weak_skill_class_map)
     weak_skill_models = get_weak_skill_models(seed=seed)
     weak_skill_models = train_all(weak_skill_models, weak_skill_X_train, weak_skill_y_train)
-    weak_skill_cv = cross_validate_classification(weak_skill_models, weak_skill_X_train, weak_skill_y_train, seed=seed)
+    weak_skill_cv = cross_validate_classification(weak_skill_models, weak_skill_X_train, weak_skill_y_train, seed=seed, groups=train_groups)
     weak_skill_holdout = evaluate_holdout_classification(weak_skill_models, weak_skill_X_test, weak_skill_y_test)
     results["weak_skill"] = {
         "models": weak_skill_models,
@@ -331,7 +339,7 @@ def train_and_evaluate_all(train_df: pd.DataFrame, test_df: pd.DataFrame, seed: 
     intervention_y_test = intervention_y_test_raw.map(intervention_class_map)
     intervention_models = get_classification_models(seed=seed)
     intervention_models = train_all(intervention_models, intervention_X_train, intervention_y_train)
-    intervention_cv = cross_validate_classification(intervention_models, intervention_X_train, intervention_y_train, seed=seed)
+    intervention_cv = cross_validate_classification(intervention_models, intervention_X_train, intervention_y_train, seed=seed, groups=train_groups)
     intervention_holdout = evaluate_holdout_classification(intervention_models, intervention_X_test, intervention_y_test)
     results["intervention_intensity"] = {
         "models": intervention_models,

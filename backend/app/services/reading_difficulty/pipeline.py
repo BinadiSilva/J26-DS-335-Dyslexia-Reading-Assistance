@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import json
 from collections import Counter
-from datetime import datetime
+from datetime import datetime, timezone
+from importlib.metadata import version
 from pathlib import Path
 from typing import Any
 
@@ -117,6 +118,7 @@ def _decode_class_label(raw_prediction: Any, class_order: list[str]) -> str:
 
 
 def train_pipeline(raw_csv: str | Path) -> PipelineArtifacts:
+    seed = 42
     raw_df = load_raw(str(raw_csv))
     cleaned = clean(raw_df)
     engineered = engineer_features(cleaned)
@@ -125,15 +127,29 @@ def train_pipeline(raw_csv: str | Path) -> PipelineArtifacts:
     train_df = apply_grade_norms(train_df, norms)
     test_df = apply_grade_norms(test_df, norms)
 
-    trained = train_and_evaluate_all(train_df, test_df)
+    trained = train_and_evaluate_all(train_df, test_df, seed=seed)
 
     artifacts = PipelineArtifacts()
     artifacts["norms"] = norms
     artifacts["feature_columns"] = {}
     artifacts["class_labels"] = {}
+    artifacts["label_maps"] = {}
     artifacts["train_rows"] = int(len(train_df))
     artifacts["test_rows"] = int(len(test_df))
-    artifacts["label_maps"] = {}
+    artifacts["model_versions"] = {}
+    artifacts["training_metadata"] = {
+        "training_date_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "seed": int(seed),
+        "train_rows": int(len(train_df)),
+        "library_versions": {
+            "python": __import__("platform").python_version(),
+            "numpy": version("numpy"),
+            "pandas": version("pandas"),
+            "scikit_learn": version("scikit-learn"),
+            "xgboost": version("xgboost"),
+            "interpret": version("interpret-core"),
+        },
+    }
 
     for target in ["difficulty_score", "weak_skill", "intervention_intensity"]:
         report = trained[target]
@@ -152,6 +168,7 @@ def train_pipeline(raw_csv: str | Path) -> PipelineArtifacts:
         artifacts["feature_columns"][target] = feature_cols
         artifacts["class_labels"][target] = labels
         artifacts["label_maps"][target] = label_map
+        artifacts["model_versions"][target] = best_name
         artifacts[target] = {
             "model": model,
             "best_model_name": best_name,
