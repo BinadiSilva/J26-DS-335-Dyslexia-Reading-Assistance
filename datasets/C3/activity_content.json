@@ -1,0 +1,2386 @@
+{
+  "A003": {
+    "title": "Space Word Puzzle",
+    "activity_type": "word games",
+    "target_skill": "Phonics",
+    "difficulty_level": "Medium",
+    "duration_minutes": 15,
+    "instructions": "Read each space word and choose its correct beginning sound.",
+    "questions": [
+      {
+        "question": "Which sound does Moon begin with?",
+        "options": [
+          "M",
+          "S",
+          "R"
+        ],
+        "answer": "M",
+        "feedback": "Correct! Moon begins with the /m/ sound."
+      },
+      {
+        "question": "Which sound does Star begin with?",
+        "options": [
+          "P",
+          "S",
+          "T"
+        ],
+        "answer": "S",
+        "feedback": "Correct! Star begins with the /s/ sound."
+      },
+      {
+        "question": "Which sound does Rocket begin with?",
+        "options": [
+          "R",
+          "B",
+          "M"
+        ],
+        "answer": "R",
+        "feedback": "Correct! Rocket begins with the /r/ sound."
+      },
+      {
+        "question": "Which sound does Sun begin with?",
+        "options": [
+          "L",
+          "S",
+          "D"
+        ],
+        "answer": "S",
+        "feedback": "Correct! Sun begins with the /s/ sound."
+      },
+      {
+        "question": "Which sound does Planet begin with?",
+        "options": [
+          "P",
+          "G",
+          "F"
+        ],
+        "answer": "P",
+        "feedback": "Correct! Planet begins with the /p/ sound."
+      }
+    ]
+  },
+  "A004": {
+    "title": "Animal Word Match",
+    "activity_type": "word games",
+    "target_skill": "Word Recognition",
+    "difficulty_level": "Easy",
+    "duration_minutes": 10,
+    "instructions": "Read each clue and choose the animal that matches it.",
+    "questions": [
+      {
+        "question": "Which animal says 'meow'?",
+        "options": [
+          "Cat",
+          "Cow",
+          "Duck"
+        ],
+        "answer": "Cat",
+        "feedback": "A cat commonly says 'meow'."
+      },
+      {
+        "question": "Which animal has a very long neck?",
+        "options": [
+          "Rabbit",
+          "Giraffe",
+          "Dog"
+        ],
+        "answer": "Giraffe",
+        "feedback": "A giraffe is known for its long neck."
+      },
+      {
+        "question": "Which animal gives us wool?",
+        "options": [
+          "Sheep",
+          "Lion",
+          "Fish"
+        ],
+        "answer": "Sheep",
+        "feedback": "Sheep grow wool that can be used to make clothing."
+      },
+      {
+        "question": "Which animal lives in water and has fins?",
+        "options": [
+          "Horse",
+          "Fish",
+          "Hen"
+        ],
+        "answer": "Fish",
+        "feedback": "Fish use fins to move through water."
+      },
+      {
+        "question": "Which animal is often called man's best friend?",
+        "options": [
+          "Dog",
+          "Tiger",
+          "Frog"
+        ],
+        "answer": "Dog",
+        "feedback": "Dogs are commonly known as man's best friend."
+      }
+    ]
+  },
+  "A009": {
+    "title": "Story Understanding",
+    "activity_type": "comprehension",
+    "target_skill": "Comprehension",
+    "difficulty_level": "Easy",
+    "duration_minutes": 10,
+    "instructions": "Read the short story carefully, then answer the questions.",
+    "passage": "Mia has a small red kite. On Saturday, she goes to the park with her brother. The wind is gentle, so Mia runs across the grass and flies her kite. After playing, they sit under a tree and eat apples.",
+    "questions": [
+      {
+        "question": "What colour is Mia's kite?",
+        "options": [
+          "Blue",
+          "Red",
+          "Yellow"
+        ],
+        "answer": "Red",
+        "feedback": "The story says Mia has a small red kite."
+      },
+      {
+        "question": "Where does Mia go on Saturday?",
+        "options": [
+          "To the park",
+          "To the library",
+          "To the shop"
+        ],
+        "answer": "To the park",
+        "feedback": "Mia goes to the park with her brother."
+      },
+      {
+        "question": "Who goes with Mia?",
+        "options": [
+          "Her sister",
+          "Her friend",
+          "Her brother"
+        ],
+        "answer": "Her brother",
+        "feedback": "The story says her brother goes with her."
+      },
+      {
+        "question": "What helps the kite fly?",
+        "options": [
+          "Rain",
+          "Wind",
+          "Snow"
+        ],
+        "answer": "Wind",
+        "feedback": "The gentle wind helps Mia fly the kite."
+      },
+      {
+        "question": "What do they eat after playing?",
+        "options": [
+          "Apples",
+          "Sandwiches",
+          "Bananas"
+        ],
+        "answer": "Apples",
+        "feedback": "After playing, they sit under a tree and eat apples."
+      }
+    ]
+  },
+  "A010": {
+    "title": "Animal Facts Comprehension",
+    "activity_type": "comprehension",
+    "target_skill": "Comprehension",
+    "difficulty_level": "Medium",
+    "duration_minutes": 15,
+    "instructions": "Read the animal facts and answer each question using the information in the passage.",
+    "passage": "Penguins are birds, but they cannot fly. They use their flippers to swim in cold ocean water. Many penguins live in groups called colonies. They eat fish and other small sea animals.",
+    "questions": [
+      {
+        "question": "What kind of animal is a penguin?",
+        "options": [
+          "A bird",
+          "A mammal",
+          "A reptile"
+        ],
+        "answer": "A bird",
+        "feedback": "The passage identifies penguins as birds."
+      },
+      {
+        "question": "Can penguins fly?",
+        "options": [
+          "Yes, very high",
+          "No, they cannot fly",
+          "Only at night"
+        ],
+        "answer": "No, they cannot fly",
+        "feedback": "The passage says penguins cannot fly."
+      },
+      {
+        "question": "What do penguins use to swim?",
+        "options": [
+          "Flippers",
+          "Horns",
+          "Long legs only"
+        ],
+        "answer": "Flippers",
+        "feedback": "Penguins use their flippers to swim."
+      },
+      {
+        "question": "What is a group of penguins called in the passage?",
+        "options": [
+          "A pack",
+          "A colony",
+          "A herd"
+        ],
+        "answer": "A colony",
+        "feedback": "The passage says many penguins live in groups called colonies."
+      },
+      {
+        "question": "What do penguins eat?",
+        "options": [
+          "Grass and leaves",
+          "Nuts and seeds",
+          "Fish and small sea animals"
+        ],
+        "answer": "Fish and small sea animals",
+        "feedback": "The passage says they eat fish and other small sea animals."
+      }
+    ]
+  },
+  "A013": {
+    "title": "Advanced Sound Patterns",
+    "activity_type": "word games",
+    "target_skill": "Phonics",
+    "difficulty_level": "Hard",
+    "duration_minutes": 15,
+    "instructions": "Read each word carefully and choose the correct sound pattern.",
+    "questions": [
+      {
+        "question": "Which word begins with the /sh/ sound?",
+        "options": [
+          "Ship",
+          "Sip",
+          "Tip"
+        ],
+        "answer": "Ship",
+        "feedback": "Ship begins with the /sh/ sound."
+      },
+      {
+        "question": "Which word has the /ch/ sound at the beginning?",
+        "options": [
+          "Chair",
+          "Share",
+          "Care"
+        ],
+        "answer": "Chair",
+        "feedback": "Chair begins with the /ch/ sound."
+      },
+      {
+        "question": "Which word contains the /th/ sound?",
+        "options": [
+          "Thin",
+          "Tin",
+          "Fin"
+        ],
+        "answer": "Thin",
+        "feedback": "Thin begins with the /th/ sound."
+      },
+      {
+        "question": "Which word begins with the /br/ blend?",
+        "options": [
+          "Brush",
+          "Rush",
+          "Crush"
+        ],
+        "answer": "Brush",
+        "feedback": "Brush begins with the /br/ blend."
+      },
+      {
+        "question": "Which word begins with the /tr/ blend?",
+        "options": [
+          "Train",
+          "Rain",
+          "Brain"
+        ],
+        "answer": "Train",
+        "feedback": "Train begins with the /tr/ blend."
+      }
+    ]
+  },
+  "A015": {
+    "title": "Fluent Story Reading",
+    "activity_type": "reading stories",
+    "target_skill": "Reading Fluency",
+    "difficulty_level": "Hard",
+    "duration_minutes": 20,
+    "instructions": "Read the passage at a comfortable pace. Then answer the questions about details from the passage.",
+    "passage": "One evening, Maya looked through her telescope and noticed a bright light near the Moon. She called her brother, Ravi, to look. They discovered that the light was a planet shining in the dark sky. Maya wrote the observation in her notebook and planned to look again the following night.",
+    "questions": [
+      {
+        "question": "When did Maya look through her telescope?",
+        "options": [
+          "One morning",
+          "One evening",
+          "At lunchtime"
+        ],
+        "answer": "One evening",
+        "feedback": "The story begins with Maya looking through her telescope one evening."
+      },
+      {
+        "question": "What did Maya notice near the Moon?",
+        "options": [
+          "A bright light",
+          "A flying bird",
+          "A rainbow"
+        ],
+        "answer": "A bright light",
+        "feedback": "Maya noticed a bright light near the Moon."
+      },
+      {
+        "question": "Who did Maya call?",
+        "options": [
+          "Her teacher",
+          "Her friend",
+          "Her brother Ravi"
+        ],
+        "answer": "Her brother Ravi",
+        "feedback": "Maya called her brother Ravi to look."
+      },
+      {
+        "question": "What did they discover?",
+        "options": [
+          "A planet",
+          "A new tree",
+          "A comet made of ice cream"
+        ],
+        "answer": "A planet",
+        "feedback": "They discovered that the light was a planet."
+      },
+      {
+        "question": "Where did Maya write her observation?",
+        "options": [
+          "On a wall",
+          "In her notebook",
+          "On a leaf"
+        ],
+        "answer": "In her notebook",
+        "feedback": "Maya wrote her observation in her notebook."
+      }
+    ]
+  },
+  "A016": {
+    "title": "Story Comprehension Challenge",
+    "activity_type": "comprehension",
+    "target_skill": "Comprehension",
+    "difficulty_level": "Hard",
+    "duration_minutes": 20,
+    "instructions": "Read the story and choose the best answer for each question.",
+    "passage": "Arun wanted to enter the school gardening competition. He planted tomato seeds in a small pot and placed it beside a sunny window. For several days, he watered the soil carefully. When the first green shoots appeared, Arun moved the pot outside so the plant could receive more sunlight. He kept a record of its growth and shared his notes with his teacher.",
+    "questions": [
+      {
+        "question": "Why did Arun plant tomato seeds?",
+        "options": [
+          "To enter a gardening competition",
+          "To feed a bird",
+          "To decorate a book"
+        ],
+        "answer": "To enter a gardening competition",
+        "feedback": "Arun wanted to enter the school gardening competition."
+      },
+      {
+        "question": "Where did he first place the pot?",
+        "options": [
+          "In a cupboard",
+          "Beside a sunny window",
+          "Under his bed"
+        ],
+        "answer": "Beside a sunny window",
+        "feedback": "He placed the pot beside a sunny window."
+      },
+      {
+        "question": "What did Arun do for several days?",
+        "options": [
+          "Forgot the plant",
+          "Painted the pot",
+          "Watered the soil carefully"
+        ],
+        "answer": "Watered the soil carefully",
+        "feedback": "He watered the soil carefully for several days."
+      },
+      {
+        "question": "Why did he move the pot outside?",
+        "options": [
+          "To give the plant more sunlight",
+          "To hide it from his teacher",
+          "To stop it growing"
+        ],
+        "answer": "To give the plant more sunlight",
+        "feedback": "He moved it outside so it could receive more sunlight."
+      },
+      {
+        "question": "What can we infer about Arun?",
+        "options": [
+          "He gave up quickly",
+          "He was patient and careful",
+          "He disliked plants"
+        ],
+        "answer": "He was patient and careful",
+        "feedback": "He cared for the plant and recorded its growth."
+      }
+    ]
+  },
+  "A006": {
+    "title": "Space Adventure Reading",
+    "activity_type": "reading stories",
+    "target_skill": "Reading Fluency",
+    "difficulty_level": "Medium",
+    "duration_minutes": 15,
+    "instructions": "Read the passage at a comfortable pace. Then answer the questions about details from the passage.",
+    "passage": "Leo and his friend Nila climbed aboard their imaginary spaceship. Their mission was to explore a distant planet. As they travelled past the stars, they noticed a blue planet with wide oceans and tall mountains. They landed safely and collected pictures of unusual rocks. Before returning home, they checked their equipment and made sure every sample was packed securely.",
+    "questions": [
+      {
+        "question": "Who travelled with Leo?",
+        "options": [
+          "Nila",
+          "Maya",
+          "Arun"
+        ],
+        "answer": "Nila",
+        "feedback": "Leo travelled with his friend Nila."
+      },
+      {
+        "question": "What was their mission?",
+        "options": [
+          "To build a school",
+          "To explore a distant planet",
+          "To find a lost dog"
+        ],
+        "answer": "To explore a distant planet",
+        "feedback": "Their mission was to explore a distant planet."
+      },
+      {
+        "question": "What did they see on the planet?",
+        "options": [
+          "Only desert",
+          "A city made of chocolate",
+          "Oceans and mountains"
+        ],
+        "answer": "Oceans and mountains",
+        "feedback": "They noticed wide oceans and tall mountains."
+      },
+      {
+        "question": "What did they collect?",
+        "options": [
+          "Pictures of unusual rocks",
+          "School uniforms",
+          "Sea shells from Earth"
+        ],
+        "answer": "Pictures of unusual rocks",
+        "feedback": "They collected pictures of unusual rocks."
+      },
+      {
+        "question": "What did they do before returning home?",
+        "options": [
+          "Left all their equipment behind",
+          "Checked their equipment and packed samples",
+          "Turned off the stars"
+        ],
+        "answer": "Checked their equipment and packed samples",
+        "feedback": "They checked their equipment and packed every sample securely."
+      }
+    ]
+  },
+  "A011": {
+    "title": "Space Reading Questions",
+    "activity_type": "comprehension",
+    "target_skill": "Comprehension",
+    "difficulty_level": "Medium",
+    "duration_minutes": 20,
+    "instructions": "Read the information passage and answer the questions using details from the text.",
+    "passage": "The Solar System contains the Sun and the objects that travel around it. Earth is one of eight planets that orbit the Sun. Some planets are rocky, while others are mostly made of gas or ice. The Moon travels around Earth. Scientists use telescopes and spacecraft to learn more about planets and other objects in space.",
+    "questions": [
+      {
+        "question": "What is at the centre of our Solar System?",
+        "options": [
+          "The Moon",
+          "The Sun",
+          "Mars"
+        ],
+        "answer": "The Sun",
+        "feedback": "The passage says the Solar System contains the Sun and objects travelling around it."
+      },
+      {
+        "question": "How many planets orbit the Sun?",
+        "options": [
+          "Eight",
+          "Three",
+          "Twenty"
+        ],
+        "answer": "Eight",
+        "feedback": "The passage states that Earth is one of eight planets."
+      },
+      {
+        "question": "What travels around Earth?",
+        "options": [
+          "The Sun only",
+          "Jupiter",
+          "The Moon"
+        ],
+        "answer": "The Moon",
+        "feedback": "The passage says the Moon travels around Earth."
+      },
+      {
+        "question": "How do scientists study space?",
+        "options": [
+          "With telescopes and spacecraft",
+          "Only with books about animals",
+          "By planting seeds"
+        ],
+        "answer": "With telescopes and spacecraft",
+        "feedback": "Scientists use telescopes and spacecraft to learn about space."
+      },
+      {
+        "question": "Which statement is supported by the passage?",
+        "options": [
+          "All planets are made of rock",
+          "Some planets are rocky and others are mostly gas or ice",
+          "Earth does not orbit the Sun"
+        ],
+        "answer": "Some planets are rocky and others are mostly gas or ice",
+        "feedback": "The passage describes different types of planets."
+      }
+    ]
+  },
+  "A017": {
+    "title": "Pronunciation Practice Challenge",
+    "activity_type": "pronunciation",
+    "target_skill": "Pronunciation",
+    "difficulty_level": "Hard",
+    "duration_minutes": 15,
+    "instructions": "Say each word aloud if you can, then choose the word matching the sound. This activity does not record or automatically assess your voice.",
+    "questions": [
+      {
+        "question": "Which word begins with the /f/ sound?",
+        "options": [
+          "Fan",
+          "Van",
+          "Then"
+        ],
+        "answer": "Fan",
+        "feedback": "Fan begins with the /f/ sound."
+      },
+      {
+        "question": "Which word begins with the /v/ sound?",
+        "options": [
+          "Fine",
+          "Vine",
+          "Shine"
+        ],
+        "answer": "Vine",
+        "feedback": "Vine begins with the /v/ sound."
+      },
+      {
+        "question": "Which word begins with the /sh/ sound?",
+        "options": [
+          "Chip",
+          "Ship",
+          "Sip"
+        ],
+        "answer": "Ship",
+        "feedback": "Ship begins with the /sh/ sound."
+      },
+      {
+        "question": "Which word begins with the /ch/ sound?",
+        "options": [
+          "Chair",
+          "Share",
+          "Fair"
+        ],
+        "answer": "Chair",
+        "feedback": "Chair begins with the /ch/ sound."
+      },
+      {
+        "question": "Which word ends with the /t/ sound?",
+        "options": [
+          "Map",
+          "Sun",
+          "Cat"
+        ],
+        "answer": "Cat",
+        "feedback": "Cat ends with the /t/ sound."
+      }
+    ]
+  },
+  "A001": {
+    "title": "Sound and Word Practice",
+    "activity_type": "word games",
+    "target_skill": "Phonics",
+    "difficulty_level": "Easy",
+    "duration_minutes": 10,
+    "instructions": "Look at each familiar animal word and choose its beginning sound.",
+    "questions": [
+      {
+        "question": "Which sound does Cat begin with?",
+        "options": [
+          "C",
+          "B",
+          "T"
+        ],
+        "answer": "C",
+        "feedback": "Cat begins with the /k/ sound."
+      },
+      {
+        "question": "Which sound does Dog begin with?",
+        "options": [
+          "D",
+          "G",
+          "F"
+        ],
+        "answer": "D",
+        "feedback": "Dog begins with the /d/ sound."
+      },
+      {
+        "question": "Which sound does Fish begin with?",
+        "options": [
+          "M",
+          "F",
+          "S"
+        ],
+        "answer": "F",
+        "feedback": "Fish begins with the /f/ sound."
+      },
+      {
+        "question": "Which sound does Hen begin with?",
+        "options": [
+          "H",
+          "N",
+          "P"
+        ],
+        "answer": "H",
+        "feedback": "Hen begins with the /h/ sound."
+      },
+      {
+        "question": "Which sound does Lion begin with?",
+        "options": [
+          "L",
+          "R",
+          "W"
+        ],
+        "answer": "L",
+        "feedback": "Lion begins with the /l/ sound."
+      }
+    ]
+  },
+  "A002": {
+    "title": "Word Recognition Challenge",
+    "activity_type": "word games",
+    "target_skill": "Word Recognition",
+    "difficulty_level": "Medium",
+    "duration_minutes": 15,
+    "instructions": "Read each word and choose the meaning that matches it.",
+    "questions": [
+      {
+        "question": "What does 'tiny' mean?",
+        "options": [
+          "Very small",
+          "Very loud",
+          "Very late"
+        ],
+        "answer": "Very small",
+        "feedback": "'Tiny' means very small."
+      },
+      {
+        "question": "What does 'rapid' mean?",
+        "options": [
+          "Slow",
+          "Fast",
+          "Quiet"
+        ],
+        "answer": "Fast",
+        "feedback": "'Rapid' means fast."
+      },
+      {
+        "question": "Which word means the opposite of 'happy'?",
+        "options": [
+          "Glad",
+          "Joyful",
+          "Sad"
+        ],
+        "answer": "Sad",
+        "feedback": "'Sad' is an opposite of 'happy'."
+      },
+      {
+        "question": "Which word means a place where books are kept for reading?",
+        "options": [
+          "Library",
+          "Kitchen",
+          "Garden"
+        ],
+        "answer": "Library",
+        "feedback": "A library is a place where books are kept for reading."
+      },
+      {
+        "question": "Which word means to look at something carefully?",
+        "options": [
+          "Observe",
+          "Forget",
+          "Throw"
+        ],
+        "answer": "Observe",
+        "feedback": "'Observe' means to look at something carefully."
+      }
+    ]
+  },
+  "A005": {
+    "title": "Read Aloud: The Little Fox",
+    "activity_type": "reading stories",
+    "target_skill": "Fluency",
+    "difficulty_level": "Easy",
+    "duration_minutes": 10,
+    "instructions": "Read the passage at a comfortable pace. Then answer the questions about details from the passage.",
+    "passage": "A little fox named Finn lived near a green forest. One morning, Finn found a red ball beside a tree. He rolled the ball to his friend Pip, the rabbit. They played together until the sun began to set. Then Finn and Pip went home happily.",
+    "questions": [
+      {
+        "question": "What was the fox's name?",
+        "options": [
+          "Finn",
+          "Pip",
+          "Max"
+        ],
+        "answer": "Finn",
+        "feedback": "The little fox was named Finn."
+      },
+      {
+        "question": "Where did Finn live?",
+        "options": [
+          "Near a green forest",
+          "In a city shop",
+          "Beside the sea"
+        ],
+        "answer": "Near a green forest",
+        "feedback": "Finn lived near a green forest."
+      },
+      {
+        "question": "What did Finn find?",
+        "options": [
+          "A red ball",
+          "A blue book",
+          "A yellow hat"
+        ],
+        "answer": "A red ball",
+        "feedback": "Finn found a red ball beside a tree."
+      },
+      {
+        "question": "Who was Finn's friend?",
+        "options": [
+          "A rabbit named Pip",
+          "A dog named Rex",
+          "A bird named Sky"
+        ],
+        "answer": "A rabbit named Pip",
+        "feedback": "Pip was Finn's rabbit friend."
+      },
+      {
+        "question": "When did they go home?",
+        "options": [
+          "When the sun began to set",
+          "At midnight",
+          "Before they played"
+        ],
+        "answer": "When the sun began to set",
+        "feedback": "They went home when the sun began to set."
+      }
+    ]
+  },
+  "A007": {
+    "title": "The School Day",
+    "activity_type": "reading stories",
+    "target_skill": "Pronunciation",
+    "difficulty_level": "Easy",
+    "duration_minutes": 10,
+    "instructions": "Read the passage at a comfortable pace. Then answer the questions about details from the passage.",
+    "passage": "Sam wakes up early and packs his school bag. He walks to school with his sister. In class, Sam reads a book and writes three sentences. At break time, he shares an apple with his friend. After school, Sam goes home and tells his family about his day.",
+    "questions": [
+      {
+        "question": "What does Sam pack?",
+        "options": [
+          "His school bag",
+          "A suitcase",
+          "A lunch box only"
+        ],
+        "answer": "His school bag",
+        "feedback": "Sam packs his school bag."
+      },
+      {
+        "question": "Who walks to school with Sam?",
+        "options": [
+          "His sister",
+          "His teacher",
+          "His cousin"
+        ],
+        "answer": "His sister",
+        "feedback": "Sam walks to school with his sister."
+      },
+      {
+        "question": "What does Sam read in class?",
+        "options": [
+          "A book",
+          "A map",
+          "A menu"
+        ],
+        "answer": "A book",
+        "feedback": "Sam reads a book in class."
+      },
+      {
+        "question": "What does Sam share at break time?",
+        "options": [
+          "An apple",
+          "A toy car",
+          "A ball"
+        ],
+        "answer": "An apple",
+        "feedback": "Sam shares an apple with his friend."
+      },
+      {
+        "question": "What does Sam do after school?",
+        "options": [
+          "Goes home and tells his family about his day",
+          "Goes to the moon",
+          "Sleeps in class"
+        ],
+        "answer": "Goes home and tells his family about his day",
+        "feedback": "Sam goes home and talks about his day."
+      }
+    ]
+  },
+  "A008": {
+    "title": "Sports Day Story",
+    "activity_type": "reading stories",
+    "target_skill": "Fluency",
+    "difficulty_level": "Medium",
+    "duration_minutes": 15,
+    "instructions": "Read the passage at a comfortable pace. Then answer the questions about details from the passage.",
+    "passage": "On Friday, Amaya took part in her school's sports day. She joined the relay race with three classmates. At first, her team was behind, but each runner tried their best. Amaya passed the baton carefully to the next runner. Her team finished second, and everyone congratulated one another for working together.",
+    "questions": [
+      {
+        "question": "When was the sports day?",
+        "options": [
+          "Friday",
+          "Monday",
+          "Sunday"
+        ],
+        "answer": "Friday",
+        "feedback": "The sports day took place on Friday."
+      },
+      {
+        "question": "Which event did Amaya join?",
+        "options": [
+          "A relay race",
+          "A swimming lesson",
+          "A spelling test"
+        ],
+        "answer": "A relay race",
+        "feedback": "Amaya joined the relay race."
+      },
+      {
+        "question": "What did Amaya pass to the next runner?",
+        "options": [
+          "A baton",
+          "A book",
+          "A water bottle"
+        ],
+        "answer": "A baton",
+        "feedback": "She passed the baton carefully."
+      },
+      {
+        "question": "What place did her team finish?",
+        "options": [
+          "First",
+          "Second",
+          "Fourth"
+        ],
+        "answer": "Second",
+        "feedback": "Her team finished second."
+      },
+      {
+        "question": "What helped the team participate successfully?",
+        "options": [
+          "Working together",
+          "Leaving early",
+          "Not practising"
+        ],
+        "answer": "Working together",
+        "feedback": "The story highlights teamwork and effort."
+      }
+    ]
+  },
+  "A012": {
+    "title": "Pronunciation Practice",
+    "activity_type": "pronunciation",
+    "target_skill": "Pronunciation",
+    "difficulty_level": "Easy",
+    "duration_minutes": 10,
+    "instructions": "Say each word aloud if you can, then choose the word matching the sound. This activity does not record or automatically assess your voice.",
+    "questions": [
+      {
+        "question": "Which word begins with the /m/ sound?",
+        "options": [
+          "Moon",
+          "Soon",
+          "Noon"
+        ],
+        "answer": "Moon",
+        "feedback": "Moon begins with the /m/ sound."
+      },
+      {
+        "question": "Which word begins with the /s/ sound?",
+        "options": [
+          "Fan",
+          "Sun",
+          "Run"
+        ],
+        "answer": "Sun",
+        "feedback": "Sun begins with the /s/ sound."
+      },
+      {
+        "question": "Which word begins with the /b/ sound?",
+        "options": [
+          "Ball",
+          "Tall",
+          "Call"
+        ],
+        "answer": "Ball",
+        "feedback": "Ball begins with the /b/ sound."
+      },
+      {
+        "question": "Which word begins with the /p/ sound?",
+        "options": [
+          "Pan",
+          "Can",
+          "Man"
+        ],
+        "answer": "Pan",
+        "feedback": "Pan begins with the /p/ sound."
+      },
+      {
+        "question": "Which word begins with the /r/ sound?",
+        "options": [
+          "Rain",
+          "Train",
+          "Main"
+        ],
+        "answer": "Rain",
+        "feedback": "Rain begins with the /r/ sound."
+      }
+    ]
+  },
+  "A014": {
+    "title": "Challenging Word Recognition",
+    "activity_type": "word games",
+    "target_skill": "Word Recognition",
+    "difficulty_level": "Hard",
+    "duration_minutes": 15,
+    "instructions": "Read each longer word carefully and choose the correct meaning or word pattern.",
+    "questions": [
+      {
+        "question": "Which word means 'to look closely at something'?",
+        "options": [
+          "Examine",
+          "Escape",
+          "Exchange"
+        ],
+        "answer": "Examine",
+        "feedback": "'Examine' means to inspect or look closely at something."
+      },
+      {
+        "question": "Which word means 'to happen again'?",
+        "options": [
+          "Repeat",
+          "Repair",
+          "Report"
+        ],
+        "answer": "Repeat",
+        "feedback": "'Repeat' means to do or say something again."
+      },
+      {
+        "question": "Which word means 'full of care and attention'?",
+        "options": [
+          "Careful",
+          "Colourful",
+          "Cheerful"
+        ],
+        "answer": "Careful",
+        "feedback": "'Careful' means using care and attention."
+      },
+      {
+        "question": "Which word is spelled correctly?",
+        "options": [
+          "Adventure",
+          "Adventcher",
+          "Advenchure"
+        ],
+        "answer": "Adventure",
+        "feedback": "'Adventure' is the correct spelling."
+      },
+      {
+        "question": "Which word has the same beginning sound as 'train'?",
+        "options": [
+          "Tree",
+          "Chair",
+          "Dream"
+        ],
+        "answer": "Tree",
+        "feedback": "'Train' and 'tree' both begin with the /tr/ blend."
+      }
+    ]
+  },
+  "A018": {
+    "title": "Advanced Word Meaning",
+    "activity_type": "comprehension",
+    "target_skill": "Vocabulary",
+    "difficulty_level": "Hard",
+    "duration_minutes": 20,
+    "instructions": "Read the short story and use clues in the sentences to work out unfamiliar word meanings.",
+    "passage": "The sky became gloomy as dark clouds covered the sun. Nila noticed a tiny trail of water flowing beside the path. She hurried to the shelter because a storm seemed imminent. Although the journey had been exhausting, she felt relieved when she arrived safely.",
+    "questions": [
+      {
+        "question": "In the story, what does 'gloomy' most nearly mean?",
+        "options": [
+          "Dark and dull",
+          "Bright and sunny",
+          "Warm and colourful"
+        ],
+        "answer": "Dark and dull",
+        "feedback": "Dark clouds covering the sun suggest a gloomy sky."
+      },
+      {
+        "question": "What does 'tiny' mean?",
+        "options": [
+          "Very small",
+          "Very noisy",
+          "Very heavy"
+        ],
+        "answer": "Very small",
+        "feedback": "'Tiny' means very small."
+      },
+      {
+        "question": "What does 'imminent' mean in this story?",
+        "options": [
+          "Likely to happen soon",
+          "Already forgotten",
+          "Very far away"
+        ],
+        "answer": "Likely to happen soon",
+        "feedback": "The storm seemed likely to happen soon."
+      },
+      {
+        "question": "What does 'exhausting' suggest about the journey?",
+        "options": [
+          "It required a lot of effort",
+          "It was very short and easy",
+          "It was completely silent"
+        ],
+        "answer": "It required a lot of effort",
+        "feedback": "'Exhausting' describes something that makes you very tired."
+      },
+      {
+        "question": "How did Nila feel when she arrived safely?",
+        "options": [
+          "Relieved",
+          "Angry",
+          "Confused"
+        ],
+        "answer": "Relieved",
+        "feedback": "The story says Nila felt relieved when she arrived safely."
+      }
+    ]
+  },
+  "A019": {
+    "title": "Space Sound Challenge",
+    "activity_type": "word games",
+    "target_skill": "Phonics",
+    "difficulty_level": "Hard",
+    "duration_minutes": 15,
+    "instructions": "Practise phonics through 'Space Sound Challenge'. Read each question carefully and choose the best answer.",
+    "questions": [
+      {
+        "question": "Which word begins with the /m/ sound?",
+        "options": [
+          "Moon",
+          "Star",
+          "Rocket"
+        ],
+        "answer": "Moon",
+        "feedback": "Moon begins with /m/."
+      },
+      {
+        "question": "Which word begins with the /r/ sound?",
+        "options": [
+          "Rocket",
+          "Sun",
+          "Fish"
+        ],
+        "answer": "Rocket",
+        "feedback": "Rocket begins with /r/."
+      },
+      {
+        "question": "Which word begins with the /s/ sound?",
+        "options": [
+          "Star",
+          "Moon",
+          "Planet"
+        ],
+        "answer": "Star",
+        "feedback": "Star begins with /s/."
+      }
+    ]
+  },
+  "A020": {
+    "title": "Space Word Builder",
+    "activity_type": "word games",
+    "target_skill": "Phonics",
+    "difficulty_level": "Medium",
+    "duration_minutes": 15,
+    "instructions": "Practise phonics through 'Space Word Builder'. Read each question carefully and choose the best answer.",
+    "questions": [
+      {
+        "question": "Which letters complete the word _oon?",
+        "options": [
+          "M",
+          "R",
+          "S"
+        ],
+        "answer": "M",
+        "feedback": "M makes the word Moon."
+      },
+      {
+        "question": "Which word begins with /p/?",
+        "options": [
+          "Planet",
+          "Rocket",
+          "Moon"
+        ],
+        "answer": "Planet",
+        "feedback": "Planet begins with /p/."
+      },
+      {
+        "question": "Which word begins with /st/?",
+        "options": [
+          "Star",
+          "Sun",
+          "Moon"
+        ],
+        "answer": "Star",
+        "feedback": "Star begins with the /st/ blend."
+      }
+    ]
+  },
+  "A021": {
+    "title": "Animal Sound Match",
+    "activity_type": "word games",
+    "target_skill": "Phonics",
+    "difficulty_level": "Easy",
+    "duration_minutes": 10,
+    "instructions": "Practise phonics through 'Animal Sound Match'. Read each question carefully and choose the best answer.",
+    "questions": [
+      {
+        "question": "Which animal begins with the /r/ sound?",
+        "options": [
+          "Rabbit",
+          "Fish",
+          "Cat"
+        ],
+        "answer": "Rabbit",
+        "feedback": "Rabbit begins with /r/."
+      },
+      {
+        "question": "Which animal begins with the /d/ sound?",
+        "options": [
+          "Dog",
+          "Hen",
+          "Lion"
+        ],
+        "answer": "Dog",
+        "feedback": "Dog begins with /d/."
+      },
+      {
+        "question": "Which animal begins with the /f/ sound?",
+        "options": [
+          "Fish",
+          "Rabbit",
+          "Cow"
+        ],
+        "answer": "Fish",
+        "feedback": "Fish begins with /f/."
+      }
+    ]
+  },
+  "A022": {
+    "title": "Space Word Recognition",
+    "activity_type": "word games",
+    "target_skill": "Word Recognition",
+    "difficulty_level": "Medium",
+    "duration_minutes": 15,
+    "instructions": "Practise word recognition through 'Space Word Recognition'. Read each question carefully and choose the best answer.",
+    "questions": [
+      {
+        "question": "What does 'journey' mean?",
+        "options": [
+          "A trip from one place to another",
+          "A kind of food",
+          "A small animal"
+        ],
+        "answer": "A trip from one place to another",
+        "feedback": "A journey is a trip."
+      },
+      {
+        "question": "What does 'tiny' mean?",
+        "options": [
+          "Very small",
+          "Very noisy",
+          "Very fast"
+        ],
+        "answer": "Very small",
+        "feedback": "Tiny means very small."
+      },
+      {
+        "question": "What does 'bright' mean?",
+        "options": [
+          "Giving much light",
+          "Very quiet",
+          "Very tired"
+        ],
+        "answer": "Giving much light",
+        "feedback": "Bright can mean shining or giving much light."
+      }
+    ]
+  },
+  "A023": {
+    "title": "Space Fluency Practice",
+    "activity_type": "reading stories",
+    "target_skill": "Fluency",
+    "difficulty_level": "Easy",
+    "duration_minutes": 10,
+    "instructions": "Read the passage at a comfortable pace. Then answer the questions about details from the passage.",
+    "questions": [
+      {
+        "question": "Who looked at the night sky?",
+        "options": [
+          "Mira and Ravi",
+          "Nila and Sam",
+          "Lina and her brother"
+        ],
+        "answer": "Mira and Ravi",
+        "feedback": "The passage names Mira and her brother Ravi."
+      },
+      {
+        "question": "What did they use to identify a planet?",
+        "options": [
+          "A star chart",
+          "A map of the city",
+          "A telescope made of paper"
+        ],
+        "answer": "A star chart",
+        "feedback": "Mira used a simple star chart."
+      },
+      {
+        "question": "What did they plan to do again?",
+        "options": [
+          "Look at the sky on another clear evening",
+          "Visit a farm",
+          "Read about dolphins"
+        ],
+        "answer": "Look at the sky on another clear evening",
+        "feedback": "They planned to look at the sky again."
+      }
+    ],
+    "passage": "Mira and her brother Ravi looked at the night sky. They saw the Moon and several bright stars. Mira used a simple star chart to identify a planet. They wrote down what they observed and planned to look at the sky again on another clear evening."
+  },
+  "A024": {
+    "title": "Space Story Comprehension",
+    "activity_type": "comprehension",
+    "target_skill": "Comprehension",
+    "difficulty_level": "Medium",
+    "duration_minutes": 15,
+    "instructions": "Practise comprehension through 'Space Story Comprehension'. Read each question carefully and choose the best answer.",
+    "questions": [
+      {
+        "question": "What does Maya see in the night sky?",
+        "options": [
+          "The Moon and stars",
+          "Fish and birds",
+          "Cars and buses"
+        ],
+        "answer": "The Moon and stars",
+        "feedback": "The passage says Maya sees the Moon and stars."
+      },
+      {
+        "question": "Who explains that Earth is a planet?",
+        "options": [
+          "Her father",
+          "Her teacher",
+          "Her friend"
+        ],
+        "answer": "Her father",
+        "feedback": "Maya's father explains this."
+      },
+      {
+        "question": "What does Maya write in her notebook?",
+        "options": [
+          "New facts",
+          "A shopping list",
+          "A birthday card"
+        ],
+        "answer": "New facts",
+        "feedback": "Maya writes the new facts in her notebook."
+      }
+    ],
+    "passage": "Maya looks at the night sky with her father. She sees the Moon and several bright stars. Her father explains that Earth is a planet. Maya writes the new facts in her notebook."
+  },
+  "A025": {
+    "title": "Space Pronunciation Practice",
+    "activity_type": "pronunciation",
+    "target_skill": "Pronunciation",
+    "difficulty_level": "Easy",
+    "duration_minutes": 10,
+    "instructions": "Say each word aloud if you can, then choose the word matching the sound. This activity does not record or automatically assess your voice.",
+    "questions": [
+      {
+        "question": "Which word begins with the /r/ sound?",
+        "options": [
+          "Rocket",
+          "Moon",
+          "Star"
+        ],
+        "answer": "Rocket",
+        "feedback": "Rocket begins with /r/."
+      },
+      {
+        "question": "Which word begins with the /k/ sound?",
+        "options": [
+          "Cat",
+          "Sun",
+          "Fish"
+        ],
+        "answer": "Cat",
+        "feedback": "Cat begins with the /k/ sound."
+      },
+      {
+        "question": "Which word begins with the /m/ sound?",
+        "options": [
+          "Moon",
+          "Rocket",
+          "Planet"
+        ],
+        "answer": "Moon",
+        "feedback": "Moon begins with /m/."
+      }
+    ]
+  },
+  "A026": {
+    "title": "Space Pronunciation Challenge",
+    "activity_type": "pronunciation",
+    "target_skill": "Pronunciation",
+    "difficulty_level": "Hard",
+    "duration_minutes": 15,
+    "instructions": "Say each word aloud if you can, then choose the word matching the sound. This activity does not record or automatically assess your voice.",
+    "questions": [
+      {
+        "question": "Which word begins with the /sh/ sound?",
+        "options": [
+          "Ship",
+          "Chip",
+          "Sip"
+        ],
+        "answer": "Ship",
+        "feedback": "Ship begins with /sh/."
+      },
+      {
+        "question": "Which word begins with the /ch/ sound?",
+        "options": [
+          "Chair",
+          "Share",
+          "Fair"
+        ],
+        "answer": "Chair",
+        "feedback": "Chair begins with /ch/."
+      },
+      {
+        "question": "Which word begins with the /v/ sound?",
+        "options": [
+          "Vine",
+          "Fine",
+          "Shine"
+        ],
+        "answer": "Vine",
+        "feedback": "Vine begins with /v/."
+      }
+    ]
+  },
+  "A027": {
+    "title": "Animal Phonics Adventure",
+    "activity_type": "word games",
+    "target_skill": "Phonics",
+    "difficulty_level": "Medium",
+    "duration_minutes": 15,
+    "instructions": "Practise phonics through 'Animal Phonics Adventure'. Read each question carefully and choose the best answer.",
+    "questions": [
+      {
+        "question": "Which animal begins with /r/?",
+        "options": [
+          "Rabbit",
+          "Dog",
+          "Fish"
+        ],
+        "answer": "Rabbit",
+        "feedback": "Rabbit begins with /r/."
+      },
+      {
+        "question": "Which animal begins with /c/ as in /k/?",
+        "options": [
+          "Cat",
+          "Lion",
+          "Hen"
+        ],
+        "answer": "Cat",
+        "feedback": "Cat begins with the /k/ sound."
+      },
+      {
+        "question": "Which animal begins with /f/?",
+        "options": [
+          "Fox",
+          "Cow",
+          "Duck"
+        ],
+        "answer": "Fox",
+        "feedback": "Fox begins with /f/."
+      }
+    ]
+  },
+  "A028": {
+    "title": "Story Sound Detective",
+    "activity_type": "word games",
+    "target_skill": "Phonics",
+    "difficulty_level": "Hard",
+    "duration_minutes": 15,
+    "instructions": "Practise phonics through 'Story Sound Detective'. Read each question carefully and choose the best answer.",
+    "questions": [
+      {
+        "question": "Which word begins with the /sh/ sound?",
+        "options": [
+          "Ship",
+          "Sip",
+          "Tip"
+        ],
+        "answer": "Ship",
+        "feedback": "Ship begins with /sh/."
+      },
+      {
+        "question": "Which word begins with the /ch/ sound?",
+        "options": [
+          "Chair",
+          "Share",
+          "Care"
+        ],
+        "answer": "Chair",
+        "feedback": "Chair begins with /ch/."
+      },
+      {
+        "question": "Which word begins with the /br/ blend?",
+        "options": [
+          "Brush",
+          "Rush",
+          "Crush"
+        ],
+        "answer": "Brush",
+        "feedback": "Brush begins with /br/."
+      }
+    ]
+  },
+  "A029": {
+    "title": "Animal Word Recognition",
+    "activity_type": "word games",
+    "target_skill": "Word Recognition",
+    "difficulty_level": "Medium",
+    "duration_minutes": 15,
+    "instructions": "Practise word recognition through 'Animal Word Recognition'. Read each question carefully and choose the best answer.",
+    "questions": [
+      {
+        "question": "Which word names an animal?",
+        "options": [
+          "Rabbit",
+          "Pencil",
+          "Window"
+        ],
+        "answer": "Rabbit",
+        "feedback": "Rabbit is an animal."
+      },
+      {
+        "question": "What does 'journey' mean?",
+        "options": [
+          "A trip from one place to another",
+          "A type of fruit",
+          "A sound"
+        ],
+        "answer": "A trip from one place to another",
+        "feedback": "Journey means a trip."
+      },
+      {
+        "question": "Which word means 'very small'?",
+        "options": [
+          "Tiny",
+          "Rapid",
+          "Gloomy"
+        ],
+        "answer": "Tiny",
+        "feedback": "Tiny means very small."
+      }
+    ]
+  },
+  "A030": {
+    "title": "Story Word Challenge",
+    "activity_type": "word games",
+    "target_skill": "Word Recognition",
+    "difficulty_level": "Hard",
+    "duration_minutes": 15,
+    "instructions": "Practise word recognition through 'Story Word Challenge'. Read each question carefully and choose the best answer.",
+    "questions": [
+      {
+        "question": "Which word means to look closely at something?",
+        "options": [
+          "Examine",
+          "Escape",
+          "Exchange"
+        ],
+        "answer": "Examine",
+        "feedback": "Examine means to look closely."
+      },
+      {
+        "question": "Which word means to happen again?",
+        "options": [
+          "Repeat",
+          "Repair",
+          "Report"
+        ],
+        "answer": "Repeat",
+        "feedback": "Repeat means do or say again."
+      },
+      {
+        "question": "Which word is spelled correctly?",
+        "options": [
+          "Adventure",
+          "Adventcher",
+          "Advenchure"
+        ],
+        "answer": "Adventure",
+        "feedback": "Adventure is the correct spelling."
+      }
+    ]
+  },
+  "A031": {
+    "title": "Space Reading Adventure",
+    "activity_type": "reading stories",
+    "target_skill": "Fluency",
+    "difficulty_level": "Medium",
+    "duration_minutes": 15,
+    "instructions": "Read the passage at a comfortable pace. Then answer the questions about details from the passage.",
+    "questions": [
+      {
+        "question": "Who looked at the night sky?",
+        "options": [
+          "Mira and Ravi",
+          "Nila and Sam",
+          "Lina and her brother"
+        ],
+        "answer": "Mira and Ravi",
+        "feedback": "The passage names Mira and her brother Ravi."
+      },
+      {
+        "question": "What did they use to identify a planet?",
+        "options": [
+          "A star chart",
+          "A map of the city",
+          "A telescope made of paper"
+        ],
+        "answer": "A star chart",
+        "feedback": "Mira used a simple star chart."
+      },
+      {
+        "question": "What did they plan to do again?",
+        "options": [
+          "Look at the sky on another clear evening",
+          "Visit a farm",
+          "Read about dolphins"
+        ],
+        "answer": "Look at the sky on another clear evening",
+        "feedback": "They planned to look at the sky again."
+      }
+    ],
+    "passage": "Mira and her brother Ravi looked at the night sky. They saw the Moon and several bright stars. Mira used a simple star chart to identify a planet. They wrote down what they observed and planned to look at the sky again on another clear evening."
+  },
+  "A032": {
+    "title": "Animal Story Reading",
+    "activity_type": "reading stories",
+    "target_skill": "Fluency",
+    "difficulty_level": "Easy",
+    "duration_minutes": 10,
+    "instructions": "Read the passage at a comfortable pace. Then answer the questions about details from the passage.",
+    "questions": [
+      {
+        "question": "Where did Nila go with her class?",
+        "options": [
+          "An animal centre",
+          "A space station",
+          "A supermarket"
+        ],
+        "answer": "An animal centre",
+        "feedback": "The passage says Nila visited an animal centre."
+      },
+      {
+        "question": "What were the fish doing?",
+        "options": [
+          "Swimming in a tank",
+          "Eating grass",
+          "Sitting in trees"
+        ],
+        "answer": "Swimming in a tank",
+        "feedback": "The fish were swimming in a tank."
+      },
+      {
+        "question": "What did Nila write down?",
+        "options": [
+          "Three interesting facts",
+          "A shopping list",
+          "A poem about planets"
+        ],
+        "answer": "Three interesting facts",
+        "feedback": "Nila wrote down three facts."
+      }
+    ],
+    "passage": "Nila visited a small animal centre with her class. She saw rabbits eating grass, birds sitting on branches, and fish swimming in a tank. The guide reminded everyone to be gentle and quiet around the animals. Nila wrote down three interesting facts before returning to school."
+  },
+  "A033": {
+    "title": "Advanced Space Story Reading",
+    "activity_type": "reading stories",
+    "target_skill": "Reading Fluency",
+    "difficulty_level": "Hard",
+    "duration_minutes": 20,
+    "instructions": "Read the passage at a comfortable pace. Then answer the questions about details from the passage.",
+    "questions": [
+      {
+        "question": "Who looked at the night sky?",
+        "options": [
+          "Mira and Ravi",
+          "Nila and Sam",
+          "Lina and her brother"
+        ],
+        "answer": "Mira and Ravi",
+        "feedback": "The passage names Mira and her brother Ravi."
+      },
+      {
+        "question": "What did they use to identify a planet?",
+        "options": [
+          "A star chart",
+          "A map of the city",
+          "A telescope made of paper"
+        ],
+        "answer": "A star chart",
+        "feedback": "Mira used a simple star chart."
+      },
+      {
+        "question": "What did they plan to do again?",
+        "options": [
+          "Look at the sky on another clear evening",
+          "Visit a farm",
+          "Read about dolphins"
+        ],
+        "answer": "Look at the sky on another clear evening",
+        "feedback": "They planned to look at the sky again."
+      }
+    ],
+    "passage": "Mira and her brother Ravi looked at the night sky. They saw the Moon and several bright stars. Mira used a simple star chart to identify a planet. They wrote down what they observed and planned to look at the sky again on another clear evening."
+  },
+  "A034": {
+    "title": "Animal Story Questions",
+    "activity_type": "comprehension",
+    "target_skill": "Comprehension",
+    "difficulty_level": "Easy",
+    "duration_minutes": 10,
+    "instructions": "Practise comprehension through 'Animal Story Questions'. Read each question carefully and choose the best answer.",
+    "questions": [
+      {
+        "question": "What is the main idea of a passage?",
+        "options": [
+          "Its most important message",
+          "The longest word",
+          "The final letter"
+        ],
+        "answer": "Its most important message",
+        "feedback": "The main idea tells what the passage is mostly about."
+      },
+      {
+        "question": "What should you do if a question is difficult?",
+        "options": [
+          "Read the relevant part again",
+          "Guess without checking",
+          "Stop reading"
+        ],
+        "answer": "Read the relevant part again",
+        "feedback": "Rereading helps you find clues."
+      },
+      {
+        "question": "Which detail can help you understand a story?",
+        "options": [
+          "What the characters do",
+          "The colour of the book cover only",
+          "The number of pages only"
+        ],
+        "answer": "What the characters do",
+        "feedback": "Actions and details help explain a story."
+      }
+    ],
+    "passage": "Nila visited a small animal centre with her class. She watched rabbits eating grass and fish swimming in a tank. The guide asked the children to stay quiet and be gentle around the animals. Nila reread the information board to answer a question."
+  },
+  "A035": {
+    "title": "Space Comprehension Challenge",
+    "activity_type": "comprehension",
+    "target_skill": "Comprehension",
+    "difficulty_level": "Hard",
+    "duration_minutes": 20,
+    "instructions": "Practise comprehension through 'Space Comprehension Challenge'. Read each question carefully and choose the best answer.",
+    "questions": [
+      {
+        "question": "What is the main idea of a passage?",
+        "options": [
+          "Its most important message",
+          "The longest word",
+          "The final letter"
+        ],
+        "answer": "Its most important message",
+        "feedback": "The main idea tells what the passage is mostly about."
+      },
+      {
+        "question": "What should you do to find an answer in a passage?",
+        "options": [
+          "Look for clues in the text",
+          "Choose randomly",
+          "Ignore the question"
+        ],
+        "answer": "Look for clues in the text",
+        "feedback": "The text provides evidence for the answer."
+      },
+      {
+        "question": "What does it mean to make an inference?",
+        "options": [
+          "Use clues to work something out",
+          "Copy every word",
+          "Read only the title"
+        ],
+        "answer": "Use clues to work something out",
+        "feedback": "An inference is based on clues and what you know."
+      }
+    ],
+    "passage": "The Solar System contains the Sun and the objects that travel around it. Earth is one of eight planets that orbit the Sun. The Moon travels around Earth. Scientists use telescopes and spacecraft to learn more about space."
+  },
+  "A036": {
+    "title": "Animal Facts Challenge",
+    "activity_type": "comprehension",
+    "target_skill": "Comprehension",
+    "difficulty_level": "Medium",
+    "duration_minutes": 15,
+    "instructions": "Practise comprehension through 'Animal Facts Challenge'. Read each question carefully and choose the best answer.",
+    "questions": [
+      {
+        "question": "Which animals does Ravi see on the farm?",
+        "options": [
+          "Rabbits, cows, and chickens",
+          "Lions and tigers",
+          "Whales and dolphins"
+        ],
+        "answer": "Rabbits, cows, and chickens",
+        "feedback": "The passage lists these three animals."
+      },
+      {
+        "question": "What do the cows eat?",
+        "options": [
+          "Grass",
+          "Fish",
+          "Chocolate"
+        ],
+        "answer": "Grass",
+        "feedback": "The passage says the cows eat grass."
+      },
+      {
+        "question": "Who explains how farmers care for animals?",
+        "options": [
+          "Their teacher",
+          "A shopkeeper",
+          "A bus driver"
+        ],
+        "answer": "Their teacher",
+        "feedback": "Ravi's teacher explains this."
+      }
+    ],
+    "passage": "Ravi visits a farm with his class. He sees rabbits, cows, and chickens. The rabbits eat vegetables, and the cows eat grass. Their teacher explains how farmers care for the animals."
+  },
+  "A037": {
+    "title": "Story Vocabulary Builder",
+    "activity_type": "comprehension",
+    "target_skill": "Vocabulary",
+    "difficulty_level": "Medium",
+    "duration_minutes": 15,
+    "instructions": "Practise vocabulary through 'Story Vocabulary Builder'. Read each question carefully and choose the best answer.",
+    "questions": [
+      {
+        "question": "What does 'character' mean in a story?",
+        "options": [
+          "A person or animal in the story",
+          "A kind of calculator",
+          "A weather report"
+        ],
+        "answer": "A person or animal in the story",
+        "feedback": "A character is a person or animal in a story."
+      },
+      {
+        "question": "What is the opposite of 'bright'?",
+        "options": [
+          "Dark",
+          "Shiny",
+          "Sunny"
+        ],
+        "answer": "Dark",
+        "feedback": "Dark is an opposite of bright."
+      },
+      {
+        "question": "What does 'observe' mean?",
+        "options": [
+          "Look at something carefully",
+          "Forget something",
+          "Run quickly"
+        ],
+        "answer": "Look at something carefully",
+        "feedback": "Observe means look carefully."
+      }
+    ],
+    "passage": "During a class walk, Nila observed birds building a nest. Her teacher explained that a habitat is the natural home of an animal. Nila watched quietly and wrote down what she noticed."
+  },
+  "A038": {
+    "title": "Space Vocabulary Challenge",
+    "activity_type": "comprehension",
+    "target_skill": "Vocabulary",
+    "difficulty_level": "Hard",
+    "duration_minutes": 20,
+    "instructions": "Practise vocabulary through 'Space Vocabulary Challenge'. Read each question carefully and choose the best answer.",
+    "questions": [
+      {
+        "question": "What does 'orbit' mean in a space text?",
+        "options": [
+          "Travel around another object",
+          "Fall asleep",
+          "Grow a plant"
+        ],
+        "answer": "Travel around another object",
+        "feedback": "Planets orbit the Sun."
+      },
+      {
+        "question": "What does 'spacecraft' mean?",
+        "options": [
+          "A vehicle used for space travel",
+          "A farm animal",
+          "A type of notebook"
+        ],
+        "answer": "A vehicle used for space travel",
+        "feedback": "A spacecraft is used to travel or explore in space."
+      },
+      {
+        "question": "What does 'identify' mean?",
+        "options": [
+          "Recognise or name something",
+          "Hide something",
+          "Break something"
+        ],
+        "answer": "Recognise or name something",
+        "feedback": "Identify means recognise or name."
+      }
+    ],
+    "passage": "An astronaut travels in a spacecraft to explore space. Planets orbit the Sun, and scientists observe them using telescopes and spacecraft. Each mission helps people learn more about the Solar System."
+  },
+  "A039": {
+    "title": "Animal Pronunciation Practice",
+    "activity_type": "pronunciation",
+    "target_skill": "Pronunciation",
+    "difficulty_level": "Medium",
+    "duration_minutes": 15,
+    "instructions": "Say each word aloud if you can, then choose the word matching the sound. This activity does not record or automatically assess your voice.",
+    "questions": [
+      {
+        "question": "Which word begins with the /r/ sound?",
+        "options": [
+          "Rabbit",
+          "Fish",
+          "Cat"
+        ],
+        "answer": "Rabbit",
+        "feedback": "Rabbit begins with /r/."
+      },
+      {
+        "question": "Which word begins with the /sh/ sound?",
+        "options": [
+          "Ship",
+          "Chip",
+          "Sip"
+        ],
+        "answer": "Ship",
+        "feedback": "Ship begins with /sh/."
+      },
+      {
+        "question": "Which word ends with the /t/ sound?",
+        "options": [
+          "Cat",
+          "Sun",
+          "Map"
+        ],
+        "answer": "Cat",
+        "feedback": "Cat ends with /t/."
+      }
+    ]
+  },
+  "A040": {
+    "title": "Story Pronunciation Challenge",
+    "activity_type": "pronunciation",
+    "target_skill": "Pronunciation",
+    "difficulty_level": "Hard",
+    "duration_minutes": 15,
+    "instructions": "Say each word aloud if you can, then choose the word matching the sound. This activity does not record or automatically assess your voice.",
+    "questions": [
+      {
+        "question": "Which word begins with the /th/ sound?",
+        "options": [
+          "Think",
+          "Sink",
+          "Fink"
+        ],
+        "answer": "Think",
+        "feedback": "Think begins with /th/."
+      },
+      {
+        "question": "Which word begins with the /ch/ sound?",
+        "options": [
+          "Chair",
+          "Share",
+          "Fair"
+        ],
+        "answer": "Chair",
+        "feedback": "Chair begins with /ch/."
+      },
+      {
+        "question": "Which word ends with the /sh/ sound?",
+        "options": [
+          "Fish",
+          "Fit",
+          "Fan"
+        ],
+        "answer": "Fish",
+        "feedback": "Fish ends with /sh/."
+      }
+    ]
+  },
+  "A041": {
+    "title": "Space Word Match",
+    "activity_type": "word games",
+    "target_skill": "Word Recognition",
+    "difficulty_level": "Easy",
+    "duration_minutes": 10,
+    "instructions": "Practise word recognition through 'Space Word Match'. Read each question carefully and choose the best answer.",
+    "questions": [
+      {
+        "question": "Which word is related to space?",
+        "options": [
+          "Moon",
+          "Spoon",
+          "Chair"
+        ],
+        "answer": "Moon",
+        "feedback": "Moon is an object seen in space."
+      },
+      {
+        "question": "What does 'journey' mean?",
+        "options": [
+          "A trip from one place to another",
+          "A kind of food",
+          "A sound"
+        ],
+        "answer": "A trip from one place to another",
+        "feedback": "Journey means a trip."
+      },
+      {
+        "question": "Which word means 'very small'?",
+        "options": [
+          "Tiny",
+          "Rapid",
+          "Gloomy"
+        ],
+        "answer": "Tiny",
+        "feedback": "Tiny means very small."
+      }
+    ]
+  },
+  "A042": {
+    "title": "Animal Word Builder",
+    "activity_type": "word games",
+    "target_skill": "Phonics",
+    "difficulty_level": "Medium",
+    "duration_minutes": 15,
+    "instructions": "Practise phonics through 'Animal Word Builder'. Read each question carefully and choose the best answer.",
+    "questions": [
+      {
+        "question": "Which word begins with the /r/ sound?",
+        "options": [
+          "Rabbit",
+          "Cat",
+          "Fish"
+        ],
+        "answer": "Rabbit",
+        "feedback": "Rabbit begins with /r/."
+      },
+      {
+        "question": "Which word begins with the /m/ sound?",
+        "options": [
+          "Mouse",
+          "Dog",
+          "Lion"
+        ],
+        "answer": "Mouse",
+        "feedback": "Mouse begins with /m/."
+      },
+      {
+        "question": "Which word begins with the /f/ sound?",
+        "options": [
+          "Fox",
+          "Hen",
+          "Cow"
+        ],
+        "answer": "Fox",
+        "feedback": "Fox begins with /f/."
+      }
+    ]
+  },
+  "A043": {
+    "title": "Story Fluency Builder",
+    "activity_type": "reading stories",
+    "target_skill": "Fluency",
+    "difficulty_level": "Medium",
+    "duration_minutes": 15,
+    "instructions": "Read the passage at a comfortable pace. Then answer the questions about details from the passage.",
+    "questions": [
+      {
+        "question": "Where did Sam find the notebook?",
+        "options": [
+          "Beside a tree in the school garden",
+          "Inside a bus",
+          "At the beach"
+        ],
+        "answer": "Beside a tree in the school garden",
+        "feedback": "The first sentence tells us where Sam found it."
+      },
+      {
+        "question": "Who helped Sam find the notebook's owner?",
+        "options": [
+          "His teacher",
+          "His neighbour",
+          "His brother"
+        ],
+        "answer": "His teacher",
+        "feedback": "Sam's teacher helped him find the owner."
+      },
+      {
+        "question": "How did the owner respond?",
+        "options": [
+          "The owner thanked Sam",
+          "The owner became angry",
+          "The owner ignored Sam"
+        ],
+        "answer": "The owner thanked Sam",
+        "feedback": "The passage says the owner thanked Sam."
+      }
+    ],
+    "passage": "One morning, Sam found a small notebook beside a tree in the school garden. He took it to his teacher, who helped find its owner. The owner thanked Sam for being honest. Sam felt happy that a small helpful action had made someone's day better."
+  },
+  "A044": {
+    "title": "Space Listening and Sounds",
+    "activity_type": "word games",
+    "target_skill": "Phonics",
+    "difficulty_level": "Easy",
+    "duration_minutes": 10,
+    "instructions": "Practise phonics through 'Space Listening and Sounds'. Read each question carefully and choose the best answer.",
+    "questions": [
+      {
+        "question": "Which word begins with the /m/ sound?",
+        "options": [
+          "Moon",
+          "Star",
+          "Rocket"
+        ],
+        "answer": "Moon",
+        "feedback": "Moon begins with /m/."
+      },
+      {
+        "question": "Which word begins with the /r/ sound?",
+        "options": [
+          "Rocket",
+          "Sun",
+          "Fish"
+        ],
+        "answer": "Rocket",
+        "feedback": "Rocket begins with /r/."
+      },
+      {
+        "question": "Which word begins with the /p/ sound?",
+        "options": [
+          "Planet",
+          "Moon",
+          "Star"
+        ],
+        "answer": "Planet",
+        "feedback": "Planet begins with /p/."
+      }
+    ]
+  },
+  "A045": {
+    "title": "Animal Reading Challenge",
+    "activity_type": "reading stories",
+    "target_skill": "Reading Fluency",
+    "difficulty_level": "Hard",
+    "duration_minutes": 20,
+    "instructions": "Read the passage at a comfortable pace. Then answer the questions about details from the passage.",
+    "questions": [
+      {
+        "question": "Where did Nila go with her class?",
+        "options": [
+          "An animal centre",
+          "A space station",
+          "A supermarket"
+        ],
+        "answer": "An animal centre",
+        "feedback": "The passage says Nila visited an animal centre."
+      },
+      {
+        "question": "What were the fish doing?",
+        "options": [
+          "Swimming in a tank",
+          "Eating grass",
+          "Sitting in trees"
+        ],
+        "answer": "Swimming in a tank",
+        "feedback": "The fish were swimming in a tank."
+      },
+      {
+        "question": "What did Nila write down?",
+        "options": [
+          "Three interesting facts",
+          "A shopping list",
+          "A poem about planets"
+        ],
+        "answer": "Three interesting facts",
+        "feedback": "Nila wrote down three facts."
+      }
+    ],
+    "passage": "Nila visited a small animal centre with her class. She saw rabbits eating grass, birds sitting on branches, and fish swimming in a tank. The guide reminded everyone to be gentle and quiet around the animals. Nila wrote down three interesting facts before returning to school."
+  },
+  "A046": {
+    "title": "Story Detail Detective",
+    "activity_type": "comprehension",
+    "target_skill": "Comprehension",
+    "difficulty_level": "Medium",
+    "duration_minutes": 15,
+    "instructions": "Practise comprehension through 'Story Detail Detective'. Read each question carefully and choose the best answer.",
+    "questions": [
+      {
+        "question": "Where does Lina go with her brother?",
+        "options": [
+          "The library",
+          "The airport",
+          "The supermarket"
+        ],
+        "answer": "The library",
+        "feedback": "The first sentence says they visit the library."
+      },
+      {
+        "question": "What is Lina's book about?",
+        "options": [
+          "Animals",
+          "Cooking",
+          "Sports"
+        ],
+        "answer": "Animals",
+        "feedback": "Lina chooses a book about animals."
+      },
+      {
+        "question": "What does Lina share with her class?",
+        "options": [
+          "An interesting fact from the book",
+          "A new toy",
+          "A drawing of a house"
+        ],
+        "answer": "An interesting fact from the book",
+        "feedback": "The passage says Lina tells the class a fact from the book."
+      }
+    ],
+    "passage": "Lina visits the library with her brother. She chooses a book about animals. At home, she reads about dolphins and learns that they live in water. The next day, Lina tells her class one interesting fact from the book."
+  },
+  "A047": {
+    "title": "Space Speech Practice",
+    "activity_type": "pronunciation",
+    "target_skill": "Pronunciation",
+    "difficulty_level": "Medium",
+    "duration_minutes": 15,
+    "instructions": "Say each word aloud if you can, then choose the word matching the sound. This activity does not record or automatically assess your voice.",
+    "questions": [
+      {
+        "question": "Which word begins with the /v/ sound?",
+        "options": [
+          "Vine",
+          "Fine",
+          "Shine"
+        ],
+        "answer": "Vine",
+        "feedback": "Vine begins with /v/."
+      },
+      {
+        "question": "Which word begins with the /sh/ sound?",
+        "options": [
+          "Ship",
+          "Chip",
+          "Sip"
+        ],
+        "answer": "Ship",
+        "feedback": "Ship begins with /sh/."
+      },
+      {
+        "question": "Which word begins with the /ch/ sound?",
+        "options": [
+          "Chair",
+          "Share",
+          "Fair"
+        ],
+        "answer": "Chair",
+        "feedback": "Chair begins with /ch/."
+      }
+    ]
+  },
+  "A048": {
+    "title": "Animal Vocabulary Challenge",
+    "activity_type": "comprehension",
+    "target_skill": "Vocabulary",
+    "difficulty_level": "Hard",
+    "duration_minutes": 20,
+    "instructions": "Practise vocabulary through 'Animal Vocabulary Challenge'. Read each question carefully and choose the best answer.",
+    "questions": [
+      {
+        "question": "What does 'habitat' mean?",
+        "options": [
+          "The natural home of a plant or animal",
+          "A kind of food",
+          "A school subject"
+        ],
+        "answer": "The natural home of a plant or animal",
+        "feedback": "A habitat is where an organism lives."
+      },
+      {
+        "question": "What does 'gentle' mean?",
+        "options": [
+          "Kind and careful",
+          "Loud and rough",
+          "Fast and noisy"
+        ],
+        "answer": "Kind and careful",
+        "feedback": "Gentle describes being kind and careful."
+      },
+      {
+        "question": "What does 'observe' mean?",
+        "options": [
+          "Look at something carefully",
+          "Forget something",
+          "Run quickly"
+        ],
+        "answer": "Look at something carefully",
+        "feedback": "Observe means look carefully."
+      }
+    ],
+    "passage": "At the animal centre, the guide spoke gently and carefully about each animal's habitat. The children observed rabbits, birds, and fish and wrote down new words to remember what they had learned."
+  },
+  "A049": {
+    "title": "Story Sound Match",
+    "activity_type": "word games",
+    "target_skill": "Phonics",
+    "difficulty_level": "Easy",
+    "duration_minutes": 10,
+    "instructions": "Practise phonics through 'Story Sound Match'. Read each question carefully and choose the best answer.",
+    "questions": [
+      {
+        "question": "Which word begins with the /sh/ sound?",
+        "options": [
+          "Ship",
+          "Sip",
+          "Tip"
+        ],
+        "answer": "Ship",
+        "feedback": "Ship begins with /sh/."
+      },
+      {
+        "question": "Which word begins with the /m/ sound?",
+        "options": [
+          "Moon",
+          "Star",
+          "Fish"
+        ],
+        "answer": "Moon",
+        "feedback": "Moon begins with /m/."
+      },
+      {
+        "question": "Which word begins with the /tr/ blend?",
+        "options": [
+          "Train",
+          "Rain",
+          "Brain"
+        ],
+        "answer": "Train",
+        "feedback": "Train begins with /tr/."
+      }
+    ]
+  },
+  "A050": {
+    "title": "Space Word Master",
+    "activity_type": "word games",
+    "target_skill": "Word Recognition",
+    "difficulty_level": "Hard",
+    "duration_minutes": 15,
+    "instructions": "Practise word recognition through 'Space Word Master'. Read each question carefully and choose the best answer.",
+    "questions": [
+      {
+        "question": "Which word is related to space?",
+        "options": [
+          "Moon",
+          "Spoon",
+          "Chair"
+        ],
+        "answer": "Moon",
+        "feedback": "Moon is related to space."
+      },
+      {
+        "question": "What does 'orbit' mean?",
+        "options": [
+          "Travel around another object",
+          "Walk into a room",
+          "Write in a notebook"
+        ],
+        "answer": "Travel around another object",
+        "feedback": "Earth orbits the Sun."
+      },
+      {
+        "question": "What does 'astronaut' mean?",
+        "options": [
+          "A person trained to travel in space",
+          "A person who studies farms",
+          "A person who repairs books"
+        ],
+        "answer": "A person trained to travel in space",
+        "feedback": "Astronauts are trained for space travel."
+      }
+    ]
+  }
+}
