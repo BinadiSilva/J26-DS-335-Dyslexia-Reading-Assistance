@@ -1,3 +1,4 @@
+
 # Import libraries for preparing longitudinal BAS prediction data
 from pathlib import Path
 import pandas as pd
@@ -11,7 +12,7 @@ INPUT_FILE = (
     / "libs_reading_assessments_long.csv"
 )
 
-# Save the BAS prediction data to a separate file
+# Save the prepared prediction data separately
 OUTPUT_FILE = (
     PROJECT_ROOT
     / "datasets"
@@ -21,18 +22,18 @@ OUTPUT_FILE = (
 
 
 def main():
-    # Stop if the prepared LIBS dataset is missing
+    # Stop if the prepared dataset is missing
     if not INPUT_FILE.exists():
-        print(f"Dataset not found: {INPUT_FILE}")
+        print(f"ERROR: Dataset not found: {INPUT_FILE}")
         return
 
     # Load the prepared longitudinal assessment data
     df = pd.read_csv(INPUT_FILE)
 
-    # Select only the BAS word-reading assessment
+    # Select the genuine BAS word-reading scores
     bas = df[df["assessment_name"] == "BAS_word_reading"].copy()
 
-    # Remove records without a participant, time point, or score
+    # Remove records without required identifiers or scores
     bas = bas.dropna(
         subset=[
             "UnlinkedParticipantNumber",
@@ -41,20 +42,19 @@ def main():
         ]
     )
 
-    # Sort observations chronologically for each participant
+    # Sort scores chronologically within each participant
     bas = bas.sort_values(
         ["UnlinkedParticipantNumber", "time_point"]
     )
 
-    # Keep one observation per participant and time point.
-    # If duplicates exist, stop so they can be investigated.
+    # Stop if a participant has duplicate observations at one time point
     duplicate_mask = bas.duplicated(
         subset=["UnlinkedParticipantNumber", "time_point"],
         keep=False,
     )
 
     if duplicate_mask.any():
-        print("Duplicate participant/time-point observations found.")
+        print("ERROR: Duplicate participant/time-point records found.")
         print(
             bas.loc[
                 duplicate_mask,
@@ -62,21 +62,19 @@ def main():
                     "UnlinkedParticipantNumber",
                     "time_point",
                     "assessment_score",
-                    "source_variable",
                 ],
             ].to_string(index=False)
         )
-        print("Please inspect duplicates before creating model data.")
         return
 
-    # Create previous-score and next-observed-score columns
+    # Store each participant's previous, current, and next observations
     grouped = bas.groupby("UnlinkedParticipantNumber")
     bas["previous_score"] = grouped["assessment_score"].shift(1)
     bas["previous_time_point"] = grouped["time_point"].shift(1)
     bas["target_score"] = grouped["assessment_score"].shift(-1)
     bas["target_time_point"] = grouped["time_point"].shift(-1)
 
-    # Keep only observations with both a previous and a later score
+    # Keep rows with genuine previous and future observations
     model_data = bas.dropna(
         subset=[
             "previous_score",
@@ -86,16 +84,17 @@ def main():
         ]
     ).copy()
 
-    # Record the time gap so predictions are interpreted correctly
+    # Calculate the gap between the current and target assessments
     model_data["time_gap"] = (
-        model_data["target_time_point"]
-        - model_data["time_point"]
+        model_data["target_time_point"] - model_data["time_point"]
     )
 
-    # Keep only cases where the target occurs after the current time
-    model_data = model_data[model_data["time_gap"] > 0]
+    # Keep only consecutive target periods to maintain a consistent horizon
+    model_data = model_data[
+        model_data["time_gap"] == 1
+    ].copy()
 
-    # Select clearly named model fields and source references
+    # Preserve the source values and assessment time points
     model_data = model_data[
         [
             "UnlinkedParticipantNumber",
@@ -109,20 +108,26 @@ def main():
         ]
     ]
 
-    # Create the output folder if it does not exist
+    # Create the output directory if necessary
     OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
 
-    # Save the new dataset without changing any source files
+    # Save the prediction dataset without modifying the original data
     model_data.to_csv(OUTPUT_FILE, index=False)
 
-    # Print a summary to verify the output
+    # Display summary information for verification
     print("BAS prediction dataset prepared.")
     print(f"Model records: {len(model_data)}")
     print(
         "Unique participants:",
         model_data["UnlinkedParticipantNumber"].nunique(),
     )
+    print("Missing values:")
+    print(model_data.isna().sum().to_string())
+    print("Time-gap distribution:")
+    print(model_data["time_gap"].value_counts().to_string())
     print(f"Output file: {OUTPUT_FILE}")
+
+    # Show sample records for manual verification
     print("\nFirst five records:")
     print(model_data.head().to_string(index=False))
 
