@@ -213,3 +213,82 @@ def test_missing_model_returns_empty_forecast(monkeypatch):
 
     assert result.empty
     assert "forecasted_next_score" in result.columns
+
+
+def test_prediction_split_has_no_participant_overlap():
+    """Training, validation, and test participants must be disjoint."""
+
+    # Recreate the same deterministic participant-level splits.
+    from sklearn.model_selection import GroupShuffleSplit
+
+    data = progress_prediction.prepare_libs_prediction_data()
+    participant_column = progress_prediction.PARTICIPANT_COLUMN
+
+    # Reserve the final test participants first.
+    outer_splitter = GroupShuffleSplit(
+        n_splits=1,
+        test_size=0.20,
+        random_state=progress_prediction.RANDOM_STATE,
+    )
+    train_indices, test_indices = next(
+        outer_splitter.split(
+            data,
+            data["target_score"],
+            groups=data[participant_column],
+        )
+    )
+
+    outer_train = data.iloc[train_indices]
+    test_data = data.iloc[test_indices]
+
+    # Split the outer training participants into fitting and validation groups.
+    inner_splitter = GroupShuffleSplit(
+        n_splits=1,
+        test_size=0.20,
+        random_state=progress_prediction.RANDOM_STATE + 1,
+    )
+    fit_indices, validation_indices = next(
+        inner_splitter.split(
+            outer_train,
+            outer_train["target_score"],
+            groups=outer_train[participant_column],
+        )
+    )
+
+    fit_data = outer_train.iloc[fit_indices]
+    validation_data = outer_train.iloc[validation_indices]
+
+    # Compare participant IDs, not record counts.
+    fit_ids = set(fit_data[participant_column])
+    validation_ids = set(validation_data[participant_column])
+    test_ids = set(test_data[participant_column])
+
+    assert fit_ids.isdisjoint(validation_ids)
+    assert fit_ids.isdisjoint(test_ids)
+    assert validation_ids.isdisjoint(test_ids)
+
+
+def test_best_model_is_selected_by_validation_mae():
+    """The selected model should have the lowest candidate validation MAE."""
+
+    # Train and evaluate without writing a results CSV.
+    result = progress_prediction.train_libs_progress_model(
+        save_results=False
+    )
+
+    candidate_results = result["validation_results"]
+
+    # The persistence baseline is a comparator, not a candidate model.
+    candidate_models = {
+        name: metrics
+        for name, metrics in candidate_results.items()
+        if name in result["models"]
+    }
+
+    expected_best_model = min(
+        candidate_models,
+        key=lambda name: candidate_models[name]["mae"],
+    )
+
+    assert result["best_model_name"] == expected_best_model
+
