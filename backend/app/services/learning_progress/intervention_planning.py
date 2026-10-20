@@ -108,7 +108,22 @@ def generate_intervention_plans(risk_data=None):
             }
         )
 
-    plans_df = pd.DataFrame(plans)
+    # Preserve the expected report columns even when no plans are generated.
+    plans_df = pd.DataFrame(
+        plans,
+        columns=[
+            PARTICIPANT_COLUMN,
+            "latest_reading_score",
+            "number_of_observed_assessments",
+            "average_recent_change",
+            "stagnation_risk",
+            "recommended_activities",
+            "frequency",
+            "session_duration",
+            "recommendation_basis",
+        ],
+    )
+
 
     print("\nPreliminary LIBS Reading-Support Plans")
     print("=" * 48)
