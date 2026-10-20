@@ -404,5 +404,94 @@ def train_progress_model():
     return results
 
 
+
+def forecast_future_progress(model_results):
+    """Forecast the next observed reading score beyond each learner's history.
+
+    The model is trained to predict the next observed score. This function
+    applies that model to each participant's latest available assessment.
+    Participants need at least two observed assessments to provide the
+    previous-score features used during training.
+    """
+
+    # Load validated LIBS data and sort assessments chronologically.
+    df = load_libs_reading_data()
+    df = df.sort_values(
+        [PARTICIPANT_COLUMN, "time_point"]
+    ).copy()
+
+    # Build features using only the previous and latest observed scores.
+    grouped = df.groupby(PARTICIPANT_COLUMN, sort=False)
+    df["previous_score"] = grouped["reading_score"].shift(1)
+    df["previous_time_point"] = grouped["time_point"].shift(1)
+
+    # Keep each participant's latest assessment.
+    latest = (
+        df.groupby(PARTICIPANT_COLUMN, sort=False)
+        .tail(1)
+        .copy()
+    )
+
+    # Participants with only one assessment lack the required history.
+    latest = latest.dropna(
+        subset=["previous_score", "previous_time_point"]
+    )
+
+    features = model_results["features"]
+    model_name = model_results["best_model_name"]
+    model = model_results["results"][model_name]["model"]
+
+    # Prepare model inputs using the same feature names as training.
+    latest["assessment_score"] = latest["reading_score"]
+
+    if latest.empty or model is None:
+        return pd.DataFrame(
+            columns=[
+                PARTICIPANT_COLUMN,
+                "latest_reading_score",
+                "latest_time_point",
+                "forecasted_next_score",
+                "forecasted_score_change",
+                "prediction_model",
+            ]
+        )
+
+    # Predict the next observed score beyond each latest assessment.
+    X_future = latest[features]
+    predicted_scores = model.predict(X_future)
+
+    # BAS reading scores are documented within the range 0–90.
+    # Clip forecasts to that valid score range.
+    latest["forecasted_next_score"] = np.clip(
+        predicted_scores, 0, 90
+    ).round(2)
+
+    # Calculate the predicted change relative to the latest observed score.
+    latest["forecasted_score_change"] = (
+        latest["forecasted_next_score"] - latest["reading_score"]
+    ).round(2)
+
+    # Return a clearly labelled future forecast, separate from historical
+    # test-set evaluation results.
+    forecasts = latest[
+        [
+            PARTICIPANT_COLUMN,
+            "reading_score",
+            "time_point",
+            "forecasted_next_score",
+            "forecasted_score_change",
+        ]
+    ].rename(
+        columns={
+            "reading_score": "latest_reading_score",
+            "time_point": "latest_time_point",
+        }
+    )
+
+    forecasts["prediction_model"] = model_name
+
+    return forecasts.reset_index(drop=True)
+
+
 if __name__ == "__main__":
     train_libs_progress_model()
