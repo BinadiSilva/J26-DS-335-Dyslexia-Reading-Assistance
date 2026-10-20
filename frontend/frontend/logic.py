@@ -60,9 +60,22 @@ DEMO_NAMES = {1: "Lara", 2: "Krish", 3: "Harsha"}
 
 
 def display_id(raw_id: str) -> str:
-    """demo_child_01 -> C001; demo_child_01-S02 -> C001-S02. Other ids are shown unchanged."""
-    m = re.match(r"demo_child_(\d+)(.*)$", str(raw_id))
-    return f"C{int(m.group(1)):03d}{m.group(2)}" if m else str(raw_id)
+    """Render all user-facing IDs in a clear, non-conflicting scheme:
+
+    - child ids: demo_child_01 -> C001
+    - session ids: demo_child_01-S02 -> S02
+    - other ids stay unchanged
+    """
+    raw = str(raw_id)
+    child = re.fullmatch(r"demo_child_(\d+)", raw)
+    if child:
+        return f"C{int(child.group(1)):03d}"
+
+    session = re.fullmatch(r"demo_child_(\d+)-S(\d+)", raw)
+    if session:
+        return f"S{int(session.group(2)):02d}"
+
+    return raw
 
 
 def display_name(child_id: str) -> str:

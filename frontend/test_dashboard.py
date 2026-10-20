@@ -81,9 +81,9 @@ def test_pure():
     assert "Component 04" in c4 and "Pending integration" in c4 and "No Component 04 results" in c4
     ct = visible_text(T.class_table(ov))
     assert "demo_child" not in ct and "C001" in ct
-    # demo children have real first names and C00x ids
+    # demo children have real first names and C00x ids; sessions use Sxx to avoid prefix clashes
     assert [logic.display_name(f"demo_child_0{i}") for i in (1, 2, 3)] == ["Lara", "Krish", "Harsha"]
-    assert logic.display_id("demo_child_01") == "C001" and logic.display_id("demo_child_02-S03") == "C002-S03"
+    assert logic.display_id("demo_child_01") == "C001" and logic.display_id("demo_child_02-S03") == "S03"
     assert "demo_child" not in visible_text(T.session_table(by["demo_child_01"], None)) if "demo_child_01" in by else True
     assert logic.support_label("Moderate") == "Medium support required"
     cert, c = logic.certainty({"weak_skill_confidence": 0.9, "intervention_confidence": 0.55})
