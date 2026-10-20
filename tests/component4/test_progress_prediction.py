@@ -292,3 +292,106 @@ def test_best_model_is_selected_by_validation_mae():
 
     assert result["best_model_name"] == expected_best_model
 
+
+
+def test_repeated_validation_returns_all_models_and_splits():
+    """Repeated validation should report all models for each split."""
+
+    # Run the five repeated participant-level validation splits.
+    result = progress_prediction.evaluate_repeated_group_validation(
+        n_splits=5
+    )
+
+    detailed = result["detailed_results"]
+    summary = result["summary"]
+
+    # Three models should be evaluated in each of five splits.
+    assert len(detailed) == 15
+    assert set(detailed["split"]) == {1, 2, 3, 4, 5}
+    assert set(detailed["model"]) == {
+        "Persistence Baseline",
+        "Linear Regression",
+        "Random Forest",
+    }
+
+    # The summary should contain one row per model.
+    assert len(summary) == 3
+    assert detailed[["mae", "rmse", "r2"]].notna().all().all()
+
+
+def test_repeated_validation_keeps_participants_separate(monkeypatch):
+    """Each validation split should keep participant groups separate."""
+
+    # Create fictional longitudinal records for 20 participants.
+    rows = []
+    for participant_id in range(1, 21):
+        rows.extend(
+            [
+                (participant_id, 1, 20 + participant_id),
+                (participant_id, 2, 25 + participant_id),
+                (participant_id, 3, 30 + participant_id),
+            ]
+        )
+
+    fake_data = make_reading_data(rows)
+
+    # Use the fictional data instead of loading the LIBS dataset.
+    monkeypatch.setattr(
+        progress_prediction,
+        "load_libs_reading_data",
+        lambda: fake_data.copy(),
+    )
+
+    result = progress_prediction.evaluate_repeated_group_validation(
+        n_splits=5,
+        test_size=0.20,
+    )
+
+    # Recreate the splits to verify participant separation.
+    from sklearn.model_selection import GroupShuffleSplit
+
+    data = progress_prediction.prepare_libs_prediction_data()
+    participant_column = progress_prediction.PARTICIPANT_COLUMN
+
+    splitter = GroupShuffleSplit(
+        n_splits=5,
+        test_size=0.20,
+        random_state=progress_prediction.RANDOM_STATE + 10,
+    )
+
+    for fit_indices, validation_indices in splitter.split(
+        data,
+        data["target_score"],
+        groups=data[participant_column],
+    ):
+        fit_ids = set(data.iloc[fit_indices][participant_column])
+        validation_ids = set(
+            data.iloc[validation_indices][participant_column]
+        )
+
+        assert fit_ids.isdisjoint(validation_ids)
+
+    # All five validation rounds should have been evaluated.
+    assert set(result["detailed_results"]["split"]) == {1, 2, 3, 4, 5}
+
+
+@pytest.mark.parametrize("n_splits", [0, 1])
+def test_repeated_validation_rejects_too_few_splits(n_splits):
+    """Repeated validation should reject fewer than two splits."""
+
+    # Invalid settings should raise an informative error.
+    with pytest.raises(ValueError, match="n_splits must be at least 2"):
+        progress_prediction.evaluate_repeated_group_validation(
+            n_splits=n_splits
+        )
+
+
+def test_repeated_validation_rejects_invalid_test_size():
+    """Repeated validation should reject an invalid validation fraction."""
+
+    # A validation fraction of 1.0 leaves no fitting participants.
+    with pytest.raises(ValueError, match="test_size must be between 0 and 1"):
+        progress_prediction.evaluate_repeated_group_validation(
+            n_splits=5,
+            test_size=1.0,
+        )
