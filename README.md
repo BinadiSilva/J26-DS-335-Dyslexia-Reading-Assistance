@@ -104,7 +104,7 @@ The reporting service combines:
 
 The report is printed in the terminal and returned as a pandas DataFrame.
 
-**Important:** Historical next-score estimates are not forecasts beyond each participant's latest assessment. The current reporting workflow does not provide a validated future forecast after the latest assessment.
+**Important:** The reporting service generates an experimental next-score forecast from each eligible participant's latest assessment. It predicts the next observed score, which may not correspond to a fixed future date. This forecast has not been independently validated as a real-world future prediction.
 
 ## 4. System Workflow
 
@@ -301,7 +301,7 @@ Run the preparation step before the other services if the prepared longitudinal 
 ## 11. Current Limitations
 
 - The model predicts the next observed assessment score, not a score at a fixed future date.
-- The current combined report does not provide a validated forecast beyond a participant's latest assessment.
+- The combined report includes experimental next-score forecasts, but their real-world future accuracy has not been independently validated.
 - The reported model results depend on the available LIBS data and the current participant split.
 - The dataset does not directly measure the effectiveness of dyslexia interventions.
 - Stagnation categories use preliminary, unvalidated rules.
@@ -323,7 +323,7 @@ Run the preparation step before the other services if the prepared longitudinal 
 Potential future improvements include:
 
 - Testing additional time-series and regression models.
-- Evaluating model performance across repeated participant-level splits.
+- Evaluating model performance across additional datasets and populations.
 - Improving uncertainty estimates for predicted scores.
 - Validating stagnation thresholds against suitable expert-reviewed criteria.
 - Evaluating support recommendations using appropriate intervention-outcome data.
@@ -340,6 +340,26 @@ Component branch:
 
 Latest verified implementation commit:
 
-`a9ea8fe` — Improve Component 4 LIBS progress prediction and reporting
+`9de45ee` — Test repeated participant-level validation
 
 The current branch contains the data-preparation, prediction, stagnation-screening, intervention-planning, and combined-reporting updates described in this document.
+
+## 15. Repeated Participant-Level Validation
+
+Five repeated participant-level validation splits were used to compare the
+Persistence Baseline, Linear Regression, and Random Forest models. Participants
+were kept separate between the fitting and validation groups within each split.
+
+| Model | Mean MAE | MAE Std. Dev. | Mean RMSE | RMSE Std. Dev. | Mean R² | R² Std. Dev. |
+|---|---:|---:|---:|---:|---:|---:|
+| Persistence Baseline | 26.849 | 0.276 | 29.248 | 0.237 | -1.011 | 0.129 |
+| Linear Regression | 8.218 | 0.238 | 10.404 | 0.292 | 0.746 | 0.018 |
+| Random Forest | 7.069 | 0.124 | 9.487 | 0.281 | 0.789 | 0.013 |
+
+Random Forest achieved the lowest mean MAE and RMSE and the highest mean R²
+across these five splits. These results complement, but do not replace, the
+separate held-out test evaluation.
+
+The results apply to the prepared LIBS dataset and current features. They do
+not establish clinical effectiveness or guarantee generalization to children
+diagnosed with dyslexia.
