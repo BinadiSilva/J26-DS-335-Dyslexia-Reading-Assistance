@@ -1,26 +1,24 @@
 
 from datetime import datetime, timezone
-import json
-from pathlib import Path
 
-# Store progress records locally during prototype development.
-PROJECT_ROOT = Path(__file__).resolve().parents[3]
-PROGRESS_DIR = PROJECT_ROOT / "datasets" / "c3" / "progress"
-PROGRESS_FILE = PROGRESS_DIR / "learner_progress.json"
+from app.db.models import ActivityProgress
+from app.db.session import SessionLocal
 
 
-def _load_records() -> list[dict]:
-    """Load previously recorded learner progress."""
-    if not PROGRESS_FILE.exists():
-        return []
+def _record_to_dict(record: ActivityProgress) -> dict:
+    """Convert a database record into the existing API format."""
+    recorded_at = record.recorded_at
 
-    with PROGRESS_FILE.open("r", encoding="utf-8") as file:
-        records = json.load(file)
+    if recorded_at.tzinfo is None:
+        recorded_at = recorded_at.replace(tzinfo=timezone.utc)
 
-    if not isinstance(records, list):
-        raise ValueError("Progress file must contain a JSON list.")
-
-    return records
+    return {
+        "learner_id": record.learner_id,
+        "item_id": record.item_id,
+        "score": float(record.score),
+        "completed": record.completed,
+        "recorded_at": recorded_at.isoformat(),
+    }
 
 
 def record_activity(
@@ -29,7 +27,7 @@ def record_activity(
     score: float,
     completed: bool = True,
 ) -> dict:
-    """Save an activity result and return updated learner progress."""
+    """Save an activity result to PostgreSQL and return learner progress."""
 
     learner_id = learner_id.strip()
     item_id = item_id.strip()
@@ -40,75 +38,85 @@ def record_activity(
     if not 0 <= score <= 100:
         raise ValueError("Score must be between 0 and 100.")
 
-    records = _load_records()
+    with SessionLocal() as db:
+        try:
+            record = ActivityProgress(
+                learner_id=learner_id,
+                item_id=item_id,
+                score=float(score),
+                completed=completed,
+                recorded_at=datetime.now(timezone.utc),
+            )
 
-    record = {
-        "learner_id": learner_id,
-        "item_id": item_id,
-        "score": float(score),
-        "completed": completed,
-        "recorded_at": datetime.now(timezone.utc).isoformat(),
-    }
+            db.add(record)
+            db.commit()
+            db.refresh(record)
 
-    records.append(record)
+            recorded_activity = _record_to_dict(record)
 
-    PROGRESS_DIR.mkdir(parents=True, exist_ok=True)
+            learner_records = (
+                db.query(ActivityProgress)
+                .filter(ActivityProgress.learner_id == learner_id)
+                .order_by(ActivityProgress.id.asc())
+                .all()
+            )
 
-    with PROGRESS_FILE.open("w", encoding="utf-8") as file:
-        json.dump(records, file, indent=2)
+            scores = [float(item.score) for item in learner_records]
 
-    learner_records = [
-        item for item in records
-        if item["learner_id"] == learner_id
-    ]
+            return {
+                "learner_id": learner_id,
+                "recorded_activity": recorded_activity,
+                "total_attempts": len(learner_records),
+                "completed_activities": sum(
+                    item.completed for item in learner_records
+                ),
+                "average_score": round(sum(scores) / len(scores), 2),
+                "latest_score": scores[-1],
+                "progress_status": "progress_recorded",
+            }
 
-    scores = [item["score"] for item in learner_records]
-
-    return {
-        "learner_id": learner_id,
-        "recorded_activity": record,
-        "total_attempts": len(learner_records),
-        "completed_activities": sum(
-            item["completed"] for item in learner_records
-        ),
-        "average_score": round(sum(scores) / len(scores), 2),
-        "latest_score": scores[-1],
-        "progress_status": "progress_recorded",
-    }
+        except Exception:
+            db.rollback()
+            raise
 
 
 def get_learner_progress(learner_id: str) -> dict:
-    """Retrieve saved progress for one learner."""
+    """Retrieve saved progress for one learner from PostgreSQL."""
 
     learner_id = learner_id.strip()
 
     if not learner_id:
         raise ValueError("Learner ID is required.")
 
-    records = [
-        item for item in _load_records()
-        if item["learner_id"] == learner_id
-    ]
+    with SessionLocal() as db:
+        records = (
+            db.query(ActivityProgress)
+            .filter(ActivityProgress.learner_id == learner_id)
+            .order_by(ActivityProgress.id.asc())
+            .all()
+        )
 
-    if not records:
+        if not records:
+            return {
+                "learner_id": learner_id,
+                "total_attempts": 0,
+                "completed_activities": 0,
+                "average_score": None,
+                "latest_score": None,
+                "records": [],
+            }
+
+        scores = [float(record.score) for record in records]
+
         return {
             "learner_id": learner_id,
-            "total_attempts": 0,
-            "completed_activities": 0,
-            "average_score": None,
-            "latest_score": None,
-            "records": [],
+            "total_attempts": len(records),
+            "completed_activities": sum(
+                record.completed for record in records
+            ),
+            "average_score": round(sum(scores) / len(scores), 2),
+            "latest_score": scores[-1],
+            "records": [
+                _record_to_dict(record) for record in records
+            ],
         }
-
-    scores = [item["score"] for item in records]
-
-    return {
-        "learner_id": learner_id,
-        "total_attempts": len(records),
-        "completed_activities": sum(
-            item["completed"] for item in records
-        ),
-        "average_score": round(sum(scores) / len(scores), 2),
-        "latest_score": scores[-1],
-        "records": records,
-    }
