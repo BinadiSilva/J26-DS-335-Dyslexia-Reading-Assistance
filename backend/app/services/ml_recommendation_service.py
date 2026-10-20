@@ -165,7 +165,11 @@ def get_target_difficulty(previous_score, current_difficulty):
     These are prototype thresholds and should be evaluated
     during testing. They are not clinical cut-offs.
     """
-
+    # No previous assessment means keep the current difficulty.
+    if previous_score is None:
+        current = normalize(current_difficulty)
+        return current if current in DIFFICULTY_LEVELS else "easy"
+    
     current = normalize(current_difficulty)
 
     if current not in DIFFICULTY_LEVELS:
@@ -545,16 +549,32 @@ def predict_recommended_activity(
         current_difficulty=current_difficulty,
     )
     
-    # Recommend activities that match the adapted difficulty.
+    # Prefer the performance-adjusted difficulty. If no activities are
+    # available at that level, use the nearest available difficulty.
+    difficulty_order = {
+        level: index for index, level in enumerate(DIFFICULTY_LEVELS)
+    }
+    catalogue["_difficulty_distance"] = catalogue[
+        "_difficulty_key"
+    ].apply(
+        lambda level: abs(
+            difficulty_order.get(level, len(DIFFICULTY_LEVELS))
+            - difficulty_order.get(
+                target_difficulty, len(DIFFICULTY_LEVELS)
+            )
+        )
+    )
+
+    nearest_distance = int(catalogue["_difficulty_distance"].min())
     catalogue = catalogue[
-        catalogue["_difficulty_key"] == target_difficulty
+        catalogue["_difficulty_distance"] == nearest_distance
     ].copy()
 
     if catalogue.empty:
         raise ValueError(
-        f"No learning activities are available at "
-        f"the target difficulty: {target_difficulty}."
-    )
+            "No usable learning activities are available after "
+            "difficulty filtering."
+        )
 
     ranked_items = []
 
@@ -598,15 +618,68 @@ def predict_recommended_activity(
             abs(duration - preferred_duration) <= 5
         )
 
-        # Weights are prototype ranking parameters.
-        # Evaluate and tune them with validation experiments.
+        # Estimate the learner's need for each skill using the supplied
+        # assessment fields. These are prototype heuristics, not clinical
+        # cut-offs. Reading speed uses 100 WPM as a configurable prototype
+        # reference point and should be validated for the target age/grade.
+        skill_key = normalize(item["target_skill"])
+        reading_score = learner_features["reading_score"]
+        reading_speed = learner_features["reading_speed_wpm"]
+        pronunciation_score = learner_features["pronunciation_accuracy"]
+        fluency_score = learner_features["fluency_score"]
+
+        skill_performance = {
+            "phonics": reading_score,
+            "reading": reading_score,
+            "reading comprehension": reading_score,
+            "comprehension": reading_score,
+            "reading speed": min(100.0, reading_speed),
+            "pronunciation": pronunciation_score,
+            "pronunciation accuracy": pronunciation_score,
+            "fluency": fluency_score,
+            "reading fluency": fluency_score,
+        }
+
+        matched_performance = skill_performance.get(skill_key)
+        performance_match = (
+            max(0.0, min(1.0, (100.0 - matched_performance) / 100.0))
+            if matched_performance is not None
+            else 0.0
+        )
+
+        # Lower completion rates favour activities no longer than the
+        # learner's preferred duration to keep the workload manageable.
+        completion_rate = learner_features["activity_completion_rate"]
+        if completion_rate > 1:
+            completion_fraction = completion_rate / 100.0
+        else:
+            completion_fraction = completion_rate
+
+        engagement_match = (
+            duration <= preferred_duration
+            if completion_fraction < 0.70
+            else duration_match
+        )
+
+        difficulty_distance = int(item["_difficulty_distance"])
+        difficulty_score = (
+            1.0 if difficulty_distance == 0
+            else 0.5 if difficulty_distance == 1
+            else 0.0
+        )
+        difficulty_match = difficulty_distance == 0
+
+        # Weights are prototype ranking parameters and must be validated
+        # against real learner outcomes before making efficacy claims.
         final_score = (
-            0.50 * model_probability
+            0.35 * model_probability
             + 0.20 * float(skill_match)
             + 0.10 * float(topic_match)
-            + 0.10 * float(difficulty_match)
+            + 0.10 * difficulty_score
             + 0.05 * float(duration_match)
             + 0.05 * float(preferred_activity_match)
+            + 0.10 * performance_match
+            + 0.05 * float(engagement_match)
         )
 
         reasons = []
@@ -625,6 +698,23 @@ def predict_recommended_activity(
             reasons.append(
                 f"matches the performance-adjusted difficulty "
                 f"{item['difficulty_level']}"
+            )
+        else:
+            reasons.append(
+                f"uses the nearest available difficulty level "
+                f"{item['difficulty_level']}"
+            )
+
+        if matched_performance is not None:
+            reasons.append(
+                f"considers the learner's {item['target_skill']} "
+                f"assessment result ({matched_performance:g})"
+            )
+
+        if completion_fraction < 0.70 and duration <= preferred_duration:
+            reasons.append(
+                "keeps the activity within the preferred duration "
+                "to support completion"
             )
 
         if duration_match:
@@ -702,8 +792,10 @@ def predict_recommended_activity(
         "ranking_note": (
             "The ranking combines trained-model activity probabilities "
             "with weak-skill, topic, performance-adjusted difficulty, "
-            "duration, and activity-preference matches. Scores are "
-            "ranking values, not verified measures of educational benefit."
+            "assessment-based skill need, duration, activity preference, "
+            "and completion-rate heuristics. Age and grade are model inputs, "
+            "but the current catalogue has no age/grade suitability metadata. "
+            "Scores are ranking values, not verified measures of educational benefit."
         ),
         "completed_items_excluded": sorted(completed_ids),
         "validation_note": (

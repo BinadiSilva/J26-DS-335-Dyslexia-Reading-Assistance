@@ -1,6 +1,10 @@
 from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel, Field
 
+from app.db.models import WeeklyPlan
+from app.db.session import SessionLocal
+from app.services.weekly_plan_service import generate_weekly_plan
+
 from app.schemas.recommendation import (
     RecommendationRequest,
     RecommendationResponse,
@@ -15,6 +19,7 @@ from app.services.progress_service import (
     record_activity,
     get_learner_progress,
 )
+
 
 
 # --------------------------------------------------
@@ -150,7 +155,15 @@ def get_ml_recommendations(
 # --------------------------------------------------
 # 5. Activity progress request schema
 # --------------------------------------------------
+# --------------------------------------------------
+# Weekly plan request schema
+# --------------------------------------------------
 
+class WeeklyPlanRequest(BaseModel):
+    learner_id: str = Field(min_length=1)
+    week_number: int = Field(ge=1)
+    learner_features: dict
+    
 class ActivityProgressRequest(BaseModel):
     learner_id: str = Field(min_length=1)
     item_id: str = Field(min_length=1)
@@ -202,3 +215,88 @@ def read_learner_progress(learner_id: str):
             status_code=400,
             detail=str(exc),
         ) from exc
+        
+        
+# --------------------------------------------------
+# 8. Generate a weekly learning plan
+# --------------------------------------------------
+
+@app.post("/weekly-plans")
+def create_weekly_plan(request: WeeklyPlanRequest):
+    try:
+        learner_id = request.learner_id.strip()
+
+        if not learner_id:
+            raise ValueError("learner_id must not be empty.")
+
+        result = generate_weekly_plan(
+            learner_id=learner_id,
+            week_number=request.week_number,
+            learner_features=request.learner_features,
+        )
+
+        return result
+
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=400,
+            detail=str(exc),
+        ) from exc
+
+
+# --------------------------------------------------
+# 9. Retrieve a saved weekly learning plan
+# --------------------------------------------------
+
+@app.get("/weekly-plans/{learner_id}/{week_number}")
+def read_weekly_plan(learner_id: str, week_number: int):
+    learner_id = learner_id.strip()
+
+    if not learner_id:
+        raise HTTPException(
+            status_code=400,
+            detail="learner_id must not be empty.",
+        )
+
+    if week_number < 1:
+        raise HTTPException(
+            status_code=400,
+            detail="week_number must be at least 1.",
+        )
+
+    db = SessionLocal()
+
+    try:
+        plan = (
+            db.query(WeeklyPlan)
+            .filter(
+                WeeklyPlan.learner_id == learner_id,
+                WeeklyPlan.week_number == week_number,
+            )
+            .first()
+        )
+
+        if plan is None:
+            raise HTTPException(
+                status_code=404,
+                detail=(
+                    f"No saved plan found for learner "
+                    f"'{learner_id}', week {week_number}."
+                ),
+            )
+
+        return {
+            "learner_id": plan.learner_id,
+            "week_number": plan.week_number,
+            "activities": plan.activities,
+            "learner_features": plan.learner_features,
+            "generated_at": (
+                plan.generated_at.isoformat()
+                if plan.generated_at
+                else None
+            ),
+            "status": "retrieved",
+        }
+
+    finally:
+        db.close()
