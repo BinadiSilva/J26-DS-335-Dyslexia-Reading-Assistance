@@ -44,11 +44,11 @@ def prepare_libs_prediction_data():
 
     grouped_scores = df.groupby(PARTICIPANT_COLUMN)["reading_score"]
 
-    # Use the previous and current observed scores as predictors.
+    # Use previous and current observed scores as predictors.
     df["previous_score"] = grouped_scores.shift(1)
     df["target_score"] = grouped_scores.shift(-1)
 
-    # Keep assessment time points as additional predictors.
+    # Preserve the assessment time points for prediction.
     df["previous_time_point"] = (
         df.groupby(PARTICIPANT_COLUMN)["time_point"].shift(1)
     )
@@ -63,7 +63,7 @@ def prepare_libs_prediction_data():
         "time_point",
     ]
 
-    # Remove rows that do not have all required predictors and target.
+    # Remove records missing a required predictor, target, or participant ID.
     usable = df.dropna(
         subset=features + ["target_score", PARTICIPANT_COLUMN]
     ).copy()
@@ -72,7 +72,7 @@ def prepare_libs_prediction_data():
         columns={"reading_score": "assessment_score"}
     )
 
-    # Return only the columns needed for training, evaluation, and reporting.
+    # Return the columns required by training, evaluation, and reporting.
     return usable[
         [
             PARTICIPANT_COLUMN,
@@ -114,6 +114,144 @@ def _create_models():
     }
 
 
+def evaluate_repeated_group_validation(n_splits=5, test_size=0.20):
+    """Evaluate candidate models over repeated participant-level splits.
+
+    This additional evaluation measures how model performance varies across
+    different participant groups. It does not replace the separate final
+    held-out test evaluation performed by train_libs_progress_model().
+    """
+
+    # Validate the requested evaluation settings.
+    if not isinstance(n_splits, int) or isinstance(n_splits, bool):
+        raise ValueError("n_splits must be an integer of at least 2.")
+
+    if n_splits < 2:
+        raise ValueError("n_splits must be at least 2.")
+
+    if not 0 < test_size < 1:
+        raise ValueError("test_size must be between 0 and 1.")
+
+    # Load the same longitudinal examples used by the main training workflow.
+    data = prepare_libs_prediction_data()
+
+    if data.empty or data[PARTICIPANT_COLUMN].nunique() < 2:
+        raise ValueError(
+            "At least two participants are required for repeated validation."
+        )
+
+    features = [
+        "previous_score",
+        "assessment_score",
+        "previous_time_point",
+        "time_point",
+    ]
+    target = "target_score"
+
+    # Create reproducible splits that keep each participant in one group
+    # within each split.
+    splitter = GroupShuffleSplit(
+        n_splits=n_splits,
+        test_size=test_size,
+        random_state=RANDOM_STATE + 10,
+    )
+
+    records = []
+
+    for split_number, (fit_indices, validation_indices) in enumerate(
+        splitter.split(
+            data[features],
+            data[target],
+            groups=data[PARTICIPANT_COLUMN],
+        ),
+        start=1,
+    ):
+        # Separate the fitting and validation records for this round.
+        fit_data = data.iloc[fit_indices]
+        validation_data = data.iloc[validation_indices]
+
+        # Verify that the same participant does not occur in both groups.
+        fit_ids = set(fit_data[PARTICIPANT_COLUMN])
+        validation_ids = set(validation_data[PARTICIPANT_COLUMN])
+
+        if not fit_ids.isdisjoint(validation_ids):
+            raise RuntimeError(
+                "Participant overlap detected in repeated validation."
+            )
+
+        X_fit = fit_data[features]
+        y_fit = fit_data[target]
+        X_validation = validation_data[features]
+        y_validation = validation_data[target]
+
+        # Evaluate the persistence baseline: predict no change from the
+        # current assessment score.
+        baseline_predictions = X_validation["assessment_score"].to_numpy()
+        baseline_metrics = _evaluate_predictions(
+            y_validation,
+            baseline_predictions,
+        )
+
+        records.append(
+            {
+                "split": split_number,
+                "model": "Persistence Baseline",
+                **baseline_metrics,
+                "fit_participants": len(fit_ids),
+                "validation_participants": len(validation_ids),
+            }
+        )
+
+        # Fit new instances of both candidate models for this split.
+        for model_name, model in _create_models().items():
+            model.fit(X_fit, y_fit)
+            predictions = model.predict(X_validation)
+
+            records.append(
+                {
+                    "split": split_number,
+                    "model": model_name,
+                    **_evaluate_predictions(y_validation, predictions),
+                    "fit_participants": len(fit_ids),
+                    "validation_participants": len(validation_ids),
+                }
+            )
+
+    # Keep the per-split results for inspection and reproducibility.
+    detailed_results = pd.DataFrame(records)
+
+    # Summarize average performance and variation across the validation splits.
+    summary = (
+        detailed_results.groupby("model")
+        .agg(
+            mean_mae=("mae", "mean"),
+            std_mae=("mae", "std"),
+            mean_rmse=("rmse", "mean"),
+            std_rmse=("rmse", "std"),
+            mean_r2=("r2", "mean"),
+            std_r2=("r2", "std"),
+        )
+        .reset_index()
+    )
+
+    print("\nREPEATED PARTICIPANT-LEVEL VALIDATION")
+    print("=" * 44)
+    print(f"Validation splits: {n_splits}")
+    print("Mean values describe average performance; standard deviations")
+    print("describe variation between splits.\n")
+    print(
+        summary.to_string(
+            index=False,
+            float_format=lambda value: f"{value:.3f}",
+        )
+    )
+
+    return {
+        "detailed_results": detailed_results,
+        "summary": summary,
+    }
+
+
 def train_libs_progress_model(save_results=True):
     """Select models using validation participants and evaluate on test participants.
 
@@ -140,7 +278,7 @@ def train_libs_progress_model(save_results=True):
     ]
     target = "target_score"
 
-    # First, reserve 20% of participants for the final test set.
+    # Reserve 20% of participants for the final test set.
     outer_splitter = GroupShuffleSplit(
         n_splits=1,
         test_size=0.20,
@@ -158,8 +296,7 @@ def train_libs_progress_model(save_results=True):
     train_data = data.iloc[train_indices].copy()
     test_data = data.iloc[test_indices].copy()
 
-    # Split the remaining training participants into model-training and
-    # validation groups. Test participants are not used for model selection.
+    # Split the remaining participants into model-fitting and validation groups.
     if train_data[PARTICIPANT_COLUMN].nunique() < 2:
         raise ValueError(
             "Not enough training participants for a separate validation split."
@@ -187,11 +324,11 @@ def train_libs_progress_model(save_results=True):
     X_validation = validation_data[features]
     y_validation = validation_data[target]
 
-    # Compare candidate models on validation participants.
+    # Compare candidate models on the validation participants.
     validation_results = {}
     validation_models = _create_models()
 
-    # Include the persistence baseline in validation reporting.
+    # Include the persistence baseline for comparison.
     validation_baseline = X_validation["assessment_score"].to_numpy()
     validation_results["Persistence Baseline"] = _evaluate_predictions(
         y_validation,
@@ -208,15 +345,13 @@ def train_libs_progress_model(save_results=True):
             validation_predictions,
         )
 
-    # Select the machine-learning model with the lowest validation MAE.
-    # The final test-set results do not influence this choice.
+    # Select the candidate with the lowest validation MAE.
     best_model_name = min(
         validation_models,
         key=lambda name: validation_results[name]["mae"],
     )
 
     # Refit fresh candidate models on all outer training participants.
-    # This makes all training participants available after selection.
     final_models = _create_models()
     results = {}
 
@@ -233,7 +368,7 @@ def train_libs_progress_model(save_results=True):
     }
 
     for model_name, model in final_models.items():
-        # Refit on all training participants, then evaluate once on test data.
+        # Refit on all outer training participants, then test once.
         model.fit(X_train, y_train)
         test_predictions = model.predict(X_test)
 
@@ -266,7 +401,7 @@ def train_libs_progress_model(save_results=True):
         f"{validation_data[PARTICIPANT_COLUMN].nunique()}"
     )
 
-    # Display validation results to make the selection process transparent.
+    # Display validation metrics used for model selection.
     validation_summary = pd.DataFrame(
         [
             {
@@ -308,16 +443,18 @@ def train_libs_progress_model(save_results=True):
 
     print("\nFINAL TEST RESULTS")
     print("==================")
-    print(summary.to_string(
-        index=False,
-        formatters={
-            "MAE": "{:.2f}".format,
-            "RMSE": "{:.2f}".format,
-            "R2": "{:.3f}".format,
-        },
-    ))
+    print(
+        summary.to_string(
+            index=False,
+            formatters={
+                "MAE": "{:.2f}".format,
+                "RMSE": "{:.2f}".format,
+                "R2": "{:.3f}".format,
+            },
+        )
+    )
 
-    # Save only the final held-out test metrics.
+    # Save only the final held-out test metrics when requested.
     if save_results:
         RESULTS_PATH.parent.mkdir(parents=True, exist_ok=True)
         summary.to_csv(RESULTS_PATH, index=False)
@@ -404,12 +541,9 @@ def train_progress_model():
     return results
 
 
-
 def forecast_future_progress(model_results):
     """Forecast the next observed reading score beyond each learner's history.
 
-    The model is trained to predict the next observed score. This function
-    applies that model to each participant's latest available assessment.
     Participants need at least two observed assessments to provide the
     previous-score features used during training.
     """
@@ -420,7 +554,7 @@ def forecast_future_progress(model_results):
         [PARTICIPANT_COLUMN, "time_point"]
     ).copy()
 
-    # Build features using only the previous and latest observed scores.
+    # Build features using previous and latest observed scores.
     grouped = df.groupby(PARTICIPANT_COLUMN, sort=False)
     df["previous_score"] = grouped["reading_score"].shift(1)
     df["previous_time_point"] = grouped["time_point"].shift(1)
@@ -432,7 +566,7 @@ def forecast_future_progress(model_results):
         .copy()
     )
 
-    # Participants with only one assessment lack the required history.
+    # Exclude participants who lack the history required by the model.
     latest = latest.dropna(
         subset=["previous_score", "previous_time_point"]
     )
@@ -441,7 +575,7 @@ def forecast_future_progress(model_results):
     model_name = model_results["best_model_name"]
     model = model_results["results"][model_name]["model"]
 
-    # Prepare model inputs using the same feature names as training.
+    # Match the feature names used during model training.
     latest["assessment_score"] = latest["reading_score"]
 
     if latest.empty or model is None:
@@ -460,19 +594,17 @@ def forecast_future_progress(model_results):
     X_future = latest[features]
     predicted_scores = model.predict(X_future)
 
-    # BAS reading scores are documented within the range 0–90.
-    # Clip forecasts to that valid score range.
+    # Keep forecasts within the documented BAS score range.
     latest["forecasted_next_score"] = np.clip(
         predicted_scores, 0, 90
     ).round(2)
 
-    # Calculate the predicted change relative to the latest observed score.
+    # Calculate the predicted change from the latest observed score.
     latest["forecasted_score_change"] = (
         latest["forecasted_next_score"] - latest["reading_score"]
     ).round(2)
 
-    # Return a clearly labelled future forecast, separate from historical
-    # test-set evaluation results.
+    # Return forecast values separately from historical test metrics.
     forecasts = latest[
         [
             PARTICIPANT_COLUMN,
@@ -494,4 +626,5 @@ def forecast_future_progress(model_results):
 
 
 if __name__ == "__main__":
+    # Preserve the existing default behaviour when running this file directly.
     train_libs_progress_model()
