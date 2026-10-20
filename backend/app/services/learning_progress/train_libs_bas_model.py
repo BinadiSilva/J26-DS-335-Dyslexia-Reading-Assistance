@@ -19,7 +19,7 @@ INPUT_FILE = (
     / "libs_bas_prediction.csv"
 )
 
-# Define the model input features and prediction target
+# Use only information available at the current assessment
 FEATURES = [
     "previous_score",
     "assessment_score",
