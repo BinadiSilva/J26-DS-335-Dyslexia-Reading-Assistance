@@ -1,270 +1,345 @@
-# AI-Based Adaptive Reading Assistance System for Children with Dyslexia
 
-## 1. Project Overview
+# Component 4: Learning Progress Prediction & AI-driven Intervention Planning
 
-This project aims to develop an AI-based adaptive reading assistance system to support children with dyslexia. The system uses reading assessment information to help identify reading difficulties, personalize reading support, and monitor learning progress over time.
+**Project:** AI-Based Adaptive Reading Assistance System for Children with Dyslexia  
+**Project Code:** J26-DS-335  
+**Component:** C4 — Learning Progress Prediction & AI-driven Intervention Planning  
+**Branch:** `component4-learning-progress-prediction`
 
-The research project is divided into four components, with each component addressing a different part of the reading assistance process.
+---
 
-## 2. Research Project Components
+## 1. Overview
 
-| Component | Description |
+Component 4 analyzes longitudinal reading-assessment data to understand changes in reading performance, evaluate machine-learning models that estimate the next observed reading score, screen for possible stagnation, and generate preliminary reading-support suggestions.
+
+The component is designed to support the wider adaptive reading assistance system by transforming historical assessment data into structured information that educators can review.
+
+The current implementation uses the LIBS longitudinal reading-assessment dataset for its main prediction and screening workflow. A separate synthetic-data workflow is retained for development compatibility.
+
+## 2. Objectives
+
+- Prepare and validate longitudinal reading-assessment data.
+- Analyze changes between consecutive observed reading scores.
+- Train and compare reading-progress prediction models.
+- Select the prediction model using validation data.
+- Evaluate final model performance on held-out participants.
+- Screen reading-score trends using preliminary stagnation rules.
+- Generate preliminary reading-support suggestions.
+- Combine assessment results, historical estimates, screening results, and support suggestions into a report.
+
+## 3. Implemented Features
+
+### 3.1 Data Preparation
+
+The data-preparation service loads and validates the LIBS longitudinal dataset.
+
+Main tasks include:
+
+- Checking required columns and data types.
+- Validating reading scores against the documented BAS score range of 0–90.
+- Organizing records by participant and assessment time point.
+- Preparing previous reading scores and score changes.
+- Handling unavailable values and duplicate participant/time-point records according to the preparation rules.
+
+Prepared longitudinal data are stored at:
+
+`datasets/component4/libs_reading_assessments_long.csv`
+
+### 3.2 Reading-Progress Prediction
+
+The prediction service creates supervised learning examples using consecutive observed assessments.
+
+**Input features:**
+- Previous observed reading score
+- Current observed reading score
+- Previous assessment time point
+- Current assessment time point
+
+**Target:** The next observed reading score.
+
+The target is the next available observed score, not necessarily a score at a fixed future date. Missing assessment time points can mean that consecutive observations are not consecutive scheduled assessments.
+
+The following approaches are compared:
+
+| Model | Purpose |
 |---|---|
-| Component 1 (C1) | Reading Speech Analysis and Feature Extraction |
-| Component 2 (C2) | Reading Difficulty Prediction, Cognitive Profiling and Explainable Risk Assessment |
-| Component 3 (C3) | Adaptive Personalized Recommendation Engine |
-| Component 4 (C4) | Learning Progress Prediction and AI-Driven Intervention Planning |
+| Persistence Baseline | Uses the current score as the estimate of the next score |
+| Linear Regression | Provides a linear machine-learning baseline |
+| Random Forest Regressor | Models potentially non-linear relationships in the assessment features |
 
-## 3. Component 4: Learning Progress Prediction and AI-Driven Intervention Planning
+Model selection uses validation MAE. Final performance is evaluated on a separate group of held-out participants.
 
-Component 4 focuses on analyzing longitudinal reading assessment data to understand learners' progress across assessment sessions.
+### 3.3 Stagnation Screening
 
-### Main Objectives
+The stagnation-detection service analyzes observed score changes for each participant.
 
-- Analyze previous and current reading assessment scores.
-- Predict a learner's score at a later assessment.
-- Compare machine learning models for reading progress prediction.
-- Identify patterns that may indicate limited or stalled progress.
-- Support the planning of personalized reading interventions.
-- Generate progress reports that can support the wider adaptive reading assistance system.
+It calculates recent score-change trends and assigns a preliminary category:
 
-### Planned Functionalities
+- **Low:** Recent scores show progress according to the current rules.
+- **Medium:** Recent average change is small and positive.
+- **High:** Recent average change is zero or negative.
+- **Insufficient Data:** There are not enough observed score changes for screening.
 
-1. Reading progress data preparation.
-2. Longitudinal assessment analysis.
-3. Learning progress prediction.
-4. Model performance evaluation.
-5. Learning stagnation detection.
-6. AI-driven intervention planning.
-7. Learning progress reporting.
+These categories are based on preliminary rules. They are not clinically validated diagnoses or reliable standalone measures of a child's reading needs.
 
-## 4. Technology Stack
+### 3.4 Intervention Planning
 
-- **Programming language:** Python
-- **Data processing:** Pandas
-- **Machine learning:** Scikit-learn
-- **Prediction models:** Linear Regression and Random Forest (baseline models)
-- **Model evaluation:** MAE, RMSE and R²
-- **Dataset processing:** Excel and CSV files
+The intervention-planning service generates preliminary reading-support suggestions based on the screening category and available assessment history.
 
-Advanced models may be evaluated as the research progresses, depending on the available data and experimental results.
+Suggestions can include continuing suitable reading practice, monitoring progress, or seeking educator review when information is insufficient or progress may be limited.
 
-## 5. Dataset
+The generated plans are rule-based suggestions. They do not demonstrate that an intervention is effective and must be reviewed by a qualified educator before being used in practice.
 
-### LIBS Secondary Dataset
+### 3.5 Combined Progress Reporting
 
-Component 4 currently uses the Literacy in Birmingham and Solihull (LIBS) dataset, specifically the repeated British Ability Scales (BAS) word-reading assessment scores.
+The reporting service combines:
 
-The dataset contains assessment observations collected at different time points. It allows the project to investigate changes in recorded word-reading scores and predict a later recorded score.
+- Latest observed reading scores and assessment time points
+- Historical next-score estimates
+- The model used for those estimates
+- Recent score-change summaries
+- Preliminary stagnation categories
+- Suggested reading-support activities
+- Recommendation frequency and session-duration guidance
 
-The original workbook is:
+The report is printed in the terminal and returned as a pandas DataFrame.
 
-`LIBS_DataSet_UnLinked_July2024.xlsx`
+**Important:** Historical next-score estimates are not forecasts beyond each participant's latest assessment. The current reporting workflow does not provide a validated future forecast after the latest assessment.
 
-The project uses an unlinked participant identifier to organize assessment records longitudinally. The participant identifiers are not treated as personal identities.
+## 4. System Workflow
 
-**Dataset source:** Aston University Research Data Repository  
-https://researchdata.aston.ac.uk/id/eprint/644/
+```text
+LIBS Longitudinal Assessment Data
+                |
+                v
+       Data Preparation
+                |
+                v
+   Historical Feature Creation
+                |
+                v
+     Model Training and
+      Validation-Based
+        Model Selection
+                |
+                v
+    Held-Out Test Evaluation
+                |
+                v
+  Stagnation Screening and
+    Intervention Planning
+                |
+                v
+     Combined Progress Report
+                |
+                v
+      Educator Review
+```
 
-### Dataset Preparation
+The current prediction, screening, planning, and reporting scripts run as Python services. The workflow described here does not imply that a live dashboard or automated clinical decision system has been implemented.
 
-The current preparation workflow:
+## 5. Dataset Information
 
-1. Loads the LIBS Excel workbook.
-2. Identifies repeated assessment columns.
-3. Converts the repeated assessment columns into a long-form dataset.
-4. Converts time points and assessment scores into numeric values.
-5. Treats dot markers as unavailable scores rather than zero.
-6. Preserves assessment names and source-variable references.
-7. Selects the BAS word-reading assessment for the initial prediction experiment.
-8. Creates previous-score, current-score and later-target-score fields.
-9. Records the time points associated with the observations.
-10. Saves the prepared datasets separately from the original workbook.
+### LIBS Longitudinal Reading Assessments
 
-Zero scores are currently retained because the available variable descriptions permit scores from 0 to 90 but do not explain the specific meaning of zero. They should not be removed or reclassified without supporting evidence.
+The primary workflow uses the LIBS longitudinal reading-assessment data.
 
-### Synthetic Data
+The prepared dataset used in the latest successful evaluation contains:
 
-The project also contains a synthetic reading dataset generator for development and testing.
+| Item | Count |
+|---|---:|
+| Observed assessment records | 2,834 |
+| Participants with at least two observed scores | 786 |
+| Usable next-score prediction examples | 1,262 |
+| Participants represented in prediction examples | 709 |
 
-Synthetic records are generated for testing data-processing workflows. They must be clearly distinguished from the real LIBS secondary dataset and must not be presented as actual records from children.
+The prediction dataset contains fewer participants than the screening dataset because prediction requires sufficient consecutive observed scores to construct the input features and target.
 
-## 6. Project Directory Structure
+### Synthetic Development Dataset
+
+The project also retains a synthetic reading-progress dataset for the legacy development workflow.
+
+Synthetic records must be clearly identified as synthetic and must not be presented as real children's assessment records.
+
+## 6. Machine-Learning Evaluation
+
+The latest successful evaluation used participant-level separation across training, validation, and testing.
+
+### Validation Results
+
+The model was selected using validation Mean Absolute Error (MAE).
+
+| Model | Validation MAE | Validation RMSE | Validation R² |
+|---|---:|---:|---:|
+| Persistence Baseline | 26.19 | 28.52 | -0.936 |
+| Linear Regression | 8.08 | 10.04 | 0.760 |
+| Random Forest | 6.49 | 8.75 | 0.818 |
+
+**Selected model:** Random Forest Regressor.
+
+### Final Held-Out Test Results
+
+| Model | Test MAE | Test RMSE | Test R² |
+|---|---:|---:|---:|
+| Persistence Baseline | 27.06 | 29.64 | -0.953 |
+| Linear Regression | 8.69 | 10.82 | 0.740 |
+| Random Forest | 7.82 | 10.36 | 0.761 |
+
+### Evaluation Metrics
+
+- **MAE:** Average absolute difference between actual and predicted scores. Lower is better.
+- **RMSE:** Error metric that gives greater weight to larger errors. Lower is better.
+- **R²:** Indicates how well predictions explain variation in the target values. Its interpretation depends on the dataset and evaluation setting.
+
+The reported values are the results of the current data preparation, model configuration, and participant split. They should not be assumed to generalize to other datasets or populations without further evaluation.
+
+## 7. Stagnation Screening Results
+
+The latest screening run processed 786 participants.
+
+| Preliminary category | Participants |
+|---|---:|
+| Low | 706 |
+| Medium | 3 |
+| High | 0 |
+| Insufficient Data | 77 |
+
+These counts describe the output of the current rules on this dataset. They do not establish the prevalence of stagnation or reading difficulties in a real-world population.
+
+The screening thresholds require further evaluation before they can be considered reliable.
+
+## 8. Technologies Used
+
+- **Python** — implementation language
+- **Pandas** — data loading, cleaning, and manipulation
+- **NumPy** — numerical calculations
+- **Scikit-learn** — regression models, participant-level splitting, and evaluation metrics
+
+## 9. Project Structure
+
+Relevant files for Component 4:
 
 ```text
 J26-DS-335-Dyslexia-Reading-Assistance/
-│
+|
 ├── backend/
 │   └── app/
 │       └── services/
 │           └── learning_progress/
-│               ├── analyze_libs_progress.py
 │               ├── data_preparation.py
-│               ├── inspect_bas_zero_scores.py
-│               ├── inspect_libs.py
-│               ├── intervention_planning.py
-│               ├── prepare_bas_prediction_data.py
-│               ├── prepare_libs_dataset.py
 │               ├── progress_prediction.py
-│               ├── progress_reporting.py
 │               ├── stagnation_detection.py
-│               ├── train_libs_bas_model.py
-│               ├── validate_bas_prediction_data.py
-│               └── validate_libs_progress.py
-│
-├── datasets/
-│   └── component4/
-│       ├── generate_sample_dataset.py
-│       ├── libs_assessment_validation.csv
-│       ├── libs_bas_prediction.csv
-│       ├── libs_progress_changes.csv
-│       ├── libs_reading_assessments_long.csv
-│       └── reading_progress.csv
-│
-├── documentation/
-│   └── component4/
-│       └── VariableDescriptions_LIBS_July2024.txt
-│
-├── models/
-│   └── component4/
-│
-├── tests/
-│   └── component4/
-│
-├── LIBS_DataSet_UnLinked_July2024.xlsx
-└── README.md
+│               ├── intervention_planning.py
+│               ├── progress_reporting.py
+│               └── prepare_libs_longitudinal.py
+|
+└── datasets/
+    └── component4/
+        ├── reading_progress.csv
+        ├── libs_reading_assessments_long.csv
+        └── libs_prediction_results.csv
 ```
 
-The directory structure describes the current working layout. Files may be added, removed or reorganized as implementation continues.
+The prepared LIBS dataset must be available at the expected path before running the main LIBS workflow. The prediction-results CSV is generated by the evaluation script when result saving is enabled.
 
-## 7. Setup and Execution
+## 10. Setup and Execution
+
+Run commands from the repository root.
 
 ### Prerequisites
 
-- Python 3.10 or a compatible Python version
-- pip
-- The required Python libraries
-- The LIBS workbook, stored at the project root
+- Python installed
+- Pandas, NumPy, and Scikit-learn installed
+- The prepared dataset available at `datasets/component4/libs_reading_assessments_long.csv`
 
-### Install Dependencies
-
-Install the required packages if they are not already available in your Python environment:
+Install the required Python packages if they are not already available:
 
 ```bash
-# Install the libraries used by the current data-processing and baseline-model scripts
-python -m pip install pandas openpyxl scikit-learn
+python -m pip install pandas numpy scikit-learn
 ```
 
-### Prepare the LIBS Dataset
-
-Run these commands from the project root.
+### Step 1: Validate Python Syntax
 
 ```bash
-# Convert the original LIBS assessment data into long-form records
-python backend/app/services/learning_progress/prepare_libs_dataset.py
-
-# Analyze changes between consecutive assessment scores
-python backend/app/services/learning_progress/analyze_libs_progress.py
-
-# Prepare the BAS word-reading prediction dataset
-python backend/app/services/learning_progress/prepare_bas_prediction_data.py
-
-# Validate the prepared prediction dataset
-python backend/app/services/learning_progress/validate_bas_prediction_data.py
+python -m compileall backend/app/services/learning_progress
 ```
 
-### Inspect and Evaluate the Data
+### Step 2: Prepare Reading Data
 
 ```bash
-# Inspect the original LIBS dataset
-python backend/app/services/learning_progress/inspect_libs.py
-
-# Investigate zero scores in the BAS prediction dataset
-python backend/app/services/learning_progress/inspect_bas_zero_scores.py
-
-# Validate the longitudinal LIBS progress data
-python backend/app/services/learning_progress/validate_libs_progress.py
+python backend/app/services/learning_progress/data_preparation.py
 ```
 
-### Train the Baseline Prediction Models
+### Step 3: Evaluate Prediction Models
 
 ```bash
-# Train and compare the baseline models using the prepared LIBS data
-python backend/app/services/learning_progress/train_libs_bas_model.py
+python backend/app/services/learning_progress/progress_prediction.py
 ```
 
-Run the preparation steps before training if the required output CSV files do not exist or need to be regenerated.
+This command prints validation results and final held-out test metrics. It also saves the evaluation summary to `datasets/component4/libs_prediction_results.csv`.
 
-## 8. Prediction Approach
+### Step 4: Run Stagnation Screening
 
-The current baseline experiment uses previous and current BAS word-reading scores and their assessment time points to predict the next available recorded BAS word-reading score.
+```bash
+python backend/app/services/learning_progress/stagnation_detection.py
+```
 
-The prediction target is the next available observed assessment score, not a guaranteed score at a fixed future date.
+### Step 5: Generate Support Plans
 
-### Baseline Models
+```bash
+python backend/app/services/learning_progress/intervention_planning.py
+```
 
-**Linear Regression**
+### Step 6: Generate the Combined Report
 
-Used as a simple baseline to estimate the relationship between the input assessment information and the later score.
+```bash
+python backend/app/services/learning_progress/progress_reporting.py
+```
 
-**Random Forest Regressor**
+Run the preparation step before the other services if the prepared longitudinal dataset has not yet been generated or needs to be refreshed.
 
-Used as a non-linear baseline model to capture patterns that may not be represented by a simple linear relationship.
+## 11. Current Limitations
 
-**Persistence Baseline**
-
-Uses the current score as the prediction for the next score. This provides a reference point for evaluating whether the machine learning models improve on a simple prediction strategy.
-
-### Evaluation Metrics
-
-- **Mean Absolute Error (MAE):** Measures the average absolute difference between predicted and actual scores.
-- **Root Mean Squared Error (RMSE):** Measures prediction error while giving greater weight to larger errors.
-- **R²:** Measures how well the predictions explain variation in the target scores relative to a mean-based reference.
-
-The experiment uses participant-grouped training and testing so that a participant's records are not shared between the training and test sets.
-
-## 9. Initial Experimental Results
-
-In the current baseline experiment, the following results were obtained:
-
-| Model | MAE | RMSE | R² |
-|---|---:|---:|---:|
-| Persistence Baseline | 25.55 | 27.71 | -0.811 |
-| Linear Regression | 7.46 | 9.53 | 0.786 |
-| Random Forest | 6.40 | 8.61 | 0.825 |
-
-These results are preliminary and depend on the current dataset preparation, target definition and held-out participant split. They must be reproduced after relevant code or data changes.
-
-The results do not demonstrate clinical validity, diagnostic ability or suitability for making decisions about individual children with dyslexia.
-
-## 10. Current Limitations
-
-- The LIBS dataset is a general literacy dataset and is not, by itself, proof of performance specifically for children diagnosed with dyslexia.
-- The available BAS scores do not directly provide every feature originally planned for Component 4, such as reading fluency, word error rate or intervention effectiveness.
-- The meaning of zero scores requires further clarification from authoritative dataset documentation.
-- The current experiment predicts the next available observed assessment score; assessment intervals may vary.
-- Model performance needs further validation and comparison with appropriate baselines.
-- Stagnation detection and intervention planning require separate evaluation.
-- The current baseline results do not establish clinical validity or real-world effectiveness.
-
-## 11. Future Work
-
-Planned work includes:
-
-1. Investigating the meaning and distribution of zero scores.
-2. Reviewing data quality and documenting the limitations of the LIBS variables.
-3. Improving prediction features and evaluation methods where supported by the dataset.
-4. Testing additional models if justified by the research design and available data.
-5. Evaluating learning stagnation detection.
-6. Developing and evaluating personalized intervention-planning rules.
-7. Integrating prediction, stagnation detection, intervention planning and progress reporting.
-8. Documenting experiments, results, limitations and reproducibility.
-9. Evaluating the system with suitable additional data where access and ethical approval permit.
+- The model predicts the next observed assessment score, not a score at a fixed future date.
+- The current combined report does not provide a validated forecast beyond a participant's latest assessment.
+- The reported model results depend on the available LIBS data and the current participant split.
+- The dataset does not directly measure the effectiveness of dyslexia interventions.
+- Stagnation categories use preliminary, unvalidated rules.
+- Intervention suggestions are rule-based and have not been demonstrated to improve reading outcomes.
+- Further evaluation is required before using the component in real educational or clinical decision-making.
+- The current implementation does not establish clinical validity.
 
 ## 12. Ethical Considerations
 
-The project must protect participant privacy and follow the applicable dataset licence and research requirements.
+- Handle assessment records responsibly and follow the dataset's access and usage conditions.
+- Avoid exposing participant identifiers in public demonstrations or reports.
+- Use synthetic data only when clearly labelled as synthetic.
+- Do not interpret model estimates as diagnoses or as replacements for educator assessment.
+- Require educator review of support suggestions.
+- Evaluate model performance and potential bias before considering real-world deployment.
 
-- Use participant identifiers only for appropriate longitudinal analysis.
-- Do not attempt to identify individual participants.
-- Do not claim
+## 13. Future Improvements
+
+Potential future improvements include:
+
+- Testing additional time-series and regression models.
+- Evaluating model performance across repeated participant-level splits.
+- Improving uncertainty estimates for predicted scores.
+- Validating stagnation thresholds against suitable expert-reviewed criteria.
+- Evaluating support recommendations using appropriate intervention-outcome data.
+- Developing a user-facing dashboard when integrated with the wider system.
+- Evaluating fairness, robustness, and generalization before deployment.
+
+These are future directions, not claims about features already implemented.
+
+## 14. Branch Information
+
+Component branch:
+
+`component4-learning-progress-prediction`
+
+Latest verified implementation commit:
+
+`a9ea8fe` — Improve Component 4 LIBS progress prediction and reporting
+
+The current branch contains the data-preparation, prediction, stagnation-screening, intervention-planning, and combined-reporting updates described in this document.
