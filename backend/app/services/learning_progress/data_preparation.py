@@ -1,22 +1,28 @@
 
+"""Prepare synthetic and LIBS reading data for Component 4."""
+
 from pathlib import Path
 
 import pandas as pd
 
 
-# Locate the project root directory
+# Locate the project root directory.
 PROJECT_ROOT = Path(__file__).resolve().parents[4]
 
-DATA_PATH = (
+# Paths to the synthetic and real secondary-assessment datasets.
+SYNTHETIC_DATA_PATH = (
+    PROJECT_ROOT / "datasets" / "component4" / "reading_progress.csv"
+)
+
+LIBS_DATA_PATH = (
     PROJECT_ROOT
     / "datasets"
     / "component4"
-    / "reading_progress.csv"
+    / "libs_reading_assessments_long.csv"
 )
 
-
-# Required fields currently available in the dataset
-REQUIRED_COLUMNS = [
+# Required fields for the existing synthetic workflow.
+SYNTHETIC_REQUIRED_COLUMNS = [
     "child_id",
     "session_number",
     "reading_speed_wpm",
@@ -26,8 +32,7 @@ REQUIRED_COLUMNS = [
     "progress_score",
 ]
 
-# Fields that must contain numeric values
-NUMERIC_COLUMNS = [
+SYNTHETIC_NUMERIC_COLUMNS = [
     "session_number",
     "reading_speed_wpm",
     "reading_accuracy",
@@ -36,107 +41,171 @@ NUMERIC_COLUMNS = [
     "progress_score",
 ]
 
+# Required fields for the LIBS longitudinal workflow.
+LIBS_REQUIRED_COLUMNS = [
+    "UnlinkedParticipantNumber",
+    "assessment",
+    "reading_score",
+    "time_point",
+]
+
+
+def _check_columns(df, required_columns, dataset_name):
+    """Raise an informative error if required columns are missing."""
+    missing = set(required_columns) - set(df.columns)
+
+    if missing:
+        raise ValueError(
+            f"{dataset_name} is missing required columns: "
+            f"{sorted(missing)}"
+        )
+
 
 def load_reading_data():
-    """Load, validate, clean, and prepare reading-progress data."""
+    """Load and validate the existing synthetic reading dataset.
 
-    # Check whether the dataset exists
-    if not DATA_PATH.exists():
+    This function is retained for compatibility with the original
+    Component 4 services until they are migrated to the LIBS workflow.
+    """
+
+    if not SYNTHETIC_DATA_PATH.exists():
         raise FileNotFoundError(
-            f"Reading dataset not found: {DATA_PATH}"
+            f"Synthetic reading dataset not found: {SYNTHETIC_DATA_PATH}"
         )
 
-    # Load the CSV dataset
-    df = pd.read_csv(DATA_PATH)
+    df = pd.read_csv(SYNTHETIC_DATA_PATH)
+    _check_columns(df, SYNTHETIC_REQUIRED_COLUMNS, "Synthetic dataset")
 
-    # Check for required columns
-    missing_columns = set(REQUIRED_COLUMNS) - set(df.columns)
-
-    if missing_columns:
-        raise ValueError(
-            f"Missing required columns: {sorted(missing_columns)}"
-        )
-
-    # Remove rows without a child ID
+    # Clean participant identifiers.
     df["child_id"] = df["child_id"].astype("string").str.strip()
     df = df.dropna(subset=["child_id"])
     df = df[df["child_id"] != ""]
 
-    # Convert reading measurements to numeric values
-    for column in NUMERIC_COLUMNS:
-        df[column] = pd.to_numeric(
-            df[column], errors="coerce"
-        )
+    # Convert numeric fields and remove invalid records.
+    for column in SYNTHETIC_NUMERIC_COLUMNS:
+        df[column] = pd.to_numeric(df[column], errors="coerce")
 
-    # Remove rows with missing or invalid required values
-    df = df.dropna(subset=NUMERIC_COLUMNS)
+    df = df.dropna(subset=SYNTHETIC_NUMERIC_COLUMNS)
 
-    # Remove duplicate child-session records
+    # Keep one record per child and session.
     df = df.drop_duplicates(
         subset=["child_id", "session_number"],
         keep="last",
     )
 
-    # Sort sessions in chronological session order
+    # Sort sessions chronologically.
     df = df.sort_values(
         ["child_id", "session_number"]
     ).reset_index(drop=True)
 
-    # Check whether valid records remain
     if df.empty:
-        raise ValueError(
-            "No valid records remain after data cleaning."
-        )
+        raise ValueError("No valid synthetic reading records remain.")
 
-    # Calculate each child's previous progress score
+    # Calculate change from the previous session.
     df["previous_progress_score"] = (
         df.groupby("child_id")["progress_score"].shift(1)
     )
-
-    # Calculate progress change between consecutive sessions
     df["progress_change"] = (
         df["progress_score"] - df["previous_progress_score"]
     )
 
-    # Keep the first session's progress change empty because
-    # there is no previous session to compare against.
-    # Do not treat this missing value as zero.
+    return df
+
+
+def load_libs_reading_data():
+    """Load and validate the prepared LIBS longitudinal dataset.
+
+    LIBS participant IDs are unlinked identifiers, not child identities.
+    Zero reading scores are retained because zero is within the documented
+    BAS score range. Dot values should already have been converted to
+    missing values during longitudinal dataset preparation.
+    """
+
+    if not LIBS_DATA_PATH.exists():
+        raise FileNotFoundError(
+            f"LIBS dataset not found: {LIBS_DATA_PATH}"
+        )
+
+    df = pd.read_csv(LIBS_DATA_PATH)
+    _check_columns(df, LIBS_REQUIRED_COLUMNS, "LIBS dataset")
+
+    # Standardize the assessment participant identifier.
+    participant_column = "UnlinkedParticipantNumber"
+    df[participant_column] = pd.to_numeric(
+        df[participant_column], errors="coerce"
+    )
+
+    # Validate score and time-point fields.
+    df["reading_score"] = pd.to_numeric(
+        df["reading_score"], errors="coerce"
+    )
+    df["time_point"] = pd.to_numeric(
+        df["time_point"], errors="coerce"
+    )
+
+    df = df.dropna(
+        subset=[participant_column, "reading_score", "time_point"]
+    )
+
+    # Check the documented BAS score range and expected time points.
+    df = df[df["reading_score"].between(0, 90)]
+    df = df[df["time_point"].isin([1, 2, 3, 4])]
+
+    # Normalize assessment names and remove duplicate participant/time rows.
+    df["assessment"] = df["assessment"].astype("string").str.strip()
+    df = df[df["assessment"] != ""]
+
+    df = df.drop_duplicates(
+        subset=[participant_column, "time_point"],
+        keep="last",
+    )
+
+    # Sort each participant's assessments in time-point order.
+    df = df.sort_values(
+        [participant_column, "time_point"]
+    ).reset_index(drop=True)
+
+    if df.empty:
+        raise ValueError("No valid LIBS reading records remain.")
+
+    # Calculate the difference from the previous observed assessment.
+    df["previous_reading_score"] = (
+        df.groupby(participant_column)["reading_score"].shift(1)
+    )
+    df["reading_score_change"] = (
+        df["reading_score"] - df["previous_reading_score"]
+    )
 
     return df
 
 
 def get_dataset_summary(df):
-    """Return basic information about the prepared dataset."""
+    """Return a basic summary of a prepared dataset."""
 
     return {
         "total_records": len(df),
-        "total_children": df["child_id"].nunique(),
-        "total_sessions": df["session_number"].nunique(),
-        "missing_values": int(df.isnull().sum().sum()),
+        "total_participants": (
+            df["UnlinkedParticipantNumber"].nunique()
+            if "UnlinkedParticipantNumber" in df.columns
+            else df["child_id"].nunique()
+        ),
         "fields": df.columns.tolist(),
+        "missing_values": int(df.isnull().sum().sum()),
     }
 
 
 if __name__ == "__main__":
-    data = load_reading_data()
-    summary = get_dataset_summary(data)
+    # Test both data sources without mixing their schemas.
+    for dataset_name, loader in [
+        ("Synthetic", load_reading_data),
+        ("LIBS", load_libs_reading_data),
+    ]:
+        data = loader()
+        summary = get_dataset_summary(data)
 
-    print("\nDataset loaded and prepared successfully!")
-    print("-" * 45)
-
-    print(f"Dataset path: {DATA_PATH}")
-    print(f"Total records: {summary['total_records']}")
-    print(f"Total children: {summary['total_children']}")
-    print(f"Distinct session numbers: {summary['total_sessions']}")
-
-    print("\nAvailable fields:")
-    for field in summary["fields"]:
-        print(f"- {field}")
-
-    print("\nFirst five prepared records:")
-    print(data.head().to_string(index=False))
-
-    print("\nMissing values by field:")
-    print(data.isnull().sum().to_string())
-
-    print("\nDataset preparation completed.")
+        print(f"\n{dataset_name} dataset loaded successfully.")
+        print("-" * 45)
+        print(f"Records: {summary['total_records']}")
+        print(f"Participants: {summary['total_participants']}")
+        print(f"Missing values: {summary['missing_values']}")
+        print(f"Fields: {summary['fields']}")

@@ -1,115 +1,215 @@
 
-# Import pandas for handling reading-session data
-import pandas as pd
+"""Generate a combined LIBS reading-progress report for Component 4."""
 
-# Import the functions developed for Component 4
-from data_preparation import load_reading_data
-from progress_prediction import train_progress_model
-from stagnation_detection import detect_stagnation
-from intervention_planning import generate_intervention_plans
+# Support running this file directly or importing it as a package.
+try:
+    from .data_preparation import load_libs_reading_data
+    from .progress_prediction import (
+        prepare_libs_prediction_data,
+        train_libs_progress_model,
+    )
+    from .stagnation_detection import detect_stagnation
+    from .intervention_planning import generate_intervention_plans
+except ImportError:
+    from data_preparation import load_libs_reading_data
+    from progress_prediction import (
+        prepare_libs_prediction_data,
+        train_libs_progress_model,
+    )
+    from stagnation_detection import detect_stagnation
+    from intervention_planning import generate_intervention_plans
+
+
+PARTICIPANT_COLUMN = "UnlinkedParticipantNumber"
 
 
 def generate_progress_report():
-    """Generate a clean report of reading progress and support plans."""
+    """Combine latest observed scores, historical estimates, screening, and plans."""
 
-    # Step 1: Load historical reading-session data
-    reading_data = load_reading_data()
+    # Load the LIBS assessment data.
+    reading_data = load_libs_reading_data()
 
-    # Step 2: Train and compare the prediction models
-    models = train_progress_model()
-
-    # Step 3: Select the trained Linear Regression model
-    model = models["Linear Regression"]["model"]
-
-    # Step 4: Define the input features used by the model
-    features = [
-        "reading_speed_wpm",
-        "reading_accuracy",
-        "fluency_score",
-        "word_error_rate",
-    ]
-
-    # Step 5: Predict progress scores for each reading session
-    reading_data = reading_data.copy()
-    reading_data["predicted_progress_score"] = model.predict(
-        reading_data[features]
-    ).round(2)
-
-    # Step 6: Find the latest session for each child
-    latest_sessions = (
-        reading_data.sort_values("session_number")
-        .groupby("child_id")
+    # Select the latest available assessment for each participant.
+    latest_assessments = (
+        reading_data.sort_values(
+            [PARTICIPANT_COLUMN, "time_point"]
+        )
+        .groupby(PARTICIPANT_COLUMN, as_index=False)
         .tail(1)
         .reset_index(drop=True)
     )
 
-    # Step 7: Get learning stagnation-risk information
-    stagnation_results = detect_stagnation()
-
-    # Step 8: Generate personalized intervention plans
-    intervention_results = generate_intervention_plans()
-
-    # Step 9: Keep only the required stagnation fields
-    risk_columns = [
-        "child_id",
-        "stagnation_risk",
-        "explanation",
-    ]
-    stagnation_summary = stagnation_results[risk_columns].copy()
-
-    # Step 10: Keep only the required intervention fields
-    intervention_columns = [
-        "child_id",
-        "recommended_activities",
-        "frequency",
-        "session_duration",
-    ]
-    intervention_summary = intervention_results[intervention_columns].copy()
-
-    # Step 11: Combine the latest sessions with risk information
-    report = latest_sessions.merge(
-        stagnation_summary,
-        on="child_id",
-        how="left",
-    )
-
-    # Step 12: Add the intervention recommendations
-    report = report.merge(
-        intervention_summary,
-        on="child_id",
-        how="left",
-    )
-
-    # Step 13: Rename columns to make the report easier to understand
-    report = report.rename(
+    latest_assessments = latest_assessments[
+        [PARTICIPANT_COLUMN, "reading_score", "time_point"]
+    ].rename(
         columns={
-            "progress_score": "latest_progress_score",
+            "reading_score": "latest_reading_score",
+            "time_point": "latest_time_point",
         }
     )
 
-    # Step 14: Select and order the final report columns
+    # Train and evaluate models using validation-based model selection.
+    # The prediction service selects a model using validation MAE and
+    # reports final performance separately on held-out test participants.
+    model_results = train_libs_progress_model(save_results=False)
+
+    best_model_name = model_results["best_model_name"]
+    best_model = model_results["results"][best_model_name]["model"]
+
+    # Prepare historical examples with a known next observed score.
+    prediction_data = prepare_libs_prediction_data()
+
+    # Keep the latest eligible historical example for each participant.
+    latest_examples = (
+        prediction_data.sort_values(
+            [PARTICIPANT_COLUMN, "time_point"]
+        )
+        .groupby(PARTICIPANT_COLUMN, as_index=False)
+        .tail(1)
+        .reset_index(drop=True)
+    )
+
+    features = model_results["features"]
+
+    # Estimate the next observed score for these historical examples.
+    # These estimates are not forecasts beyond the latest assessment.
+    if best_model is not None and not latest_examples.empty:
+        latest_examples["historical_next_score_estimate"] = (
+            best_model.predict(latest_examples[features]).round(2)
+        )
+    else:
+        latest_examples["historical_next_score_estimate"] = None
+
+    # Keep the historical target time point for interpretation.
+    historical_predictions = latest_examples[
+        [
+            PARTICIPANT_COLUMN,
+            "historical_next_score_estimate",
+            "target_time_point",
+        ]
+    ].rename(
+        columns={
+            "target_time_point": "historical_target_time_point",
+        }
+    )
+
+    # Run stagnation screening once and reuse its output for support planning.
+    stagnation_results = detect_stagnation()
+
+    intervention_results = generate_intervention_plans(
+        risk_data=stagnation_results
+    )
+
+    # Select the required screening fields.
+    risk_summary = stagnation_results[
+        [
+            PARTICIPANT_COLUMN,
+            "stagnation_risk",
+            "explanation",
+            "average_recent_change",
+            "number_of_observed_assessments",
+        ]
+    ]
+
+    # Select the required intervention-planning fields.
+    intervention_summary = intervention_results[
+        [
+            PARTICIPANT_COLUMN,
+            "recommended_activities",
+            "frequency",
+            "session_duration",
+            "recommendation_basis",
+        ]
+    ]
+
+    # Combine latest assessments, screening results, support plans,
+    # and historical model estimates by participant identifier.
+    report = latest_assessments.merge(
+        risk_summary,
+        on=PARTICIPANT_COLUMN,
+        how="left",
+    )
+
+    report = report.merge(
+        intervention_summary,
+        on=PARTICIPANT_COLUMN,
+        how="left",
+    )
+
+    report = report.merge(
+        historical_predictions,
+        on=PARTICIPANT_COLUMN,
+        how="left",
+    )
+
+    # Mark whether a historical estimate is available for each participant.
+    # This flag does not indicate a future prediction after the latest score.
+    report["has_historical_estimate"] = (
+        report["historical_next_score_estimate"].notna()
+    )
+
+    # Record which model generated the historical estimates.
+    report["prediction_model"] = best_model_name
+
+    # Arrange the final report columns in a consistent order.
     final_columns = [
-        "child_id",
-        "latest_progress_score",
-        "predicted_progress_score",
+        PARTICIPANT_COLUMN,
+        "latest_reading_score",
+        "latest_time_point",
+        "historical_next_score_estimate",
+        "historical_target_time_point",
+        "has_historical_estimate",
+        "prediction_model",
+        "average_recent_change",
+        "number_of_observed_assessments",
         "stagnation_risk",
         "explanation",
         "recommended_activities",
         "frequency",
         "session_duration",
+        "recommendation_basis",
     ]
 
-    report = report[final_columns]
+    report = (
+        report[final_columns]
+        .sort_values(PARTICIPANT_COLUMN)
+        .reset_index(drop=True)
+    )
 
-    # Step 15: Display the clean progress report
-    print("\nLearning Progress Report")
-    print("=" * 80)
-    print(report.to_string(index=False))
+    # Print a summary so the results can be checked from the terminal.
+    print("\nCombined LIBS Learning Progress Report")
+    print("=" * 58)
+    print(f"Participants in report: {len(report)}")
+    print(f"Model used for historical estimates: {best_model_name}")
+    print(
+        "Participants with a historical next-score estimate: "
+        f"{report['has_historical_estimate'].sum()}"
+    )
 
-    # Return the report for future dashboard integration
+    print("\nFirst five report rows:")
+    print(report.head().to_string(index=False))
+
+    # Explain the scope and limitations of the report accurately.
+    print(
+        "\nLimitations:\n"
+        "- Historical estimates refer to next observed scores in historical "
+        "assessment examples; they are not forecasts beyond the latest "
+        "assessment.\n"
+        "- Model selection uses validation MAE; final model metrics are "
+        "evaluated on held-out test participants.\n"
+        "- The report does not currently provide a validated future forecast "
+        "after each participant's latest assessment.\n"
+        "- Stagnation categories use preliminary rules and are not clinically "
+        "validated.\n"
+        "- Support plans are preliminary suggestions requiring educator "
+        "review; intervention effectiveness has not been established.\n"
+        "- The LIBS assessment data do not directly measure the effectiveness "
+        "of dyslexia interventions."
+    )
+
     return report
 
 
-# Run the report generator when this file is executed directly
 if __name__ == "__main__":
+    # Generate and print the combined Component 4 report.
     generate_progress_report()
