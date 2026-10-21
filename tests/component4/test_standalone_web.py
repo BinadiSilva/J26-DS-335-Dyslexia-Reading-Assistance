@@ -102,3 +102,43 @@ def test_logout_revokes_access_and_post_is_required(app):
     assert client.get("/logout").status_code == 405
     post(client, "/logout", {})
     assert client.get("/learners/one").status_code == 302
+
+
+def test_invalid_form_keeps_observations_for_correction(app):
+    client = app.test_client()
+    login(client)
+    row = generate_cohort(1, 5).iloc[0].to_dict()
+    page = post(client, "/learners/one/sessions", {**row, "correct_words": 201, "notes": "Keep this observation"})
+    assert page.status_code == 422
+    assert b'value="201" name="correct_words"' in page.data
+    assert b"Keep this observation</textarea>" in page.data
+    assert app.extensions["c4_store"].sessions("one") == []
+
+
+def test_training_export_has_one_source_no_notes_and_parent_is_denied(app):
+    teacher = app.test_client()
+    login(teacher)
+    row = generate_cohort(1, 5).iloc[0].to_dict()
+    post(teacher, "/learners/one/sessions", {**row, "notes": "private-content"})
+    response = teacher.get("/training-sessions.csv?source=synthetic")
+    assert response.status_code == 200
+    assert b"learner_id,source,assessed_on" in response.data
+    assert b"private-content" not in response.data
+    assert b"one,synthetic" in response.data
+    assert teacher.get("/training-sessions.csv?source=mixed").status_code == 400
+    parent = app.test_client()
+    login(parent, "parent")
+    assert parent.get("/training-sessions.csv?source=synthetic").status_code == 403
+    assert parent.get("/evaluation.json").status_code == 403
+    assert post(parent, "/learners/one/goals", {}).status_code == 403
+
+
+def test_goal_form_refreshes_report_and_rejects_invalid_goal(app):
+    client = app.test_client()
+    login(client)
+    page = post(client, "/learners/one/goals", {"target_speed": 100, "target_accuracy": 95, "target_fluency": 80})
+    assert page.status_code == 200 and b"Goals updated" in page.data
+    assert app.extensions["c4_store"].learner("one")["target_speed"] == 100
+    page = post(client, "/learners/one/goals", {"target_speed": 0, "target_accuracy": 95, "target_fluency": 80})
+    assert page.status_code == 422
+    assert app.extensions["c4_store"].learner("one")["target_speed"] == 100

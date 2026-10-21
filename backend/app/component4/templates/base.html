@@ -10,18 +10,18 @@
 <a class="skip" href="#main">Skip to content</a>
 <aside class="sidebar">
   <a class="brand" href="{{ url_for('home') }}"><span class="brand-icon">L</span><span>Lumi-IT<small>LEARNING TOGETHER</small></span></a>
-  <div class="nav-label">COMPONENT 04</div>
+  <div class="nav-label">YOUR WORKSPACE</div>
   <nav aria-label="Main navigation">
     <a href="{{ url_for('home') }}" class="nav-link">◉ &nbsp; Learning progress</a>
-    {% if user and user.role == 'teacher' %}<a href="{{ url_for('evaluation') }}" class="nav-link">▤ &nbsp; Research evaluation</a>{% endif %}
+    {% if user and user.role == 'teacher' %}<a href="{{ url_for('evaluation') }}" class="nav-link">▤ &nbsp; Model performance</a>{% endif %}
   </nav>
-  <div class="sidebar-foot"><span class="status-dot"></span> Standalone research prototype<p>Learning progress prediction<br>& intervention planning</p>
+  <div class="sidebar-foot"><span class="status-dot"></span> Reading support<p>Learning progress prediction<br>& intervention planning</p>
     {% if user %}<strong>{{ user.username }}</strong> · {{ user.role }}
     <form method="post" action="{{ url_for('logout') }}"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="quiet" type="submit">Sign out</button></form>{% endif %}
   </div>
 </aside>
 <div class="workspace">
-  <header class="topbar"><span>Learning support / <strong>Progress overview</strong></span><span class="pill">PP1 · Component 4</span></header>
+  <header class="topbar"><span>Learning support / <strong>Progress overview</strong></span><span class="pill">Progress & support</span></header>
   <main id="main">
     {% for category, message in get_flashed_messages(with_categories=true) %}<div role="alert" class="notice {{ category }}">{{ message }}</div>{% endfor %}
     {% block content %}{% endblock %}

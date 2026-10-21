@@ -1,5 +1,7 @@
 # Component 4: methodology and research presentation notes
 
+> Scope: this document records the earlier LIBS/BAS benchmark. The standalone session application and current PP1 workflow are documented in the root README and `pp1_checklist.md`. Historical statements about missing dashboards or session storage apply to this benchmark only.
+
 Project: J26-DS-335 — AI-Based Adaptive Reading Assistance System for Children with Dyslexia
 
 Individual component: Learning Progress Prediction & AI-driven Intervention Planning

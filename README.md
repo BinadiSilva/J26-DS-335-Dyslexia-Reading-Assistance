@@ -1,620 +1,135 @@
+# Component 4 — Learning Progress Prediction and Intervention Planning
 
-# Component 4: Learning Progress Prediction & AI-driven Intervention Planning
+Standalone PP1 research prototype for **J26-DS-335: AI-Based Adaptive Reading Assistance System for Children with Dyslexia**. The application includes a teacher/parent frontend, persistent session records, one-week reading forecasts, stagnation screening, intervention planning and follow-up monitoring. Components 1–3 are not required to run it.
 
-**Project:** AI-Based Adaptive Reading Assistance System for Children with Dyslexia  
-**Project Code:** J26-DS-335  
-**Component:** C4 — Learning Progress Prediction & AI-driven Intervention Planning  
-**Branch:** `component4-learning-progress-prediction`
+The session application is in `backend/app/component4/`. The earlier LIBS/BAS experiment remains in `backend/app/services/learning_progress/` as a separate research benchmark. BAS scores are **not** converted into fluency percentages or weekly session observations.
 
----
+## Start the existing installation
 
-## 1. Overview
+From the repository root on the development Mac:
 
-Component 4 analyzes longitudinal reading-assessment data to understand changes in reading performance, evaluate machine-learning models that estimate the next observed reading score, screen for possible stagnation, and generate preliminary reading-support suggestions.
+```bash
+cd /Users/binadisilva/J26-DS-335-Dyslexia-Reading-Assistance
+.venv-component4/bin/python -m backend.app.component4.web --demo --model-dir models/component4/session_demo_v2
+```
 
-The component is designed to support the wider adaptive reading assistance system by transforming historical assessment data into structured information that educators can review.
+Open **http://127.0.0.1:5054**. `--demo` creates six fictional learners only when they do not already exist; it does not erase existing records. The first launch creates a `teacher` account and prints its random password once. Existing passwords are retained on later launches. Stop the server with **Ctrl+C**.
 
-The current implementation uses the LIBS longitudinal reading-assessment dataset for its main prediction and screening workflow. A separate synthetic-data workflow is retained for development compatibility.
+If the teacher password was not saved, stop the server and use the interactive recovery command:
 
-## 2. Objectives
+```bash
+.venv-component4/bin/python -m backend.app.component4.web --reset-password teacher
+```
 
-- Prepare and validate longitudinal reading-assessment data.
-- Analyze changes between consecutive observed reading scores.
-- Train and compare reading-progress prediction models.
-- Select the prediction model using validation data.
-- Evaluate final model performance on held-out participants.
-- Screen reading-score trends using preliminary stagnation rules.
-- Generate preliminary reading-support suggestions.
-- Combine assessment results, historical estimates, screening results, and support suggestions into a report.
+Enter a new password of at least 12 characters twice, then restart the server. Recovery changes the signing key, so previously issued browser sessions become invalid after restart. Passwords are hashed in SQLite; no credentials belong in Git or the research report.
 
-## 3. Implemented Features
+## Install on a new checkout
 
-### 3.1 Data Preparation
+Tested with Python 3.13.9 on macOS Apple Silicon. The existing development environment does not need to be recreated just to launch the app.
 
-The data-preparation service loads and validates the LIBS longitudinal dataset.
+```bash
+/opt/anaconda3/bin/python -m venv .venv-component4
+.venv-component4/bin/python -m pip install -r requirements-component4.txt
+.venv-component4/bin/python -m backend.app.component4.train --demo --output models/component4/session_demo_v2
+.venv-component4/bin/python -m backend.app.component4.web --demo --model-dir models/component4/session_demo_v2
+```
 
-Main tasks include:
+Training compares **Persistence, Linear Regression, Random Forest, XGBoost, LSTM and GRU**. It is a separate command; opening a learner page does not train a model. Training refuses to overwrite an experiment directory. For another experiment, choose a new directory and pass the same directory to the server with `--model-dir`.
 
-- Checking required columns and data types.
-- Validating reading scores against the documented BAS score range of 0–90.
-- Organizing records by participant and assessment time point.
-- Preparing previous reading scores and score changes.
-- Reporting excluded invalid rows, removing identical duplicate assessments, and rejecting conflicting duplicate scores or mismatched assessment names.
+The dependency file pins directly used libraries, including Flask, Werkzeug, Joblib, PyTorch and XGBoost. It is not a transitive dependency lockfile. A clean installation on other operating systems has not been verified.
 
-Prepared longitudinal data are stored at:
+## What the application does
 
-`datasets/component4/libs_reading_assessments_long.csv`
+- Register a learner using a pseudonymous alias, age, grade and educator-entered goals.
+- Record dated assessments and calculate correct words per minute, reading accuracy and word error rate. Fluency uses a consistent educator-assigned 0–100 rubric.
+- Display chronological history, charts, recent trends and an experimental forecast for seven days after the latest assessment.
+- Explain provisional stagnation categories and identify recent declines. Changed difficulty, short histories and scale ceilings receive separate explanations.
+- Propose a target skill, activity, support priority, practice duration/frequency and review period. An educator reviews or edits the proposal before saving it.
+- Save each intervention's baseline, follow-up assessment, adherence and observed outcome; consider the previous outcome when proposing future support.
+- Update learner goals without changing previously approved plan snapshots.
+- Save educator-only professional notes, export learner reports as JSON and print reports from the browser.
+- Give parents read-only access to their assigned learner. Teachers can access model evaluation and export pseudonymous training sessions.
 
-### 3.2 Reading-Progress Prediction
+Forms retain entered values when server validation fails. Original assessments and completed intervention outcomes are not silently overwritten. An active intervention must be reviewed before another is started.
 
-The prediction service creates supervised learning examples using consecutive observed assessments.
+## A short PP1 demonstration
 
-**Input features:**
-- Previous observed reading score
-- Current observed reading score
-- Previous assessment time point
-- Current assessment time point
+1. Sign in as `teacher` and open **Demo learner 1**. Identify the synthetic-data banner.
+2. Show the historical charts, the dated one-week forecast, its model name and the risk explanation.
+3. Open a learner with a High screening category and compare the explanation with the underlying observations.
+4. Review the active intervention using one of its later assessments. Record adherence and outcome notes, then complete the plan.
+5. Show the calculated changes and the next proposed plan's use of intervention history. Review and approve a new plan.
+6. Add a new assessment. Use a date seven days after the preceding assessment if demonstrating weekly forecasting; dates must not be in the future. Irregular observations are stored, but forecasts may be unavailable.
+7. Show an invalid assessment being rejected, edit goals, save a professional note, and export the report.
+8. Open **Model performance** to compare all models and explain how validation selected the model. The evaluation JSON can be downloaded from that page.
+9. Demonstrate a parent account and confirm it cannot edit data or view another learner.
 
-**Target:** The next observed reading score.
+Create a parent account from a separate terminal, using a learner ID shown in the dashboard:
 
-The target is the next available observed score, not necessarily a score at a fixed future date. Missing assessment time points can mean that consecutive observations are not consecutive scheduled assessments.
+```bash
+.venv-component4/bin/python -m backend.app.component4.web --add-parent demo-parent --learner DEMO0001
+```
 
-The following approaches are compared:
+The command prompts for a password. It does not change or replace existing accounts.
 
-| Model | Purpose |
+## Data and prediction contract
+
+See [the data contract](documentation/component4/data_contract.md) for fields, units, bounds, and CSV examples.
+
+A forecast requires **four assessments exactly seven days apart**, at unchanged difficulty, with inputs inside the model's development-data ranges. Training examples require those four inputs plus the following weekly target. There must be at least 15 eligible learners for participant-separated training, validation and testing.
+
+The forecast is one week ahead, not a recursive three-week forecast or a probability of improvement. Source and input checks are screening safeguards; they do not prove validity for a new population. No unsupported confidence percentage or expected intervention benefit is displayed.
+
+Synthetic and collected records are kept distinct. A model trained on synthetic data refuses to forecast for a collected-data learner. Collected records can still be stored, charted and reviewed.
+
+To train with collected observations, export **collected sessions** from the teacher dashboard, retain the raw field contract and run:
+
+```bash
+.venv-component4/bin/python -m backend.app.component4.train --csv /path/to/collected-sessions.csv --output models/component4/session_collected_v1
+.venv-component4/bin/python -m backend.app.component4.web --model-dir models/component4/session_collected_v1
+```
+
+The CSV export omits aliases, professional notes and account details. An optional independent stagnation reference can be recorded on an assessment. It is used only in evaluation, never as a prediction feature. Do not copy the detector's output into the reference label.
+
+## Research evidence and limits
+
+The reproducible demonstration cohort has 180 fictional learners with 20 weekly observations each. The split has 115 fitting, 29 validation and 36 test learners. The generator uses simple noisy improvement, plateau and decline patterns; high scores on this dataset are not evidence of performance with real children.
+
+Each model receives identical historical inputs. Validation selection uses equal-learner mean absolute error standardized by training-target standard deviations. Scalers are fitted on training records only. The selected model is then refitted on training + validation learners and evaluated separately on the untouched test group. Saved artifacts include the split manifest, example dates, dataset hash, source hashes, model hash and dependency versions.
+
+The initial demonstration comparison selected **Linear Regression**. Read the saved JSON or the evaluation page for the measured MAE, RMSE and R² for speed, accuracy, fluency and WER. Stagnation evaluation includes accuracy, precision, recall, F1, confusion matrix, abstentions and a majority baseline. Synthetic references describe generator scenarios, not independent judgments about real children.
+
+Intervention intensity is an explainable rule-based proposal informed by observations, forecast context and history. It is not a learned treatment policy. The outcome monitor records before/after differences and flags changed difficulty; it cannot attribute improvement to an intervention. Real-user prediction validation, educator review of thresholds/schedules, and intervention efficacy research still require suitable collected evidence.
+
+## Verification
+
+```bash
+.venv-component4/bin/python -m pytest tests/component4 -q -p no:cacheprovider
+.venv-component4/bin/python -m backend.app.component4.verify --model-dir models/component4/session_demo_v2
+```
+
+The verification command uses a temporary fictional database, checks authenticated routes with the saved model, and measures report latency against the proposal's five-second target. This is a local functional measurement, not a concurrent-user load test. Optional `--output NEW_FILE.json` saves evidence without overwriting previous results.
+
+Tests cover existing BAS behaviour, participant separation, actual model families, model reloads, chronology, data validation, persistence, outcome matching, permissions, CSRF, escaped notes, source separation, goal updates and invalid-form recovery. Browser checks and the proposal mapping are recorded in [the PP1 checklist](documentation/component4/pp1_checklist.md).
+
+## Files and operation
+
+| Location | Purpose |
 |---|---|
-| Persistence Baseline | Uses the current score as the estimate of the next score |
-| Linear Regression | Provides a linear machine-learning baseline |
-| Random Forest Regressor | Models potentially non-linear relationships in the assessment features |
-
-Model selection uses validation MAE among Linear Regression and Random Forest. Persistence is a comparison baseline. Final performance is evaluated on a separate group of held-out participants.
-
-### 3.3 Stagnation Screening
-
-The stagnation-detection service analyzes observed score changes for each participant.
-
-It calculates recent score-change trends and assigns a preliminary category:
-
-- **Low:** Recent scores show progress according to the current rules.
-- **Medium:** Recent average change is small and positive.
-- **High:** Recent average change is zero or negative.
-- **Insufficient Data:** There are not enough observed score changes for screening.
-
-These categories are based on preliminary rules. They are not clinically validated diagnoses or reliable standalone measures of a child's reading needs.
-
-The category uses the mean of the latest up to three observed changes:
-`High` for a mean <= 0, `Medium` for 0 < mean < 2, and `Low` for mean >= 2.
-At least three assessments are required. No validated clinical cutoff is claimed.
-
-The report now separately shows the latest change and a `recent_decline` flag.
-Earlier gains cannot hide this flag, even if the average-based category is Low.
-It also reports `recent_change_per_study_year`: total recent change divided by
-the summed approximate study-age gaps. The local variable descriptions give
-ages 4, 5, 6, and 9 for T1–T4. These rates are descriptive, not individual growth
-norms or validated annual thresholds. Exact assessment dates are unavailable.
-Missing intermediate time points are flagged and never filled with zero scores.
-A score of 90 receives a ceiling-effect explanation.
-
-### 3.4 Intervention Planning
-
-The intervention-planning service generates preliminary reading-support suggestions based on the screening category and available assessment history.
-
-Suggestions can include continuing suitable reading practice, monitoring progress, or seeking educator review when information is insufficient or progress may be limited.
-
-The generated plans are rule-based suggestions. They do not demonstrate that an intervention is effective and must be reviewed by a qualified educator before being used in practice.
-
-| Evidence | Support priority and action |
-|---|---|
-| Insufficient history | Collect evidence; obtain further assessments before classifying a trend. |
-| Latest observed decline, High category, or Medium category | Educator review; inspect assessment conditions and plan supported practice. |
-| Negative experimental forecast at a time point seen in training | Educator review; corroborate with further observations before changing support. |
-| Low category without those review triggers | Continue and monitor using the existing learning plan. |
-
-A positive forecast never cancels an observed decline. Forecasts at unseen or
-unknown training time points do not change priorities. Missing history still
-requires evidence collection even when a forecast exists. Numerical scores do
-not identify a specific decoding, fluency, or comprehension deficit.
-
-Each plan includes `support_priority`, `forecast_use`, `recommendation_basis`,
-`review_required`, and `review_trigger`. The rationale states the actual score
-changes and any forecast used. Frequency and duration remain educator decisions.
-Activities include educator-selected supported oral reading, constructive
-feedback, and recording word-reading errors for educator assessment. These
-examples are informed by general literacy guidance in the [IES/WWC foundational
-reading guide](https://ies.ed.gov/ncee/wwc/PracticeGuide/21); that source does not
-validate this software's mapping, thresholds, or effectiveness for dyslexia.
-
-### 3.5 Combined Progress Reporting
-
-The reporting service combines:
-
-- Latest observed reading scores and assessment time points
-- Experimental next-score forecasts from each participant's latest history
-- The model used for those estimates
-- Recent score-change summaries
-- Preliminary stagnation categories
-- Suggested reading-support activities
-- Recommendation frequency and session-duration guidance
-
-The report is printed in the terminal and returned as a pandas DataFrame.
-
-**Important:** The reporting service generates an experimental next-score forecast from each eligible participant's latest assessment. It predicts the next observed score, which may not correspond to a fixed future date. This forecast has not been independently validated as a real-world future prediction.
-
-Each report row includes `forecast_status` and `forecast_explanation`:
-
-| Status | Meaning |
-|---|---|
-| `observed_training_time_point` | The latest assessment time point occurred in the final model's training inputs. The forecast remains experimental. |
-| `unseen_training_time_point` | The latest assessment time point did not occur in training inputs; historical test results do not validate forecasting from it. |
-| `training_time_points_unknown` | Training time-point metadata is unavailable, so support cannot be checked. |
-| `no_forecast` | No numerical forecast is available; check assessment history and model availability. |
-
-The check uses only the final model's training data, not the held-out test data.
-It checks time-point membership, not the full feature distribution, the time
-until the next assessment, or whether this learner's forecast is accurate.
-`has_future_forecast` indicates that a numerical estimate exists; it does not
-mean that the forecast has been validated.
-
-In the report verified on 2026-10-21, 579 T4 forecasts are flagged as
-`unseen_training_time_point`. The other 207 forecasts use T2 (61) or T3 (146),
-which occurred in training inputs. All 786 report rows include an explanation.
-These status fields do not alter predicted scores. Support planning excludes forecasts with unseen or unknown training time points.
-
-## 4. System Workflow
-
-```text
-LIBS Longitudinal Assessment Data
-                |
-                v
-       Data Preparation
-                |
-                v
-   Historical Feature Creation
-                |
-                v
-     Model Training and
-      Validation-Based
-        Model Selection
-                |
-                v
-    Held-Out Test Evaluation
-                |
-                v
-  Stagnation Screening and
-    Intervention Planning
-                |
-                v
-     Combined Progress Report
-                |
-                v
-      Educator Review
-```
-
-The current prediction, screening, planning, and reporting scripts run as Python services. The workflow described here does not imply that a live dashboard or automated clinical decision system has been implemented.
-
-## 5. Dataset Information
-
-### LIBS Longitudinal Reading Assessments
-
-The primary workflow uses the LIBS longitudinal reading-assessment data.
-
-The prepared dataset used in the latest successful evaluation contains:
-
-| Item | Count |
-|---|---:|
-| Observed assessment records | 2,834 |
-| Participants with at least two observed scores | 786 |
-| Usable next-score prediction examples | 1,262 |
-| Participants represented in prediction examples | 709 |
-
-The prediction dataset contains fewer participants than the screening dataset because prediction requires sufficient consecutive observed scores to construct the input features and target.
-
-### Synthetic Development Dataset
-
-The project also retains a synthetic reading-progress dataset for the legacy development workflow.
-
-Synthetic records must be clearly identified as synthetic and must not be presented as real children's assessment records.
-
-## 6. Machine-Learning Evaluation
-
-The latest successful evaluation used participant-level separation across training, validation, and testing.
-
-All three evaluation workflows now share the default outer split: 20% of
-eligible participants are reserved using random seed 42. On the current data,
-this gives 567 development participants and 142 test participants. Repeated
-validation uses only the development group. Interval evaluation divides that
-development group into fitting and calibration participants.
-
-Membership is reproducible for the same eligible participant population and
-test fraction; this is not a saved participant manifest. Adding or removing
-eligible participants can change the split. A custom interval `test_size`
-changes its holdout and should be treated as a different experiment.
-
-Earlier repeated-validation runs included the whole dataset, and test results
-have already been inspected. This change prevents future cross-workflow use
-of test participants for fitting or validation; it cannot make past exploration
-unseen. These are exploratory research results, not an untouched confirmatory
-test. Further tuning should use development data only.
-
-### Validation Results
-
-The model was selected using validation Mean Absolute Error (MAE).
-
-| Model | Validation MAE | Validation RMSE | Validation R² |
-|---|---:|---:|---:|
-| Persistence Baseline | 26.19 | 28.52 | -0.936 |
-| Linear Regression | 8.08 | 10.04 | 0.760 |
-| Random Forest | 6.49 | 8.75 | 0.818 |
-
-**Selected model:** Random Forest Regressor.
-
-### Final Held-Out Test Results
-
-| Model | Test MAE | Test RMSE | Test R² |
-|---|---:|---:|---:|
-| Persistence Baseline | 27.06 | 29.64 | -0.953 |
-| Linear Regression | 8.69 | 10.82 | 0.740 |
-| Random Forest | 7.82 | 10.36 | 0.761 |
-
-### Evaluation Metrics
-
-- **MAE:** Average absolute difference between actual and predicted scores. Lower is better.
-- **RMSE:** Error metric that gives greater weight to larger errors. Lower is better.
-- **R²:** Indicates how well predictions explain variation in the target values. Its interpretation depends on the dataset and evaluation setting.
-
-The reported values are the results of the current data preparation, model configuration, and participant split. They should not be assumed to generalize to other datasets or populations without further evaluation.
-
-## 7. Stagnation Screening Results
-
-The latest screening run processed 786 participants.
-
-| Preliminary category | Participants |
-|---|---:|
-| Low | 706 |
-| Medium | 3 |
-| High | 0 |
-| Insufficient Data | 77 |
-
-These counts describe the output of the current rules on this dataset. They do not establish the prevalence of stagnation or reading difficulties in a real-world population.
-
-The screening thresholds require further evaluation before they can be considered reliable.
-The updated run found zero latest-score declines and seven participants with
-missing intermediate time points. Support priorities were Continue and monitor
-(706), Collect evidence (77), and Educator review (3). Decline handling and
-forecast-triggered review are tested with explicitly fictional cases; the real
-cohort does not validate these rules' sensitivity or specificity.
-
-## 8. Technologies Used
-
-- **Python** — implementation language
-- **Pandas** — data loading, cleaning, and manipulation
-- **NumPy** — numerical calculations
-- **Scikit-learn** — regression models, participant-level splitting, and evaluation metrics
-
-## 9. Project Structure
-
-Relevant files for Component 4:
-
-```text
-J26-DS-335-Dyslexia-Reading-Assistance/
-|
-├── backend/
-│   └── app/
-│       └── services/
-│           └── learning_progress/
-│               ├── data_preparation.py
-│               ├── progress_prediction.py
-│               ├── stagnation_detection.py
-│               ├── intervention_planning.py
-│               ├── progress_reporting.py
-│               └── prepare_libs_longitudinal.py
-|
-└── datasets/
-    └── component4/
-        ├── reading_progress.csv
-        ├── libs_reading_assessments_long.csv
-        └── libs_prediction_results.csv
-```
-
-The prepared LIBS dataset must be available at the expected path before running the main LIBS workflow. The prediction-results CSV is generated by the evaluation script when result saving is enabled.
-
-## 10. Setup and Execution
-
-Run commands from the repository root.
-
-### Prerequisites
-
-- Python installed (the current verification environment uses Python 3.13.9)
-- Dependencies from `requirements-component4.txt`, including `openpyxl` for Excel and `pytest` for tests
-- The prepared BAS dataset, or the source workbook to generate it
-
-Install the required Python packages if they are not already available:
-
-```bash
-python -m pip install -r requirements-component4.txt
-```
-
-The requirements file records the direct package versions in the verified
-environment; it is not a complete dependency lockfile or a claim that a fresh
-installation has been tested. Use a dedicated virtual environment for a new
-installation. On the current development Mac, `/opt/anaconda3/bin/python`
-has these dependencies; the default `python3` points to a different environment.
-
-### Step 1: Validate Python Syntax
-
-```bash
-python -m compileall backend/app/services/learning_progress
-```
-
-### Step 2: Prepare or Validate Reading Data
-
-If the prepared BAS CSV is missing, generate it from
-`LIBS_DataSet_UnLinked_July2024.xlsx` in the repository root:
-
-```bash
-python backend/app/services/learning_progress/prepare_libs_longitudinal.py
-```
-
-This writes `datasets/component4/libs_reading_assessments_long.csv` only if the
-path does not exist. Use `--output PATH` for a new file; `--overwrite` is required
-to deliberately replace an existing file. Importing the preparation module
-performs no file writes.
-The current workbook produces 2,834 records for 786 participants.
-
-If the prepared CSV already exists, validate it without rewriting it:
-
-```bash
-python backend/app/services/learning_progress/data_preparation.py
-```
-
-### Step 3: Evaluate Prediction Models
-
-```bash
-python backend/app/services/learning_progress/progress_prediction.py
-```
-
-This command prints validation results and final held-out test metrics. It also saves the evaluation summary to `datasets/component4/libs_prediction_results.csv`.
-
-### Step 4: Run Stagnation Screening
-
-```bash
-python backend/app/services/learning_progress/stagnation_detection.py
-```
-
-### Step 5: Generate Support Plans
-
-```bash
-python backend/app/services/learning_progress/intervention_planning.py
-```
-
-### Step 6: Generate the Combined Report
-
-```bash
-python backend/app/services/learning_progress/progress_reporting.py
-```
-
-`data_preparation.py` loads and validates existing CSVs; it does not generate
-the BAS CSV from the workbook.
-
-### Run Component 4 Tests
-
-```bash
-python -m pytest tests/component4 -q -p no:cacheprovider
-```
-
-### Separate Older Multi-Assessment Workflow
-
-The current prediction, screening, and reporting services use the BAS-only
-`libs_reading_assessments_long.csv`, with `assessment` and `reading_score`
-columns. The older exploratory workflow uses a different schema and now has
-its own output path:
-
-| Script | Input | Output |
-|---|---|---|
-| `prepare_libs_dataset.py` | Original workbook | `libs_all_assessments_long.csv` |
-| `analyze_libs_progress.py` | `libs_all_assessments_long.csv` | `libs_progress_changes.csv` |
-| `prepare_bas_prediction_data.py` | `libs_all_assessments_long.csv` | `libs_bas_prediction.csv` |
-
-All CSV paths in this table are under `datasets/component4/`. The older format
-contains `assessment_name`, `assessment_score`, and `source_variable`. Generate
-it with `prepare_libs_dataset.py` only when using those exploratory scripts.
-It must not replace the current BAS CSV. Existing generated results are not
-automatically migrated or refreshed by this path change. The older scripts
-overwrite their own output files when explicitly run.
-
-## 11. Current Limitations
-
-- The model predicts the next observed assessment score, not a score at a fixed future date.
-- The combined report includes experimental next-score forecasts, but their real-world future accuracy has not been independently validated.
-- The reported model results depend on the available LIBS data and the current participant split.
-- The dataset does not directly measure the effectiveness of dyslexia interventions.
-- Stagnation categories use preliminary, unvalidated rules.
-- Intervention suggestions are rule-based and have not been demonstrated to improve reading outcomes.
-- Further evaluation is required before using the component in real educational or clinical decision-making.
-- The current implementation does not establish clinical validity.
-
-## 12. Ethical Considerations
-
-- Handle assessment records responsibly and follow the dataset's access and usage conditions.
-- Avoid exposing participant identifiers in public demonstrations or reports.
-- Use synthetic data only when clearly labelled as synthetic.
-- Do not interpret model estimates as diagnoses or as replacements for educator assessment.
-- Require educator review of support suggestions.
-- Evaluate model performance and potential bias before considering real-world deployment.
-
-## 13. Future Improvements
-
-Potential future improvements include:
-
-- Validate the current simple models on new data before adding complexity.
-- Evaluating model performance across additional datasets and populations.
-- Improving uncertainty estimates for predicted scores.
-- Validating stagnation thresholds against suitable expert-reviewed criteria.
-- Evaluating support recommendations using appropriate intervention-outcome data.
-- Developing a user-facing dashboard when integrated with the wider system.
-- Evaluating fairness, robustness, and generalization before deployment.
-
-These are future directions, not claims about features already implemented.
-
-## 14. Branch Information
-
-Component branch:
-
-`component4-learning-progress-prediction`
-
-Base commit for the current local work:
-
-`f7e46b9` — Add experimental prediction intervals
-
-The corrections described here are subsequent local changes, not a new commit.
-
-The current branch contains the data-preparation, prediction, stagnation-screening, intervention-planning, and combined-reporting updates described in this document.
-
-## 15. Repeated Participant-Level Validation
-
-Five repeated participant-level validation splits were used to compare the
-Persistence Baseline, Linear Regression, and Random Forest models. Participants
-were kept separate between the fitting and validation groups within each split.
-These updated results were measured on 2026-10-21 using only the 567 development
-participants. Each round uses 453 fitting and 114 validation participants;
-the 142 test participants are excluded. The `test_size` argument in
-`evaluate_repeated_group_validation()` means the validation fraction within
-the development group, not the outer holdout fraction.
-
-| Model | Mean MAE | MAE Std. Dev. | Mean RMSE | RMSE Std. Dev. | Mean R² | R² Std. Dev. |
-|---|---:|---:|---:|---:|---:|---:|
-| Persistence Baseline | 26.443 | 0.284 | 28.872 | 0.471 | -0.933 | 0.105 |
-| Linear Regression | 8.247 | 0.424 | 10.368 | 0.513 | 0.751 | 0.019 |
-| Random Forest | 6.979 | 0.325 | 9.343 | 0.282 | 0.798 | 0.008 |
-
-Random Forest achieved the lowest mean MAE and RMSE and the highest mean R²
-across these five splits. These results complement, but do not replace, the
-separate held-out test evaluation.
-
-The splits can overlap across rounds; their standard deviations describe
-variation across these splits and are not confidence intervals. Earlier
-generated repeated-validation CSVs were preserved and describe the old
-whole-dataset experiment, so they do not match this updated table.
-
-The results apply to the prepared LIBS dataset and current features. They do
-not establish clinical effectiveness or guarantee generalization to children
-diagnosed with dyslexia.
-
-
-## 16. Experimental Prediction Intervals
-
-An experimental split conformal prediction-interval evaluation was added
-for the Random Forest reading-progress model. Participants were separated
-into fitting, calibration, and test groups to avoid participant overlap.
-
-The evaluation used nominal 90% coverage and produced these results on
-2026-10-21 for the current prepared LIBS dataset, using the shared seed-42
-test group. The fitting group contains 425 participants. These replace the
-earlier interval results from a different test group (seed 62):
-
-| Metric | Result |
-|---|---:|
-| Calibration participants | 142 |
-| Test participants | 142 |
-| Test records | 254 |
-| Record-level coverage | 91.3% |
-| Participant-level coverage | 85.2% |
-| Mean interval width | 35.373 score points |
-| Calibration threshold | 18.037 score points |
-
-Record-level coverage measures the proportion of individual test records
-inside their intervals. Participant-level coverage measures the proportion
-of test participants for whom all evaluated records were covered.
-
-Observed participant coverage is below the nominal 90% target on this split.
-Record coverage above 90% does not establish that the participant target was
-met. Do not select a different split or tune the threshold against these test
-results to improve the reported coverage.
-
-For an unavailable finite calibration rank, the implementation uses an infinite
-threshold, producing the full valid score range [0, 90]. Such an interval is
-uninformative, even though it covers all valid scores.
-
-**Limitations:** These are experimental results from the current LIBS dataset.
-The intervals are clipped to the documented 0–90 score range. For genuine
-scores within this range, clipping does not remove covered scores.
-The observed coverage does not guarantee nominal coverage for future
-participants. The available local documentation does not establish a dyslexia-specific population,
-and these results do not establish clinical validity or intervention
-effectiveness.
-
-To reproduce the updated evaluations without overwriting result CSVs, run
-from the repository root:
-
-```bash
-python - <<'PY'
-from backend.app.services.learning_progress.progress_prediction import (
-    train_libs_progress_model,
-    evaluate_repeated_group_validation,
-    evaluate_prediction_intervals,
-)
-train_libs_progress_model(save_results=False)
-evaluate_repeated_group_validation()
-evaluate_prediction_intervals()
-PY
-```
-
-
-## 17. Reproducible Evaluation and Research Materials
-
-Run the complete aggregate evaluation without writing files:
-
-```bash
-python -m backend.app.services.learning_progress.evaluation_report
-```
-
-To save a **new** result file (an existing path is refused):
-
-```bash
-python -m backend.app.services.learning_progress.evaluation_report --output documentation/component4/evaluation_new_run.json
-```
-
-This evaluates the existing models, repeated validation, intervals, and reporting.
-It includes package versions, input/source SHA-256 hashes, a test-participant
-membership digest, missing-data counts, participant-weighted MAE, and transition
-breakdowns. It does not save learner IDs or individual scores. A membership
-digest detects changes but is not a persisted split manifest. Existing generated
-CSVs are not overwritten. Keep the exact data and source version with a report.
-
-Measured output: [evaluation_2026-10-21.json](documentation/component4/evaluation_2026-10-21.json).
-Methodology, presentation outline, examples, and limitations:
-[research_notes.md](documentation/component4/research_notes.md).
-
-### Additional diagnostic results
-
-| Comparator | Validation MAE | Test MAE | Test RMSE | Test R² |
-|---|---:|---:|---:|---:|
-| Current-time-point mean | 11.733 | 11.526 | 14.878 | 0.508 |
-
-This baseline learns a mean target score for each current assessment time point
-from fitting participants only. It does not use the future time point as a
-predictor. It is a diagnostic comparator and does not change model selection.
-Random Forest's test MAE with equal weight per participant is **8.066**; the
-record-weighted MAE remains **7.822**.
-
-| Observed transition | Test records | Approximate study years | Random Forest MAE |
-|---|---:|---:|---:|
-| T2 → T3 | 140 | 1 | 8.476 |
-| T2 → T4 | 2 | 4 | 20.163 |
-| T3 → T4 | 112 | 3 | 6.784 |
-
-The two-record T2 → T4 subgroup cannot support a robust conclusion. The pooled
-R² also reflects differences between assessment stages; it is not a percentage
-accuracy or evidence of within-child causal learning improvement.
-
-### Verification
-
-Final local verification on 2026-10-21: **89 tests passed**. Python compilation
-and `git diff --check` also completed successfully.
-
-The implementation has unit tests for data validation, chronology, participant
-separation, interval rank calculations, forecast support, trend screening,
-and recommendation rules, plus temporary-file preparation and combined-report
-integration tests. These verify software behavior, not educational effectiveness.
-Run the test command in Section 10 after edits. The source workbook and existing
-dataset CSVs were preserved during this implementation.
+| `backend/app/component4/schema.py` | Raw observation validation and derived metrics |
+| `backend/app/component4/store.py` | SQLite records, accounts, goals and intervention lifecycle |
+| `backend/app/component4/models.py` | Model comparison, evaluation and guarded inference |
+| `backend/app/component4/analytics.py` | Trend screening, planning and outcome reports |
+| `backend/app/component4/web.py` | Local routes, authentication and teacher/parent permissions |
+| `backend/app/component4/templates/` and `static/` | Dashboard frontend and print styles |
+| `runtime/` | Ignored local database and signing key; preserve both when backing up |
+| `models/component4/session_*/` | Ignored trusted training artifacts; reproducible with the training CLI |
+| `documentation/component4/` | Evaluation evidence, methodology and PP1 checklist |
+
+The server binds to `127.0.0.1` only and uses Flask's development server for the local evaluation. Database permissions are restricted to the local OS user; the database is not application-encrypted. Password hashing, role checks, session-cookie protections and CSRF checks support this local prototype. Internet deployment, institution-wide access control, concurrent deployment testing and integration with other components are outside this PP1 build.
+
+If port 5054 is already occupied by this application, use its running terminal or stop it with Ctrl+C before restarting. Alternatively supply `--port 5055` and open the corresponding local URL. A missing model produces an explicit unavailable forecast; a corrupt artifact fails its checksum check.
+
+## Earlier LIBS benchmark
+
+[LIBS methodology and results](documentation/component4/libs_benchmark.md) and [research notes](documentation/component4/research_notes.md) document the separate BAS 0–90 experiment. Existing source datasets and previous result files are preserved. They do not establish a dyslexia-specific cohort or intervention effectiveness.

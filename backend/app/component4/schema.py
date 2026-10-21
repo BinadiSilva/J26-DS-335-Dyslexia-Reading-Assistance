@@ -9,6 +9,12 @@ import math
 
 TARGETS = ("reading_speed_wpm", "reading_accuracy", "fluency_score", "word_error_rate")
 FEATURES = TARGETS + ("difficulty_level", "practice_minutes")
+# CSV import and the web form share raw observations; derived metrics are
+# always recalculated so an imported accuracy or WER cannot contradict counts.
+SESSION_INPUTS = (
+    "assessed_on", "words_total", "correct_words", "insertions",
+    "duration_seconds", "fluency_score", "difficulty_level", "practice_minutes",
+)
 WINDOW = 4
 HORIZON_DAYS = 7
 
@@ -63,4 +69,14 @@ def validate_session(data):
         result["words_total"] - result["correct_words"] + result["insertions"]
     ) / result["words_total"]
     result["notes"] = str(data.get("notes", "")).strip()[:2000]
+    reference = data.get("reference_stagnation")
+    result["reference_stagnation"] = None
+    if reference is not None and str(reference).strip().lower() not in {"", "nan"}:
+        # This optional label must come from an independent reviewer. It is
+        # retained for evaluation only and never added to model features.
+        labels = {"true": True, "false": False, "1": True, "0": False,
+                  "1.0": True, "0.0": False}
+        if str(reference).strip().lower() not in labels:
+            raise ValueError("Reference stagnation must be blank, true or false.")
+        result["reference_stagnation"] = labels[str(reference).strip().lower()]
     return result

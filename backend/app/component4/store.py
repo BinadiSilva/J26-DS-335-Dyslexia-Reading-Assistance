@@ -91,6 +91,35 @@ class Store:
             raise LookupError("Learner not found.")
         return dict(row)
 
+    def update_goals(self, learner_id, data):
+        """Update educator goals without rewriting previously approved plans."""
+        self.learner(learner_id)
+        goals = {
+            "target_speed": number(data.get("target_speed"), "Speed goal", 1, 300),
+            "target_accuracy": number(data.get("target_accuracy"), "Accuracy goal", 1, 100),
+            "target_fluency": number(data.get("target_fluency"), "Fluency goal", 1, 100),
+            "id": learner_id,
+        }
+        with self.connection() as db:
+            db.execute("UPDATE learners SET target_speed=:target_speed, target_accuracy=:target_accuracy, target_fluency=:target_fluency WHERE id=:id", goals)
+
+    def training_records(self, source):
+        """Export only one provenance group; omit names, notes and account data."""
+        if source not in {"synthetic", "collected"}:
+            raise ValueError("Choose synthetic or collected data provenance.")
+        with self.connection() as db:
+            rows = db.execute(
+                "SELECT s.learner_id,s.payload FROM sessions s JOIN learners l "
+                "ON s.learner_id=l.id WHERE l.source=? ORDER BY s.learner_id,s.assessed_on",
+                (source,),
+            ).fetchall()
+        records = []
+        for row in rows:
+            payload = json.loads(row["payload"])
+            payload.pop("notes", None)
+            records.append({**payload, "learner_id": row["learner_id"], "source": source})
+        return records
+
     def create_user(self, username, password, role, learner_id=None):
         username = text(username, "Username", 80)
         if not isinstance(password, str) or len(password) < 12:
@@ -111,6 +140,16 @@ class Store:
         if row and check_password_hash(row["password_hash"], password):
             return self.user(username)
         return None
+
+    def reset_password(self, username, password):
+        """Local administrative recovery; the CLI reads passwords with getpass."""
+        if not self.user(username):
+            raise ValueError("Account not found.")
+        if not isinstance(password, str) or len(password) < 12:
+            raise ValueError("Use a password with at least 12 characters.")
+        with self.connection() as db:
+            db.execute("UPDATE users SET password_hash=? WHERE username=?",
+                       (generate_password_hash(password), username))
 
     def add_session(self, learner_id, data):
         self.learner(learner_id)

@@ -151,3 +151,43 @@ def test_passwords_hashed_and_parent_scope_required(store):
     assert store.authenticate("teacher", "testing-password")["role"] == "teacher"
     with pytest.raises(ValueError, match="assigned"):
         store.create_user("parent", "testing-password", "parent")
+
+
+def test_goal_updates_do_not_rewrite_approved_plan(store, rows):
+    store.add_session("one", rows[0])
+    proposal = learner_report(store, "one")["proposed_plan"]
+    store.start_intervention("one", {**proposal, "started_on": rows[0]["assessed_on"]})
+    store.update_goals("one", {"target_speed": 100, "target_accuracy": 95, "target_fluency": 85})
+    assert store.learner("one")["target_speed"] == 100
+    assert store.interventions("one")[0]["plan"]["goal_snapshot"]["speed"] == 80
+
+
+def test_independent_labels_export_and_do_not_override_detector(store, rows):
+    for row in rows[:4]:
+        store.add_session("one", {**row, "reference_stagnation": "true", "notes": "Private review"})
+    report = learner_report(store, "one")
+    assert report["risk"]["level"] == "Low"  # observations determine screening
+    assert report["sessions"][-1]["reference_stagnation"] is True
+    records = store.training_records("synthetic")
+    assert records[0]["reference_stagnation"] is True
+    assert "notes" not in records[0] and "alias" not in records[0]
+    assert store.training_records("collected") == []
+    with pytest.raises(ValueError, match="Reference"):
+        validate_session({**rows[0], "reference_stagnation": "unknown"})
+
+
+def test_password_reset_invalidates_the_old_password(store):
+    store.create_user("teacher", "old-testing-password", "teacher")
+    store.reset_password("teacher", "new-testing-password")
+    assert store.authenticate("teacher", "old-testing-password") is None
+    assert store.authenticate("teacher", "new-testing-password")
+
+
+def test_supported_accuracy_forecast_can_prompt_review(store, rows):
+    history = rows[:4]
+    forecast_values = dict(history[-1])
+    forecast_values["reading_accuracy"] -= 5
+    result = propose_plan(store.learner("one"), history, monitor(history),
+                          {"status": "available", "values": forecast_values}, [])
+    assert result["priority"] == "Medium"
+    assert any("lower accuracy" in reason for reason in result["rationale"])

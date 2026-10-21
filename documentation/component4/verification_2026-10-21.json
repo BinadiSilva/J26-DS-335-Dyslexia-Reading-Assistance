@@ -1,0 +1,46 @@
+{
+  "scope": "Local synthetic demonstration; Flask test client, not a load test or browser rendering benchmark.",
+  "model": "Linear Regression",
+  "source": "synthetic",
+  "model_sha256": "f656a66802fd8124b9fcae619fcf1689405cca83240c6869997ae1d6af73f936",
+  "startup_model_load_seconds": 0.016853415989317,
+  "routes": {
+    "/": {
+      "status": 200,
+      "seconds": 0.014712625066749752
+    },
+    "/learners/DEMO0001": {
+      "status": 200,
+      "seconds": 0.018321415991522372
+    },
+    "/evaluation": {
+      "status": 200,
+      "seconds": 0.005484499968588352
+    },
+    "/evaluation.json": {
+      "status": 200,
+      "seconds": 0.0008212500251829624
+    },
+    "/learners/DEMO0001/report.json": {
+      "status": 200,
+      "seconds": 0.00202700006775558
+    },
+    "/training-sessions.csv?source=synthetic": {
+      "status": 200,
+      "seconds": 0.0016234999056905508
+    }
+  },
+  "report_samples": 18,
+  "report_p95_seconds": 0.001198977691819891,
+  "report_max_seconds": 0.0013393339468166232,
+  "target_seconds": 5,
+  "report_target_met": true,
+  "forecast_statuses": {
+    "DEMO0001": "available",
+    "DEMO0002": "available",
+    "DEMO0003": "available",
+    "DEMO0004": "available",
+    "DEMO0005": "available",
+    "DEMO0006": "available"
+  }
+}

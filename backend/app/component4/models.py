@@ -31,7 +31,7 @@ from sklearn.multioutput import MultiOutputRegressor
 from sklearn.preprocessing import StandardScaler
 
 from .analytics import monitor
-from .schema import FEATURES, TARGETS, WINDOW, HORIZON_DAYS, validate_session
+from .schema import FEATURES, TARGETS, WINDOW, HORIZON_DAYS, SESSION_INPUTS, validate_session
 
 
 MODEL_NAMES = (
@@ -47,7 +47,7 @@ SEED = 335
 
 def prepare_examples(frame):
     """Build chronological training examples without data leakage."""
-    required = {"learner_id", "source", "assessed_on", *FEATURES}
+    required = {"learner_id", "source", *SESSION_INPUTS}
 
     if not required.issubset(frame.columns):
         raise ValueError(
@@ -62,11 +62,16 @@ def prepare_examples(frame):
         raise ValueError("Nonempty learner IDs and sessions are required.")
 
     if (
-        frame.source.nunique() != 1
+        frame.source.isna().any()
+        or frame.source.nunique() != 1
         or frame.source.iloc[0] not in {"synthetic", "collected"}
     ):
         raise ValueError("Train synthetic and collected datasets separately.")
 
+    frame = frame.copy()
+    # Canonical IDs prevent differently formatted identifiers for one learner
+    # from bypassing duplicate checks or participant-separated splitting.
+    frame["learner_id"] = frame["learner_id"].astype(str).str.strip()
     if frame.duplicated(["learner_id", "assessed_on"]).any():
         raise ValueError("Duplicate learner assessment dates.")
 
@@ -754,6 +759,10 @@ def train_comparison(frame, output_dir, epochs=80, names=MODEL_NAMES):
         "dataset_sha256": hashlib.sha256(
             data.to_csv(index=False).encode()
         ).hexdigest(),
+        "source_sha256": {
+            name: hashlib.sha256(Path(__file__).with_name(name).read_bytes()).hexdigest()
+            for name in ("models.py", "schema.py", "analytics.py", "synthetic.py")
+        },
         "participants": {
             key: len(ids)
             for key, ids in splits.items()
@@ -866,4 +875,8 @@ def load_model(directory):
             "Model checksum mismatch; use the original trusted experiment artifact."
         )
 
-    return joblib.load(model_path)
+    bundle = joblib.load(model_path)
+    # The JSON is written after hashing the binary. Use that final report for
+    # exports so the dashboard includes the exact artifact checksum as well.
+    bundle.report = report
+    return bundle

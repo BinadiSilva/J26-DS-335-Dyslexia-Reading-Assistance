@@ -1,20 +1,21 @@
 """Local standalone dashboard: python -m backend.app.component4.web --demo."""
 
 import argparse
+import csv
 from datetime import timedelta
 from functools import wraps
 import getpass
-import json
+from io import StringIO
 import os
 from pathlib import Path
 import secrets
 import time
 
-from flask import Flask, abort, flash, g, jsonify, redirect, render_template, request, session, url_for
+from flask import Flask, Response, abort, flash, g, jsonify, redirect, render_template, request, session, url_for
 
 from .analytics import learner_report
 from .models import load_model
-from .schema import TARGETS
+from .schema import TARGETS, SESSION_INPUTS
 from .store import Store
 from .synthetic import seed_demo
 
@@ -34,7 +35,8 @@ def chart(sessions, metric, forecast):
     top = max(max(all_values) * 1.15, 10)
     def xy(day, value):
         return f"{35 + 380 * (day - dates[0]) / max(1, all_dates[-1] - dates[0]):.2f},{145 - 120 * value / top:.2f}"
-    return {"points": " ".join(xy(d, v) for d, v in zip(dates, values)),
+    points = [xy(d, v) for d, v in zip(dates, values)]
+    return {"points": " ".join(points), "markers": [point.split(",") for point in points],
             "forecast": " ".join([xy(dates[-1], values[-1]), xy(all_dates[-1], all_values[-1])]) if has_forecast else None,
             "top": round(top), "start": sessions[0]["assessed_on"],
             "end": forecast["date"] if has_forecast else sessions[-1]["assessed_on"]}
@@ -98,7 +100,15 @@ def create_app(db_path=None, model_dir=None, secret_key=None):
 
     @app.context_processor
     def context():
-        return {"csrf": session.get("csrf"), "user": g.get("user")}
+        # Render invalid POSTs directly. Values stay in the response rather than
+        # placing child observations in Flask's client-side session cookie.
+        def form_value(name, default="", target=None):
+            if request.method == "POST" and (target is None or target == request.endpoint):
+                return request.form.get(name, default)
+            return default
+        return {"csrf": session.get("csrf"), "user": g.get("user"), "form_value": form_value,
+                "form_values": request.form if request.method == "POST" else {},
+                "form_target": request.endpoint if request.method == "POST" else None}
 
     @app.route("/login", methods=["GET", "POST"])
     def login():
@@ -141,7 +151,7 @@ def create_app(db_path=None, model_dir=None, secret_key=None):
             item = store.create_learner(request.form)
         except ValueError as error:
             flash(str(error), "error")
-            return redirect(url_for("home"))
+            return home(), 422
         flash("Learner registered. Add an assessment to begin.", "success")
         return redirect(url_for("learner", learner_id=item["id"]))
 
@@ -163,6 +173,19 @@ def create_app(db_path=None, model_dir=None, secret_key=None):
             flash("Assessment saved. Trends, forecast and proposed support have been refreshed.", "success")
         except ValueError as error:
             flash(str(error), "error")
+            return learner(learner_id), 422
+        return redirect(url_for("learner", learner_id=learner_id))
+
+    @app.post("/learners/<learner_id>/goals")
+    @teacher_only
+    def update_goals(learner_id):
+        authorized(learner_id)
+        try:
+            store.update_goals(learner_id, request.form)
+            flash("Goals updated. The proposed plan has been refreshed; approved plans retain their saved goals.", "success")
+        except ValueError as error:
+            flash(str(error), "error")
+            return learner(learner_id), 422
         return redirect(url_for("learner", learner_id=learner_id))
 
     @app.post("/learners/<learner_id>/interventions")
@@ -178,6 +201,7 @@ def create_app(db_path=None, model_dir=None, secret_key=None):
             flash("Reviewed plan saved with its baseline assessment.", "success")
         except ValueError as error:
             flash(str(error), "error")
+            return learner(learner_id), 422
         return redirect(url_for("learner", learner_id=learner_id))
 
     @app.post("/learners/<learner_id>/interventions/<int:intervention_id>/complete")
@@ -190,6 +214,7 @@ def create_app(db_path=None, model_dir=None, secret_key=None):
             flash("Outcome recorded. Future proposals now consider this intervention history.", "success")
         except ValueError as error:
             flash(str(error), "error")
+            return learner(learner_id), 422
         return redirect(url_for("learner", learner_id=learner_id))
 
     @app.post("/learners/<learner_id>/notes")
@@ -201,6 +226,7 @@ def create_app(db_path=None, model_dir=None, secret_key=None):
             flash("Professional note saved.", "success")
         except ValueError as error:
             flash(str(error), "error")
+            return learner(learner_id), 422
         return redirect(url_for("learner", learner_id=learner_id))
 
     @app.get("/learners/<learner_id>/report.json")
@@ -220,18 +246,62 @@ def create_app(db_path=None, model_dir=None, secret_key=None):
     def evaluation():
         return render_template("evaluation.html", evaluation=model.report if model else None)
 
+    @app.get("/training-sessions.csv")
+    @teacher_only
+    def export_training():
+        source = request.args.get("source", "collected")
+        try:
+            records = store.training_records(source)
+        except ValueError as error:
+            abort(400, str(error))
+        output = StringIO()
+        fields = ["learner_id", "source", *SESSION_INPUTS, "reference_stagnation"]
+        writer = csv.DictWriter(output, fieldnames=fields, extrasaction="ignore")
+        writer.writeheader()
+        writer.writerows(records)
+        return Response(output.getvalue(), mimetype="text/csv", headers={
+            "Content-Disposition": f'attachment; filename="component4-{source}-sessions.csv"'
+        })
+
+    @app.get("/evaluation.json")
+    @teacher_only
+    def export_evaluation():
+        if model is None:
+            abort(404, "No experiment loaded.")
+        response = jsonify(model.report)
+        response.headers["Content-Disposition"] = 'attachment; filename="component4-model-evaluation.json"'
+        return response
+
     return app
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--db", default=str(ROOT / "runtime/component4.sqlite3"))
-    parser.add_argument("--model-dir", default=str(ROOT / "models/component4/session_demo_v1"))
+    parser.add_argument("--model-dir", default=str(ROOT / "models/component4/session_demo_v2"))
     parser.add_argument("--demo", action="store_true", help="Seed only fictional learners; safe to repeat")
     parser.add_argument("--port", default=5054, type=int)
     parser.add_argument("--add-parent", help="Create a parent login, then exit")
+    parser.add_argument("--reset-password", metavar="USERNAME", help="Reset a local account password interactively, then exit")
     parser.add_argument("--learner", help="Learner ID assigned to the new parent")
     args = parser.parse_args()
+    if args.reset_password:
+        # Recovery is a local CLI operation; no password is accepted in URLs,
+        # command arguments or a web endpoint.
+        store = Store(args.db)
+        password = getpass.getpass("New password (12+ characters): ")
+        if password != getpass.getpass("Confirm new password: "):
+            parser.error("Passwords do not match.")
+        try:
+            store.reset_password(args.reset_password, password)
+        except ValueError as error:
+            parser.error(str(error))
+        # A new signing key invalidates old cookies when the server restarts.
+        key_path = Path(args.db).with_suffix(".secret")
+        key_path.write_text(secrets.token_hex(32))
+        key_path.chmod(0o600)
+        print("Password changed. Restart the local server to invalidate existing browser sessions.")
+        return
     app = create_app(args.db, args.model_dir)
     store = app.extensions["c4_store"]
     if args.add_parent:

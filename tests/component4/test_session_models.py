@@ -57,6 +57,25 @@ def test_imported_derived_values_are_recomputed_and_sources_cannot_mix():
         prepare_examples(frame)
 
 
+def test_raw_export_contract_can_train_without_supplied_derived_metrics():
+    frame = generate_cohort(18, 8).drop(columns=["reading_accuracy", "reading_speed_wpm", "word_error_rate"])
+    x, y, *_ = prepare_examples(frame)
+    assert x.shape == (72, 4, len(FEATURES))
+    assert np.isfinite(y).all()
+    frame.loc[0, "source"] = None
+    with pytest.raises(ValueError, match="separately"):
+        prepare_examples(frame)
+
+
+def test_canonical_ids_cannot_bypass_duplicate_checks():
+    frame = generate_cohort(18, 8)
+    duplicate = frame.iloc[[0]].copy()
+    duplicate["learner_id"] = " SYN0001 "
+    import pandas as pd
+    with pytest.raises(ValueError, match="Duplicate"):
+        prepare_examples(pd.concat([frame, duplicate], ignore_index=True))
+
+
 def test_scaler_fits_only_training_and_predictions_repeat():
     x, y, *_ = prepare_examples(generate_cohort(18, 8))
 
@@ -180,7 +199,11 @@ def test_experiment_saves_manifest_preserves_artifacts_and_loads(tmp_path):
     )
 
     assert (destination / "split_manifest.json").exists()
-    assert load_model(destination).predictor.name == model.predictor.name
+    loaded = load_model(destination)
+    assert loaded.predictor.name == model.predictor.name
+    # The final report contains the artifact hash added after serialization.
+    assert loaded.report["model_sha256"] == report["model_sha256"]
+    assert set(report["source_sha256"]) == {"models.py", "schema.py", "analytics.py", "synthetic.py"}
 
     with pytest.raises(FileExistsError):
         train_comparison(generate_cohort(18, 8), destination)

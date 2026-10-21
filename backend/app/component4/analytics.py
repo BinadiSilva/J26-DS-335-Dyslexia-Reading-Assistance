@@ -93,9 +93,11 @@ def propose_plan(learner, sessions, risk, forecast, outcomes):
     # Only a supported forecast can increase priority; history always remains visible.
     if forecast.get("status") == "available":
         predicted = forecast["values"]
-        if predicted["fluency_score"] < latest["fluency_score"] - 2:
+        falling = [name for name in TARGETS[:3] if predicted[name] < latest[name] - 2]
+        if falling:
             level = "High" if level == "High" else "Medium"
-            reasons.append("The experimental one-week forecast suggests lower fluency; corroborate with further observations.")
+            labels = {"reading_speed_wpm": "reading speed", "reading_accuracy": "accuracy", "fluency_score": "fluency"}
+            reasons.append("The experimental one-week forecast suggests lower " + ", ".join(labels[name] for name in falling) + "; corroborate with further observations.")
     if risk["level"] in {"Insufficient data", "Review ceiling"}:
         level = "Review"
         reasons.extend(risk["reasons"][:1])
@@ -115,6 +117,7 @@ def propose_plan(learner, sessions, risk, forecast, outcomes):
         "rationale": reasons, "rule_version": RULE_VERSION, "requires_educator_approval": True,
         "intensity_basis": "Provisional rule-based schedule; educator must confirm or edit before saving.",
         "expected_improvement": None,
+        "goal_snapshot": goals,
     }
 
 
