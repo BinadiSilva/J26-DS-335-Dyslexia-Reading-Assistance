@@ -1,0 +1,369 @@
+{
+  "measured_at_utc": "2026-10-21T06:11:46.592846+00:00",
+  "environment": {
+    "python": "3.13.9",
+    "numpy": "2.3.5",
+    "pandas": "2.3.2",
+    "scikit_learn": "1.5.2"
+  },
+  "provenance": {
+    "dataset_sha256": "ffc4a8a33dfcdcb6f62ee45c91078213c6a62dc152c01b00efbce0be4a2b7bc4",
+    "outer_split_seed": 42,
+    "development_participants": 567,
+    "test_participants": 142,
+    "test_participant_digest": "005d3e253aa6bc891789eee1a23c1ec91a84def83d2b62e2e547ed6400132e90",
+    "status": "Exploratory: earlier results have already been inspected.",
+    "source_sha256": {
+      "analyze_libs_progress.py": "f5ea08a5f5476b33443080b589129c47f98410d116d1cf306994f264b20adc75",
+      "data_preparation.py": "08edb856ebaf1cb6e15fef54ce412d55018cd340f61d7bc95f2cd1ee2e7ebfbe",
+      "evaluation_report.py": "e8b9b161c51f12f39ffce6791d60cb9cc5e6258bfd7431229f4f871663977d63",
+      "inspect_bas_zero_scores.py": "f666271851b0a7a24033c89e7104e31cf742bc1e3307c86f2743c071d7453824",
+      "inspect_libs.py": "f4b3b4160c64638255b1a18a92fede8407828e2fdb6f8c4a9ca2f7aeacdd3ba6",
+      "intervention_planning.py": "eaa462cf2fc0c93aa139263a180704d0828619c3565ce1d2caf4ddd58fb1289c",
+      "prepare_bas_prediction_data.py": "5b181a1ad575a47af012c1f65c1c12a37fec67192f85b7aae5f864aed8da87df",
+      "prepare_libs_dataset.py": "9980cca099f0aa4fae7f79de30d68cae4a1192beb9e65aa51f5d126136ee2b0b",
+      "prepare_libs_longitudinal.py": "8906ebcec1fc79e56265e891f42219b082a3491264e43b0472cd32da900de3dc",
+      "progress_prediction.py": "0623e3ecfe9976c6813d0a929096fe26eadc0de07ccb0fe4d0537abe0f6cbd88",
+      "progress_reporting.py": "c4dc3c23fdab96744cbeba9e9845a14db661df0b27a4e2e18161f15d81368823",
+      "stagnation_detection.py": "e9719ef76f23a7ece61da2c1f8d25b6d59383332d639b41689db7dfa65b592e6",
+      "train_libs_bas_model.py": "6f8ef71aba62d1cfd6daaa9cf104c6b6facf9ad7793956b3d2581ebea74f4c4c",
+      "validate_bas_prediction_data.py": "9ae89b9fafe7f7a2b6d1cf5e6f21ed689b91fbe5c093b51650fa8486ce11cfe3",
+      "validate_libs_progress.py": "3b17c226d928f59c8da6e654b581b406460d805a66f51a457d4de38ccbbd8c2d"
+    },
+    "workbook_sha256": "7a1146ede58f4b050c28032eea4399d08ce2a19f167cd27ec703ae59bf957d33"
+  },
+  "data_quality": {
+    "source_rows": 2834,
+    "invalid_rows_removed": 0,
+    "duplicate_rows_removed": 0,
+    "retained_rows": 2834
+  },
+  "dataset": {
+    "observed_records": 2834,
+    "participants": 786,
+    "prediction_examples": 1262,
+    "prediction_participants": 709,
+    "assessment_counts": {
+      "2": 77,
+      "3": 156,
+      "4": 553
+    },
+    "source_rows": 977,
+    "source_valid_bas_count_distribution": {
+      "0": 145,
+      "1": 46,
+      "2": 77,
+      "3": 156,
+      "4": 553
+    }
+  },
+  "selected_model": "Random Forest",
+  "validation_metrics": {
+    "Persistence Baseline": {
+      "mae": 26.19,
+      "rmse": 28.51981767122644,
+      "r2": -0.9363498027893267
+    },
+    "Linear Regression": {
+      "mae": 8.082543320775908,
+      "rmse": 10.040388177712842,
+      "r2": 0.760011001424669
+    },
+    "Random Forest": {
+      "mae": 6.494555266835081,
+      "rmse": 8.745320358533844,
+      "r2": 0.8179285828508928
+    }
+  },
+  "diagnostics": {
+    "test_models": {
+      "Persistence Baseline": {
+        "records": 254,
+        "participants": 142,
+        "mae": 27.055118110236222,
+        "rmse": 29.641426639558805,
+        "r2": -0.9526844442301001,
+        "participant_macro_mae": 26.658450704225352
+      },
+      "Linear Regression": {
+        "records": 254,
+        "participants": 142,
+        "mae": 8.693589886008386,
+        "rmse": 10.821456606277733,
+        "r2": 0.7397412699143477,
+        "participant_macro_mae": 8.929522292415951
+      },
+      "Random Forest": {
+        "records": 254,
+        "participants": 142,
+        "mae": 7.821939729508237,
+        "rmse": 10.359537038995407,
+        "r2": 0.7614856259979782,
+        "participant_macro_mae": 8.065602747411496
+      },
+      "Current-time-point Mean": {
+        "records": 254,
+        "participants": 142,
+        "mae": 11.525902976187782,
+        "rmse": 14.87800203968174,
+        "r2": 0.5080475932151184,
+        "participant_macro_mae": 12.153448436449635
+      }
+    },
+    "time_point_mean_validation": {
+      "records": 200,
+      "participants": 114,
+      "mae": 11.732956647111465,
+      "rmse": 14.691280216473517,
+      "r2": 0.4861816490303582,
+      "participant_macro_mae": 11.862384408869444
+    },
+    "selected_model_by_observed_transition": [
+      {
+        "current_time_point": 2,
+        "target_time_point": 3,
+        "approximate_study_year_gap": 1,
+        "records": 140,
+        "participants": 140,
+        "mae": 8.476113766790741,
+        "rmse": 10.893995707310633,
+        "r2": 0.5657401419828019,
+        "participant_macro_mae": 8.476113766790741
+      },
+      {
+        "current_time_point": 2,
+        "target_time_point": 4,
+        "approximate_study_year_gap": 4,
+        "records": 2,
+        "participants": 2,
+        "mae": 20.16251884920634,
+        "rmse": 21.517853144338915,
+        "r2": -73.08288063061379,
+        "participant_macro_mae": 20.16251884920634
+      },
+      {
+        "current_time_point": 3,
+        "target_time_point": 4,
+        "approximate_study_year_gap": 3,
+        "records": 112,
+        "participants": 112,
+        "mae": 6.783854698624785,
+        "rmse": 9.315006130863946,
+        "r2": 0.3253143559845424,
+        "participant_macro_mae": 6.783854698624785
+      }
+    ],
+    "note": "The added time-point comparator is diagnostic, not a new selection candidate. No parameters were tuned on these results."
+  },
+  "repeated_validation": [
+    {
+      "model": "Linear Regression",
+      "mean_mae": 8.247471825794607,
+      "std_mae": 0.4243456639837006,
+      "mean_rmse": 10.367911032070536,
+      "std_rmse": 0.5125440852175116,
+      "mean_r2": 0.7508344743095197,
+      "std_r2": 0.018841933894310603
+    },
+    {
+      "model": "Persistence Baseline",
+      "mean_mae": 26.443401916160393,
+      "std_mae": 0.2841725818062193,
+      "mean_rmse": 28.87167953866654,
+      "std_rmse": 0.47094745446558006,
+      "mean_r2": -0.9333638472129377,
+      "std_r2": 0.10539506867387954
+    },
+    {
+      "model": "Random Forest",
+      "mean_mae": 6.979417836808231,
+      "std_mae": 0.32538919858629306,
+      "mean_rmse": 9.343433875330433,
+      "std_rmse": 0.2818440915177553,
+      "mean_r2": 0.7977340995079408,
+      "std_r2": 0.00788255833113421
+    }
+  ],
+  "repeated_validation_details": [
+    {
+      "split": 1,
+      "model": "Persistence Baseline",
+      "mae": 26.563981042654028,
+      "rmse": 28.82443999858848,
+      "r2": -1.106967468688433,
+      "fit_participants": 453,
+      "validation_participants": 114
+    },
+    {
+      "split": 1,
+      "model": "Linear Regression",
+      "mae": 8.114164694356504,
+      "rmse": 10.04691743820129,
+      "r2": 0.7440225314439031,
+      "fit_participants": 453,
+      "validation_participants": 114
+    },
+    {
+      "split": 1,
+      "model": "Random Forest",
+      "mae": 6.904766383742699,
+      "rmse": 9.108370512598414,
+      "r2": 0.7896137026795733,
+      "fit_participants": 453,
+      "validation_participants": 114
+    },
+    {
+      "split": 2,
+      "model": "Persistence Baseline",
+      "mae": 26.38235294117647,
+      "rmse": 28.85868204564728,
+      "r2": -0.8359534462998148,
+      "fit_participants": 453,
+      "validation_participants": 114
+    },
+    {
+      "split": 2,
+      "model": "Linear Regression",
+      "mae": 8.222948202583538,
+      "rmse": 10.548437403525078,
+      "r2": 0.7547071223402526,
+      "fit_participants": 453,
+      "validation_participants": 114
+    },
+    {
+      "split": 2,
+      "model": "Random Forest",
+      "mae": 7.07442793689713,
+      "rmse": 9.53222562833602,
+      "r2": 0.7996924563570014,
+      "fit_participants": 453,
+      "validation_participants": 114
+    },
+    {
+      "split": 3,
+      "model": "Persistence Baseline",
+      "mae": 26.237623762376238,
+      "rmse": 28.47006418073984,
+      "r2": -0.8882506631165712,
+      "fit_participants": 453,
+      "validation_participants": 114
+    },
+    {
+      "split": 3,
+      "model": "Linear Regression",
+      "mae": 8.049970221009357,
+      "rmse": 10.132408273664048,
+      "r2": 0.7608292225578617,
+      "fit_participants": 453,
+      "validation_participants": 114
+    },
+    {
+      "split": 3,
+      "model": "Random Forest",
+      "mae": 6.506124106399047,
+      "rmse": 9.118068431903465,
+      "r2": 0.8063183625591932,
+      "fit_participants": 453,
+      "validation_participants": 114
+    },
+    {
+      "split": 4,
+      "model": "Persistence Baseline",
+      "mae": 26.871287128712872,
+      "rmse": 29.657951031821813,
+      "r2": -0.9516416844334374,
+      "fit_participants": 453,
+      "validation_participants": 114
+    },
+    {
+      "split": 4,
+      "model": "Linear Regression",
+      "mae": 8.97275436029683,
+      "rmse": 11.184004626392024,
+      "r2": 0.7224683778983045,
+      "fit_participants": 453,
+      "validation_participants": 114
+    },
+    {
+      "split": 4,
+      "model": "Random Forest",
+      "mae": 7.408777854381003,
+      "rmse": 9.743036717000074,
+      "r2": 0.7893766692434799,
+      "fit_participants": 453,
+      "validation_participants": 114
+    },
+    {
+      "split": 5,
+      "model": "Persistence Baseline",
+      "mae": 26.16176470588235,
+      "rmse": 28.547260436535282,
+      "r2": -0.8840059735264323,
+      "fit_participants": 453,
+      "validation_participants": 114
+    },
+    {
+      "split": 5,
+      "model": "Linear Regression",
+      "mae": 7.877521650726805,
+      "rmse": 9.927787418570244,
+      "r2": 0.7721451173072762,
+      "fit_participants": 453,
+      "validation_participants": 114
+    },
+    {
+      "split": 5,
+      "model": "Random Forest",
+      "mae": 7.002992902621279,
+      "rmse": 9.215468086814194,
+      "r2": 0.8036693067004562,
+      "fit_participants": 453,
+      "validation_participants": 114
+    }
+  ],
+  "intervals": {
+    "confidence_level": 0.9,
+    "calibration_participants": 142,
+    "test_participants": 142,
+    "calibration_threshold": 18.037335317460332,
+    "record_coverage": 0.9133858267716536,
+    "participant_coverage": 0.852112676056338,
+    "mean_interval_width": 35.37316203683698,
+    "test_records": 254
+  },
+  "intervals_by_target_time_point": [
+    {
+      "target_time_point": 3,
+      "records": 140,
+      "participants": 140,
+      "record_coverage": 0.9,
+      "mean_interval_width": 35.685716223955026
+    },
+    {
+      "target_time_point": 4,
+      "records": 114,
+      "participants": 114,
+      "record_coverage": 0.9298245614035088,
+      "mean_interval_width": 34.98932356142885
+    }
+  ],
+  "monitoring": {
+    "participants": 786,
+    "screening_categories": {
+      "Low": 706,
+      "Insufficient Data": 77,
+      "Medium": 3
+    },
+    "latest_declines": 0,
+    "missing_intermediate_time_points": 7,
+    "forecast_statuses": {
+      "unseen_training_time_point": 579,
+      "observed_training_time_point": 207
+    },
+    "support_priorities": {
+      "Continue and monitor": 706,
+      "Collect evidence": 77,
+      "Educator review": 3
+    }
+  }
+}

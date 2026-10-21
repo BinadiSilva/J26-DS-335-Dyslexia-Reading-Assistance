@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Sign in{% endblock %}
+{% block content %}
+<section class="login card">
+  <div class="eyebrow">WELCOME TO LUMI-IT</div><h1>A clearer view of<br>learning progress.</h1>
+  <p class="muted">Sign in to review reading sessions, explore progress and plan the next step.</p>
+  <form method="post"><input type="hidden" name="csrf" value="{{ csrf }}">
+    <label>Username<input name="username" required autocomplete="username" autofocus></label>
+    <label>Password<input name="password" type="password" required autocomplete="current-password"></label>
+    <button type="submit">Sign in</button>
+  </form>
+  <p class="small muted">Use the local account created when the application starts. Parent accounts can view only their assigned learner.</p>
+</section>
+{% endblock %}

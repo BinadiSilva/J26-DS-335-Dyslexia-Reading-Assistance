@@ -8,7 +8,7 @@ INPUT_FILE = (
     PROJECT_ROOT
     / "datasets"
     / "component4"
-    / "libs_reading_assessments_long.csv"
+    / "libs_all_assessments_long.csv"
 )
 
 # Define a separate output file for progress changes

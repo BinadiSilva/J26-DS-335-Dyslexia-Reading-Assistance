@@ -114,12 +114,29 @@ def _create_models():
     }
 
 
+def _split_development_and_test(data, test_size=0.20):
+    """Reserve the same test participants for a fixed dataset and fraction.
+
+    All evaluation workflows use this split before fitting or calibration.
+    Changing the eligible participant population can change membership.
+    """
+    splitter = GroupShuffleSplit(
+        n_splits=1, test_size=test_size, random_state=RANDOM_STATE,
+    )
+    development_indices, test_indices = next(
+        splitter.split(data, groups=data[PARTICIPANT_COLUMN])
+    )
+    return data.iloc[development_indices].copy(), data.iloc[test_indices].copy()
+
+
 def evaluate_repeated_group_validation(n_splits=5, test_size=0.20):
     """Evaluate candidate models over repeated participant-level splits.
 
     This additional evaluation measures how model performance varies across
     different participant groups. It does not replace the separate final
     held-out test evaluation performed by train_libs_progress_model().
+    The default 20% test participants are excluded from every round.
+    Here test_size means the validation fraction of development participants.
     """
 
     # Validate the requested evaluation settings.
@@ -135,10 +152,15 @@ def evaluate_repeated_group_validation(n_splits=5, test_size=0.20):
     # Load the same longitudinal examples used by the main training workflow.
     data = prepare_libs_prediction_data()
 
-    if data.empty or data[PARTICIPANT_COLUMN].nunique() < 2:
+    if data.empty or data[PARTICIPANT_COLUMN].nunique() < 3:
         raise ValueError(
-            "At least two participants are required for repeated validation."
+            "At least three participants are required for repeated validation "
+            "with a separate test group."
         )
+
+    # Never use reserved test participants to compare or tune models.
+    data, reserved_test = _split_development_and_test(data)
+    test_ids = set(reserved_test[PARTICIPANT_COLUMN])
 
     features = [
         "previous_score",
@@ -157,6 +179,7 @@ def evaluate_repeated_group_validation(n_splits=5, test_size=0.20):
     )
 
     records = []
+    split_participants = []
 
     for split_number, (fit_indices, validation_indices) in enumerate(
         splitter.split(
@@ -174,10 +197,20 @@ def evaluate_repeated_group_validation(n_splits=5, test_size=0.20):
         fit_ids = set(fit_data[PARTICIPANT_COLUMN])
         validation_ids = set(validation_data[PARTICIPANT_COLUMN])
 
-        if not fit_ids.isdisjoint(validation_ids):
+        if (
+            not fit_ids.isdisjoint(validation_ids)
+            or not fit_ids.isdisjoint(test_ids)
+            or not validation_ids.isdisjoint(test_ids)
+        ):
             raise RuntimeError(
                 "Participant overlap detected in repeated validation."
             )
+
+        split_participants.append({
+            "split": split_number,
+            "fit_participants": fit_ids,
+            "validation_participants": validation_ids,
+        })
 
         X_fit = fit_data[features]
         y_fit = fit_data[target]
@@ -237,6 +270,8 @@ def evaluate_repeated_group_validation(n_splits=5, test_size=0.20):
     print("\nREPEATED PARTICIPANT-LEVEL VALIDATION")
     print("=" * 44)
     print(f"Validation splits: {n_splits}")
+    print(f"Development participants: {data[PARTICIPANT_COLUMN].nunique()}")
+    print(f"Reserved test participants (excluded): {len(test_ids)}")
     print("Mean values describe average performance; standard deviations")
     print("describe variation between splits.\n")
     print(
@@ -249,6 +284,8 @@ def evaluate_repeated_group_validation(n_splits=5, test_size=0.20):
     return {
         "detailed_results": detailed_results,
         "summary": summary,
+        "split_participants": split_participants,
+        "test_participants": test_ids,
     }
 
 
@@ -297,26 +334,14 @@ def evaluate_prediction_intervals(
             "At least 10 participants are required for interval evaluation."
         )
 
-    # First reserve the test participants, which are not used for fitting
-    # or calibration.
-    outer_splitter = GroupShuffleSplit(
-        n_splits=1,
-        test_size=test_size,
-        random_state=RANDOM_STATE + 20,
-    )
-    development_indices, test_indices = next(
-        outer_splitter.split(
-            data[features],
-            data[target],
-            groups=data[PARTICIPANT_COLUMN],
-        )
-    )
-
-    development_data = data.iloc[development_indices].copy()
-    test_data = data.iloc[test_indices].copy()
+    # Match the main evaluation holdout when using the default test_size.
+    development_data, test_data = _split_development_and_test(data, test_size)
 
     # Separate calibration participants from model-fitting participants.
     relative_calibration_size = calibration_size / (1 - test_size)
+    development_count = development_data[PARTICIPANT_COLUMN].nunique()
+    if int(np.ceil(development_count * relative_calibration_size)) >= development_count:
+        raise ValueError("Split proportions leave no fitting participants after calibration rounding.")
     calibration_splitter = GroupShuffleSplit(
         n_splits=1,
         test_size=relative_calibration_size,
@@ -366,20 +391,21 @@ def evaluate_prediction_intervals(
         .to_numpy()
     )
 
-    # Use the finite-sample conformal quantile rank.
+    # Calculate the finite-sample conformal quantile rank.
     calibration_count = len(participant_errors)
     quantile_rank = int(
         np.ceil((calibration_count + 1) * confidence_level)
     )
 
+    # If the requested confidence cannot be supported by the calibration
+    # sample, use an infinite threshold rather than an invalid quantile.
     if quantile_rank > calibration_count:
-        raise ValueError(
-            "Too few calibration participants for this confidence level."
+        threshold = float("inf")
+    else:
+        threshold = float(
+            np.sort(participant_errors)[quantile_rank - 1]
         )
 
-    threshold = float(
-        np.sort(participant_errors)[quantile_rank - 1]
-    )
 
     # Evaluate the resulting intervals only on the held-out test group.
     test_predictions = model.predict(test_data[features])
@@ -468,23 +494,8 @@ def train_libs_progress_model(save_results=True):
     ]
     target = "target_score"
 
-    # Reserve 20% of participants for the final test set.
-    outer_splitter = GroupShuffleSplit(
-        n_splits=1,
-        test_size=0.20,
-        random_state=RANDOM_STATE,
-    )
-
-    train_indices, test_indices = next(
-        outer_splitter.split(
-            data[features],
-            data[target],
-            groups=data[PARTICIPANT_COLUMN],
-        )
-    )
-
-    train_data = data.iloc[train_indices].copy()
-    test_data = data.iloc[test_indices].copy()
+    # Share the default holdout with repeated validation and intervals.
+    train_data, test_data = _split_development_and_test(data)
 
     # Split the remaining participants into model-fitting and validation groups.
     if train_data[PARTICIPANT_COLUMN].nunique() < 2:
@@ -669,6 +680,7 @@ def train_libs_progress_model(save_results=True):
         "best_model_name": best_model_name,
         "models": final_models,
         "train_data": train_data,
+        "fit_data": inner_train,
         "validation_data": validation_data,
         "test_data": test_data,
     }
@@ -777,6 +789,8 @@ def forecast_future_progress(model_results):
                 "forecasted_next_score",
                 "forecasted_score_change",
                 "prediction_model",
+                "forecast_status",
+                "forecast_explanation",
             ]
         )
 
@@ -811,6 +825,36 @@ def forecast_future_progress(model_results):
     )
 
     forecasts["prediction_model"] = model_name
+
+    # Check only the data used to fit the final model, never held-out data.
+    # A familiar time point alone does not establish future accuracy.
+    training_data = model_results.get("train_data")
+    training_times = (
+        set(training_data["time_point"].dropna())
+        if isinstance(training_data, pd.DataFrame)
+        and "time_point" in training_data.columns
+        else set()
+    )
+    if not training_times:
+        forecasts["forecast_status"] = "training_time_points_unknown"
+        forecasts["forecast_explanation"] = (
+            "Experimental estimate: training assessment time points are "
+            "unavailable, so time-point support cannot be checked."
+        )
+    else:
+        observed = forecasts["latest_time_point"].isin(training_times)
+        forecasts["forecast_status"] = np.where(
+            observed, "observed_training_time_point", "unseen_training_time_point"
+        )
+        forecasts["forecast_explanation"] = np.where(
+            observed,
+            "Experimental estimate: this assessment time point occurred in "
+            "training inputs. This does not establish future accuracy or "
+            "specify a future assessment date.",
+            "Experimental estimate: this assessment time point did not occur "
+            "in training inputs. Historical test results do not validate "
+            "forecasts from this time point.",
+        )
 
     return forecasts.reset_index(drop=True)
 

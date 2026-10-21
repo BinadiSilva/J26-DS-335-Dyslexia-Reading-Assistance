@@ -16,6 +16,16 @@ PARTICIPANT_COLUMN = "UnlinkedParticipantNumber"
 HIGH_RISK_THRESHOLD = 0
 MEDIUM_RISK_THRESHOLD = 2
 RECENT_CHANGES_WINDOW = 3
+# Approximate study ages from VariableDescriptions_LIBS_July2024.txt.
+# These are not each participant's measured age or exact assessment dates.
+STUDY_AGES = {1: 4, 2: 5, 3: 6, 4: 9}
+RESULT_COLUMNS = [
+    PARTICIPANT_COLUMN, "latest_reading_score", "latest_time_point",
+    "number_of_observed_assessments", "average_recent_change",
+    "latest_score_change", "latest_change_direction", "recent_decline",
+    "latest_study_year_gap", "recent_change_per_study_year",
+    "has_missing_time_points", "stagnation_risk", "explanation",
+]
 
 
 def detect_stagnation():
@@ -52,6 +62,22 @@ def detect_stagnation():
 
         # Keep the most recent changes for a simple trend summary.
         recent_changes = changes[-RECENT_CHANGES_WINDOW:]
+        latest_change = changes[-1] if changes else None
+        direction = (
+            "Insufficient Data" if latest_change is None else
+            "Decline" if latest_change < 0 else
+            "Unchanged" if latest_change == 0 else "Increase"
+        )
+        gaps = [
+            STUDY_AGES[time_points[i]] - STUDY_AGES[time_points[i - 1]]
+            for i in range(1, len(time_points))
+        ]
+        recent_gaps = gaps[-RECENT_CHANGES_WINDOW:]
+        # Report an elapsed-time-adjusted description without inventing a
+        # validated annual-rate cutoff or changing the legacy risk categories.
+        annual_change = (
+            sum(recent_changes) / sum(recent_gaps) if recent_gaps else None
+        )
 
         if len(recent_changes) < 2:
             average_change = None
@@ -82,6 +108,16 @@ def detect_stagnation():
                     "observed assessments."
                 )
 
+        if latest_change is not None:
+            explanation += (
+                f" Latest observed change: {latest_change:+.2f} points over "
+                f"approximately {gaps[-1]} study year(s)."
+            )
+        if direction == "Decline":
+            explanation += " The latest score declined; review this even if the overall average is positive."
+        if scores[-1] == 90:
+            explanation += " The latest score is at the scale maximum; limited headroom can affect apparent progress."
+
         results.append(
             {
                 "UnlinkedParticipantNumber": participant_id,
@@ -95,10 +131,19 @@ def detect_stagnation():
                 ),
                 "stagnation_risk": risk_level,
                 "explanation": explanation,
+                "latest_score_change": latest_change,
+                "latest_change_direction": direction,
+                "recent_decline": direction == "Decline",
+                "latest_study_year_gap": gaps[-1] if gaps else None,
+                "recent_change_per_study_year": round(annual_change, 3) if annual_change is not None else None,
+                "has_missing_time_points": any(
+                    time_points[i] - time_points[i - 1] > 1
+                    for i in range(1, len(time_points))
+                ),
             }
         )
 
-    results_df = pd.DataFrame(results)
+    results_df = pd.DataFrame(results, columns=RESULT_COLUMNS)
 
     print("\nLIBS Reading-Progress Stagnation Screening")
     print("=" * 52)

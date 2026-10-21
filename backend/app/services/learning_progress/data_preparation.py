@@ -4,6 +4,7 @@
 from pathlib import Path
 
 import pandas as pd
+import numpy as np
 
 
 # Locate the project root directory.
@@ -128,6 +129,7 @@ def load_libs_reading_data():
 
     df = pd.read_csv(LIBS_DATA_PATH)
     _check_columns(df, LIBS_REQUIRED_COLUMNS, "LIBS dataset")
+    source_rows = len(df)
 
     # Standardize the assessment participant identifier.
     participant_column = "UnlinkedParticipantNumber"
@@ -146,19 +148,25 @@ def load_libs_reading_data():
     df = df.dropna(
         subset=[participant_column, "reading_score", "time_point"]
     )
+    df = df[np.isfinite(df[participant_column])]
 
     # Check the documented BAS score range and expected time points.
     df = df[df["reading_score"].between(0, 90)]
     df = df[df["time_point"].isin([1, 2, 3, 4])]
 
-    # Normalize assessment names and remove duplicate participant/time rows.
+    # Reject mixed tests or a time-point/name mismatch instead of silently
+    # treating another assessment's scale as a BAS reading score.
     df["assessment"] = df["assessment"].astype("string").str.strip()
-    df = df[df["assessment"] != ""]
+    expected_names = df["time_point"].map({i: f"T{i}BAS_word_reading" for i in range(1, 5)})
+    if not df["assessment"].eq(expected_names).fillna(False).all():
+        raise ValueError("Assessment names must match BAS word reading and time_point.")
 
-    df = df.drop_duplicates(
-        subset=[participant_column, "time_point"],
-        keep="last",
-    )
+    invalid_rows = source_rows - len(df)
+    keys = [participant_column, "time_point"]
+    if df.groupby(keys)["reading_score"].nunique().gt(1).any():
+        raise ValueError("Conflicting reading scores for the same participant/time point.")
+    duplicates = int(df.duplicated(keys).sum())
+    df = df.drop_duplicates(subset=keys, keep="first")
 
     # Sort each participant's assessments in time-point order.
     df = df.sort_values(
@@ -175,6 +183,12 @@ def load_libs_reading_data():
     df["reading_score_change"] = (
         df["reading_score"] - df["previous_reading_score"]
     )
+    df.attrs["quality_report"] = {
+        "source_rows": source_rows,
+        "invalid_rows_removed": invalid_rows,
+        "duplicate_rows_removed": duplicates,
+        "retained_rows": len(df),
+    }
 
     return df
 

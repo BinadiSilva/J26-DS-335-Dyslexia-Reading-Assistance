@@ -34,6 +34,8 @@ def sample_forecasts():
             "forecasted_next_score": [55.0, 68.0],
             "forecasted_score_change": [5.0, 3.0],
             "prediction_model": ["Linear Regression", "Linear Regression"],
+            "forecast_status": ["observed_training_time_point", "unseen_training_time_point"],
+            "forecast_explanation": ["Experimental estimate at a seen time point", "Historical tests do not validate this time point"],
         }
     )
 
@@ -48,6 +50,12 @@ def sample_risk_results():
             "explanation": ["Progress observed", "Slow recent progress"],
             "average_recent_change": [10.0, 1.5],
             "number_of_observed_assessments": [2, 2],
+            "latest_score_change": [10.0, 5.0],
+            "latest_change_direction": ["Increase", "Increase"],
+            "recent_decline": [False, False],
+            "latest_study_year_gap": [1, 1],
+            "recent_change_per_study_year": [10.0, 5.0],
+            "has_missing_time_points": [False, False],
         }
     )
 
@@ -64,6 +72,10 @@ def sample_intervention_results():
             ],
             "frequency": ["2 sessions per week", "3 sessions per week"],
             "session_duration": ["15 minutes", "15 minutes"],
+            "support_priority": ["Continue and monitor", "Educator review"],
+            "forecast_use": ["Experimental review context", "Not used: unavailable or unsupported forecast"],
+            "review_required": [True, True],
+            "review_trigger": ["Further assessment", "Further assessment"],
             "recommendation_basis": [
                 "Low-risk rule",
                 "Medium-risk rule",
@@ -100,7 +112,7 @@ def configure_report_dependencies(
     monkeypatch.setattr(
         reporting,
         "generate_intervention_plans",
-        lambda risk_data: sample_intervention_results.copy(),
+        lambda risk_data, forecast_data=None: sample_intervention_results.copy(),
     )
 
 
@@ -131,6 +143,8 @@ def test_report_contains_expected_columns(
         "forecasted_next_score",
         "forecasted_score_change",
         "has_future_forecast",
+        "forecast_status",
+        "forecast_explanation",
         "prediction_model",
         "stagnation_risk",
         "recommended_activities",
@@ -201,6 +215,9 @@ def test_report_combines_forecasts_risk_and_interventions(
 
     assert report.loc[202, "forecasted_next_score"] == 68.0
     assert report.loc[202, "stagnation_risk"] == "Medium"
+    assert report.loc[202, "forecast_status"] == "unseen_training_time_point"
+    assert report.loc[202, "forecast_explanation"] == "Historical tests do not validate this time point"
+    assert report.loc[101, "forecast_status"] == "observed_training_time_point"
     assert (
         report.loc[202, "recommended_activities"]
         == "Guided reading practice"
@@ -221,6 +238,8 @@ def test_report_marks_missing_forecasts(
             "forecasted_next_score": [55.0],
             "forecasted_score_change": [5.0],
             "prediction_model": ["Linear Regression"],
+            "forecast_status": ["observed_training_time_point"],
+            "forecast_explanation": ["Experimental estimate at a seen time point"],
         }
     )
 
@@ -240,6 +259,8 @@ def test_report_marks_missing_forecasts(
     assert bool(report.loc[101, "has_future_forecast"]) is True
     assert bool(report.loc[202, "has_future_forecast"]) is False
     assert pd.isna(report.loc[202, "forecasted_next_score"])
+    assert report.loc[202, "forecast_status"] == "no_forecast"
+    assert "No forecast is available" in report.loc[202, "forecast_explanation"]
 
     # Missing forecast labels should fall back to the selected model name.
     assert report.loc[202, "prediction_model"] == "Linear Regression"
@@ -293,4 +314,17 @@ def test_report_rejects_incomplete_forecast_schema(
     )
 
     with pytest.raises(KeyError):
+        reporting.generate_progress_report()
+
+
+def test_duplicate_forecast_ids_cannot_multiply_report_rows(
+    monkeypatch, sample_reading_data, sample_model_results, sample_forecasts,
+    sample_risk_results, sample_intervention_results,
+):
+    duplicates = pd.concat([sample_forecasts, sample_forecasts.iloc[[0]]])
+    configure_report_dependencies(
+        monkeypatch, sample_reading_data, sample_model_results, duplicates,
+        sample_risk_results, sample_intervention_results,
+    )
+    with pytest.raises(pd.errors.MergeError):
         reporting.generate_progress_report()

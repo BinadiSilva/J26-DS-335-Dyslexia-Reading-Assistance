@@ -59,7 +59,7 @@ def generate_progress_report():
     # Run risk screening once and reuse the results for intervention planning.
     stagnation_results = detect_stagnation()
     intervention_results = generate_intervention_plans(
-        risk_data=stagnation_results
+        risk_data=stagnation_results, forecast_data=forecasts
     )
 
     # Keep only the columns required in the final report.
@@ -70,6 +70,12 @@ def generate_progress_report():
             "explanation",
             "average_recent_change",
             "number_of_observed_assessments",
+            "latest_score_change",
+            "latest_change_direction",
+            "recent_decline",
+            "latest_study_year_gap",
+            "recent_change_per_study_year",
+            "has_missing_time_points",
         ]
     ]
 
@@ -80,12 +86,15 @@ def generate_progress_report():
             "frequency",
             "session_duration",
             "recommendation_basis",
+            "support_priority",
+            "forecast_use",
+            "review_required",
+            "review_trigger",
         ]
     ]
 
     # Merge forecasts with latest assessments, risk categories, and plans.
-    # The forecast table does not contain latest_reading_score or latest_time_point,
-    # so the observed assessment columns remain unchanged.
+    # Select only forecast fields to keep observed assessment columns unchanged.
     report = latest_assessments.merge(
         forecasts[
             [
@@ -93,27 +102,40 @@ def generate_progress_report():
                 "forecasted_next_score",
                 "forecasted_score_change",
                 "prediction_model",
+                "forecast_status",
+                "forecast_explanation",
             ]
         ],
         on=PARTICIPANT_COLUMN,
         how="left",
+        validate="one_to_one",
     )
 
     report = report.merge(
         risk_summary,
         on=PARTICIPANT_COLUMN,
         how="left",
+        validate="one_to_one",
     )
 
     report = report.merge(
         intervention_summary,
         on=PARTICIPANT_COLUMN,
         how="left",
+        validate="one_to_one",
     )
 
     # Mark whether a participant has a usable forecast.
     report["has_future_forecast"] = (
         report["forecasted_next_score"].notna()
+    )
+
+    # A missing forecast is different from an estimate at an unseen time point.
+    missing_forecast = ~report["has_future_forecast"]
+    report.loc[missing_forecast, "forecast_status"] = "no_forecast"
+    report.loc[missing_forecast, "forecast_explanation"] = (
+        "No forecast is available. Check that at least two observed "
+        "assessments and a fitted model are available."
     )
 
     # Keep a consistent model label for report interpretation.
@@ -129,15 +151,27 @@ def generate_progress_report():
         "forecasted_next_score",
         "forecasted_score_change",
         "has_future_forecast",
+        "forecast_status",
+        "forecast_explanation",
         "prediction_model",
         "average_recent_change",
         "number_of_observed_assessments",
+        "latest_score_change",
+        "latest_change_direction",
+        "recent_decline",
+        "latest_study_year_gap",
+        "recent_change_per_study_year",
+        "has_missing_time_points",
         "stagnation_risk",
         "explanation",
         "recommended_activities",
         "frequency",
         "session_duration",
         "recommendation_basis",
+        "support_priority",
+        "forecast_use",
+        "review_required",
+        "review_trigger",
     ]
 
     report = (

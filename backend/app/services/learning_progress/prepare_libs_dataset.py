@@ -8,12 +8,12 @@ import pandas as pd
 PROJECT_ROOT = Path(__file__).resolve().parents[4]
 INPUT_FILE = PROJECT_ROOT / "LIBS_DataSet_UnLinked_July2024.xlsx"
 
-# Define the output path without overwriting the original dataset
+# Keep the older multi-assessment format separate from the current BAS CSV.
 OUTPUT_FILE = (
     PROJECT_ROOT
     / "datasets"
     / "component4"
-    / "libs_reading_assessments_long.csv"
+    / "libs_all_assessments_long.csv"
 )
 
 # Identify columns that contain repeated assessment time points

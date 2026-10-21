@@ -9,7 +9,7 @@ INPUT_FILE = (
     PROJECT_ROOT
     / "datasets"
     / "component4"
-    / "libs_reading_assessments_long.csv"
+    / "libs_all_assessments_long.csv"
 )
 
 # Save the prepared prediction data separately

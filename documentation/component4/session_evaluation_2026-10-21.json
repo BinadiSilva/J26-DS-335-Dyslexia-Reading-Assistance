@@ -1,0 +1,448 @@
+{
+  "schema_version": 1,
+  "source": "synthetic",
+  "seed": 335,
+  "history_sessions": 4,
+  "horizon_days": 7,
+  "features": [
+    "reading_speed_wpm",
+    "reading_accuracy",
+    "fluency_score",
+    "word_error_rate",
+    "difficulty_level",
+    "practice_minutes"
+  ],
+  "targets": [
+    "reading_speed_wpm",
+    "reading_accuracy",
+    "fluency_score",
+    "word_error_rate"
+  ],
+  "dataset_sha256": "7281e6a87380f639271a24ce94d879906c8cb4d035e444b583d23d55d81a6f74",
+  "participants": {
+    "fit": 115,
+    "validation": 29,
+    "test": 36
+  },
+  "examples": {
+    "fit": 1840,
+    "validation": 464,
+    "test": 576
+  },
+  "selection_rule": "Lowest validation equal-participant mean absolute error divided by training target standard deviations.",
+  "selection_scales": [
+    18.03571106561842,
+    11.09478462719815,
+    15.123838954850317,
+    0.11123375815335114
+  ],
+  "selected_model": "Linear Regression",
+  "models": {
+    "Persistence": {
+      "validation": {
+        "reading_speed_wpm": {
+          "mae": 0.9483230170123504,
+          "rmse": 1.1580657935996543,
+          "r2": 0.9959483544373928,
+          "participant_mae": 0.9483230170123504
+        },
+        "reading_accuracy": {
+          "mae": 0.4989224137931034,
+          "rmse": 0.6470256883457645,
+          "r2": 0.9958611002187224,
+          "participant_mae": 0.4989224137931034
+        },
+        "fluency_score": {
+          "mae": 0.7325431034482758,
+          "rmse": 0.9142202726348567,
+          "r2": 0.9948204611445013,
+          "participant_mae": 0.7325431034482758
+        },
+        "word_error_rate": {
+          "mae": 0.009536637931034481,
+          "rmse": 0.011924240017711819,
+          "r2": 0.9860039198753628,
+          "participant_mae": 0.009536637931034481
+        }
+      },
+      "validation_selection_score": 0.05793020363684924,
+      "training_seconds": 0.0036806249991059303,
+      "test": {
+        "reading_speed_wpm": {
+          "mae": 1.0288813698085644,
+          "rmse": 1.24327783447644,
+          "r2": 0.9950248866352989,
+          "participant_mae": 1.0288813698085642
+        },
+        "reading_accuracy": {
+          "mae": 0.5347222222222222,
+          "rmse": 0.67700320038633,
+          "r2": 0.9958949712311016,
+          "participant_mae": 0.5347222222222222
+        },
+        "fluency_score": {
+          "mae": 0.8546180555555556,
+          "rmse": 1.0327261320838592,
+          "r2": 0.9952906987109403,
+          "participant_mae": 0.8546180555555557
+        },
+        "word_error_rate": {
+          "mae": 0.009739583333333333,
+          "rmse": 0.012151388809514737,
+          "r2": 0.9867123212727494,
+          "participant_mae": 0.009739583333333333
+        }
+      }
+    },
+    "Linear Regression": {
+      "validation": {
+        "reading_speed_wpm": {
+          "mae": 0.45813562071716085,
+          "rmse": 0.5683407689495883,
+          "r2": 0.9990241510486699,
+          "participant_mae": 0.45813562071716085
+        },
+        "reading_accuracy": {
+          "mae": 0.28861377022269546,
+          "rmse": 0.35469040329172324,
+          "r2": 0.9987562281025135,
+          "participant_mae": 0.28861377022269546
+        },
+        "fluency_score": {
+          "mae": 0.3825778069497799,
+          "rmse": 0.472514767436845,
+          "r2": 0.9986163693544392,
+          "participant_mae": 0.38257780694977994
+        },
+        "word_error_rate": {
+          "mae": 0.0067088769194086515,
+          "rmse": 0.00798861521263898,
+          "r2": 0.9937181435518708,
+          "participant_mae": 0.0067088769194086515
+        }
+      },
+      "validation_selection_score": 0.03425617647407071,
+      "training_seconds": 0.007120167021639645,
+      "test": {
+        "reading_speed_wpm": {
+          "mae": 0.4585302186630666,
+          "rmse": 0.573620184440876,
+          "r2": 0.9989409524769454,
+          "participant_mae": 0.4585302186630666
+        },
+        "reading_accuracy": {
+          "mae": 0.2892153105977921,
+          "rmse": 0.3554063343644304,
+          "r2": 0.9988686809778323,
+          "participant_mae": 0.2892153105977921
+        },
+        "fluency_score": {
+          "mae": 0.3502275822547317,
+          "rmse": 0.44037368970351237,
+          "r2": 0.9991436942283175,
+          "participant_mae": 0.3502275822547316
+        },
+        "word_error_rate": {
+          "mae": 0.006601501802739721,
+          "rmse": 0.007842603439319916,
+          "r2": 0.9944649978290007,
+          "participant_mae": 0.006601501802739722
+        }
+      }
+    },
+    "Random Forest": {
+      "validation": {
+        "reading_speed_wpm": {
+          "mae": 0.5336364897553366,
+          "rmse": 0.6621835165508713,
+          "r2": 0.9986752872680454,
+          "participant_mae": 0.5336364897553365
+        },
+        "reading_accuracy": {
+          "mae": 0.32432814314358127,
+          "rmse": 0.4017183637583651,
+          "r2": 0.9984045425221632,
+          "participant_mae": 0.3243281431435812
+        },
+        "fluency_score": {
+          "mae": 0.4202974794522709,
+          "rmse": 0.518957704682221,
+          "r2": 0.9983310115599602,
+          "participant_mae": 0.4202974794522709
+        },
+        "word_error_rate": {
+          "mae": 0.008561442598546945,
+          "rmse": 0.01064008737003013,
+          "r2": 0.9888561466051772,
+          "participant_mae": 0.008561442598546945
+        }
+      },
+      "validation_selection_score": 0.04089466958465208,
+      "training_seconds": 1.7401585840852931,
+      "test": {
+        "reading_speed_wpm": {
+          "mae": 0.5500111975017278,
+          "rmse": 0.6830222712158526,
+          "r2": 0.9984984619949394,
+          "participant_mae": 0.5500111975017277
+        },
+        "reading_accuracy": {
+          "mae": 0.3291689930901007,
+          "rmse": 0.4114907532184347,
+          "r2": 0.9984834563234498,
+          "participant_mae": 0.3291689930901007
+        },
+        "fluency_score": {
+          "mae": 0.4269786920675873,
+          "rmse": 0.542392947620385,
+          "r2": 0.9987009848641748,
+          "participant_mae": 0.4269786920675873
+        },
+        "word_error_rate": {
+          "mae": 0.008916089943227413,
+          "rmse": 0.010879931355947883,
+          "r2": 0.9893475477735616,
+          "participant_mae": 0.008916089943227413
+        }
+      }
+    },
+    "XGBoost": {
+      "validation": {
+        "reading_speed_wpm": {
+          "mae": 0.5544182381773701,
+          "rmse": 0.6970724972355609,
+          "r2": 0.9985320175114257,
+          "participant_mae": 0.5544182381773701
+        },
+        "reading_accuracy": {
+          "mae": 0.3326564102603227,
+          "rmse": 0.4164987764085422,
+          "r2": 0.9982849794692413,
+          "participant_mae": 0.3326564102603227
+        },
+        "fluency_score": {
+          "mae": 0.4439002936274008,
+          "rmse": 0.5532612994262545,
+          "r2": 0.9981030757639706,
+          "participant_mae": 0.4439002936274007
+        },
+        "word_error_rate": {
+          "mae": 0.00843905206668641,
+          "rmse": 0.010397461591793665,
+          "r2": 0.9893585783633575,
+          "participant_mae": 0.00843905206668641
+        }
+      },
+      "validation_selection_score": 0.04148547928024785,
+      "training_seconds": 0.938489833031781,
+      "test": {
+        "reading_speed_wpm": {
+          "mae": 0.5434522648165832,
+          "rmse": 0.6759844566224541,
+          "r2": 0.9985292460641944,
+          "participant_mae": 0.5434522648165832
+        },
+        "reading_accuracy": {
+          "mae": 0.3197409589209378,
+          "rmse": 0.401893870123876,
+          "r2": 0.9985533698041039,
+          "participant_mae": 0.3197409589209378
+        },
+        "fluency_score": {
+          "mae": 0.42000707787885205,
+          "rmse": 0.5343731894256604,
+          "r2": 0.9987391150398659,
+          "participant_mae": 0.42000707787885205
+        },
+        "word_error_rate": {
+          "mae": 0.008665532388455079,
+          "rmse": 0.01051520676653704,
+          "r2": 0.9900497746110218,
+          "participant_mae": 0.008665532388455079
+        }
+      }
+    },
+    "LSTM": {
+      "validation": {
+        "reading_speed_wpm": {
+          "mae": 0.47362355996732197,
+          "rmse": 0.590177354365312,
+          "r2": 0.9989477230408205,
+          "participant_mae": 0.47362355996732197
+        },
+        "reading_accuracy": {
+          "mae": 0.2970569827557483,
+          "rmse": 0.3707034233895391,
+          "r2": 0.9986413892173787,
+          "participant_mae": 0.2970569827557483
+        },
+        "fluency_score": {
+          "mae": 0.38556318621857666,
+          "rmse": 0.47858909504592745,
+          "r2": 0.998580566672775,
+          "participant_mae": 0.38556318621857666
+        },
+        "word_error_rate": {
+          "mae": 0.007588602566256667,
+          "rmse": 0.00928284744693667,
+          "r2": 0.9915178210916067,
+          "participant_mae": 0.0075886025662566655
+        }
+      },
+      "validation_selection_score": 0.03668766177938692,
+      "training_seconds": 14.196608541999012,
+      "test": {
+        "reading_speed_wpm": {
+          "mae": 0.4775679912973183,
+          "rmse": 0.5995449184142622,
+          "r2": 0.9988430620903423,
+          "participant_mae": 0.4775679912973183
+        },
+        "reading_accuracy": {
+          "mae": 0.295352698392738,
+          "rmse": 0.37061308788356234,
+          "r2": 0.9987697984620444,
+          "participant_mae": 0.295352698392738
+        },
+        "fluency_score": {
+          "mae": 0.37081289774650933,
+          "rmse": 0.47325477887266415,
+          "r2": 0.9990110458448197,
+          "participant_mae": 0.3708128977465094
+        },
+        "word_error_rate": {
+          "mae": 0.007652764947581149,
+          "rmse": 0.009277813937675652,
+          "r2": 0.9922538018539195,
+          "participant_mae": 0.007652764947581151
+        }
+      }
+    },
+    "GRU": {
+      "validation": {
+        "reading_speed_wpm": {
+          "mae": 0.46651840920644233,
+          "rmse": 0.5798669909210814,
+          "r2": 0.9989841683194931,
+          "participant_mae": 0.46651840920644233
+        },
+        "reading_accuracy": {
+          "mae": 0.29428666352408794,
+          "rmse": 0.3644723415405332,
+          "r2": 0.9986866786105631,
+          "participant_mae": 0.29428666352408794
+        },
+        "fluency_score": {
+          "mae": 0.3836390860510212,
+          "rmse": 0.4750714113037924,
+          "r2": 0.9986013559786812,
+          "participant_mae": 0.3836390860510212
+        },
+        "word_error_rate": {
+          "mae": 0.007274700816609889,
+          "rmse": 0.00876206977256354,
+          "r2": 0.9924428435002991,
+          "participant_mae": 0.0072747008166098885
+        }
+      },
+      "validation_selection_score": 0.03578944467698699,
+      "training_seconds": 0.9748867079615593,
+      "test": {
+        "reading_speed_wpm": {
+          "mae": 0.45862914839295793,
+          "rmse": 0.5732502601112932,
+          "r2": 0.9989423179837086,
+          "participant_mae": 0.45862914839295804
+        },
+        "reading_accuracy": {
+          "mae": 0.29272198892030904,
+          "rmse": 0.3611266304707838,
+          "r2": 0.9988319705498849,
+          "participant_mae": 0.29272198892030904
+        },
+        "fluency_score": {
+          "mae": 0.36577350205848547,
+          "rmse": 0.4598234594026334,
+          "r2": 0.9990663837714394,
+          "participant_mae": 0.3657735020584854
+        },
+        "word_error_rate": {
+          "mae": 0.007273341005582222,
+          "rmse": 0.008777851066267908,
+          "r2": 0.9930661618459731,
+          "participant_mae": 0.007273341005582222
+        }
+      }
+    }
+  },
+  "selected_refit_test": {
+    "reading_speed_wpm": {
+      "mae": 0.4590712842164022,
+      "rmse": 0.5743270112108501,
+      "r2": 0.998938340907974,
+      "participant_mae": 0.4590712842164021
+    },
+    "reading_accuracy": {
+      "mae": 0.2892106000344478,
+      "rmse": 0.3555500175598046,
+      "r2": 0.9988677660566594,
+      "participant_mae": 0.2892106000344478
+    },
+    "fluency_score": {
+      "mae": 0.3484192223254686,
+      "rmse": 0.4397716389219571,
+      "r2": 0.9991460340009458,
+      "participant_mae": 0.3484192223254687
+    },
+    "word_error_rate": {
+      "mae": 0.0065999747594127295,
+      "rmse": 0.007839145962351118,
+      "r2": 0.9944698770567449,
+      "participant_mae": 0.0065999747594127295
+    }
+  },
+  "stagnation": {
+    "status": "evaluated",
+    "reference_source": "generator latent scenario; synthetic only",
+    "learners": 36,
+    "abstained": 0,
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "confusion_matrix_labels": [
+      "progress",
+      "stagnation"
+    ],
+    "confusion_matrix": [
+      [
+        14,
+        0
+      ],
+      [
+        0,
+        22
+      ]
+    ],
+    "majority_baseline_accuracy": 0.6111111111111112
+  },
+  "intervention_effectiveness": {
+    "status": "not_established",
+    "reason": "Dashboard tracks observed before/after changes. No causal outcome experiment has been performed."
+  },
+  "limitations": [
+    "Synthetic data test software and assumed patterns, not real children.",
+    "Only weekly, unchanged-difficulty sequences are eligible.",
+    "No individual confidence percentage or intervention benefit is inferred.",
+    "Reference labels need independent educator annotation for collected-data validation."
+  ],
+  "versions": {
+    "numpy": "2.3.5",
+    "pandas": "2.3.2",
+    "scikit-learn": "1.5.2",
+    "joblib": "1.4.2",
+    "torch": "2.14.1",
+    "xgboost": "3.4.1"
+  },
+  "model_sha256": "625b7bdbcad0b7f7e875be2c9f474c1fe7829ac7cce43b5ad6f77a3005ece09b"
+}
