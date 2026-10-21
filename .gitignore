@@ -1,0 +1,21 @@
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment variables and secrets
+.env
+.env.*
+
+# macOS files
+.DS_Store
+
+# Local Component 4 environment, learner records and trained binary artifacts
+.venv-component4/
+runtime/
+models/component4/session_*/
