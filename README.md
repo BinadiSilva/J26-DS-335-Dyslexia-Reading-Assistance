@@ -40,7 +40,7 @@ The dependency file pins directly used libraries, including Flask, Werkzeug, Job
 
 ## What the application does
 
-- Register a learner using a pseudonymous alias, age, grade and educator-entered goals.
+- Register a learner using a name, age, grade and educator-entered goals.
 - Record dated assessments and calculate correct words per minute, reading accuracy and word error rate. Fluency uses a consistent educator-assigned 0–100 rubric.
 - Display chronological history, charts, recent trends and an experimental forecast for seven days after the latest assessment.
 - Explain provisional stagnation categories and identify recent declines. Changed difficulty, short histories and scale ceilings receive separate explanations.
@@ -54,7 +54,7 @@ Forms retain entered values when server validation fails. Original assessments a
 
 ## A short PP1 demonstration
 
-1. Sign in as `teacher` and open **Demo learner 1**. Identify the synthetic-data banner.
+1. Sign in as `teacher` and open **Emma**. Identify the synthetic-data banner.
 2. Show the historical charts, the dated one-week forecast, its model name and the risk explanation.
 3. Open a learner with a High screening category and compare the explanation with the underlying observations.
 4. Review the active intervention using one of its later assessments. Record adherence and outcome notes, then complete the plan.
