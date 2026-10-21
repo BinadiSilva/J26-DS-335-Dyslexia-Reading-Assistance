@@ -65,10 +65,10 @@ class Store:
     def create_learner(self, data, learner_id=None):
         source = data.get("source")
         if source not in {"synthetic", "collected"}:
-            raise ValueError("Choose synthetic or collected data provenance.")
+            raise ValueError("Choose demo data or recorded sessions.")
         learner = {
             "id": learner_id or uuid4().hex[:12],
-            "alias": text(data.get("alias"), "Learner alias", 80),
+            "alias": text(data.get("alias"), "Name", 80),
             "age": number(data.get("age"), "Age", 4, 18, True),
             "grade": number(data.get("grade"), "Grade", 1, 13, True),
             "source": source,
@@ -106,7 +106,7 @@ class Store:
     def training_records(self, source):
         """Export only one provenance group; omit names, notes and account data."""
         if source not in {"synthetic", "collected"}:
-            raise ValueError("Choose synthetic or collected data provenance.")
+            raise ValueError("Choose demo data or recorded sessions.")
         with self.connection() as db:
             rows = db.execute(
                 "SELECT s.learner_id,s.payload FROM sessions s JOIN learners l "
