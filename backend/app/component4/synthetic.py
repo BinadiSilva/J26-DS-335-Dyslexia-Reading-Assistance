@@ -38,6 +38,9 @@ def generate_cohort(participants=180, weeks=20, seed=335, start="2025-01-06", pr
     return pd.DataFrame(rows)
 
 
+DEMO_NAMES = ("Emma", "Noah", "Olivia", "Liam", "Sophia", "Oliver")
+
+
 def seed_demo(store):
     """Idempotent seed; never clears or overwrites existing learners."""
     start = (date.today() - timedelta(days=85)).isoformat()
@@ -46,7 +49,7 @@ def seed_demo(store):
     for index, (learner_id, group) in enumerate(data.groupby("learner_id")):
         if learner_id in existing:
             continue
-        store.create_learner({"alias": f"Demo learner {index + 1}", "age": 9, "grade": 4,
+        store.create_learner({"alias": DEMO_NAMES[index], "age": 9, "grade": 4,
                               "source": "synthetic", "target_speed": 80, "target_accuracy": 90,
                               "target_fluency": 75}, learner_id)
         for position, row in enumerate(group.to_dict("records")):
